@@ -3,312 +3,941 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Wonuskiz — Portal da Comunidade</title>
+  <title>Wonuskiz — Portal da Joiner</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Inter',system-ui,sans-serif;font-size:14px;background:#F7F6FB;color:#1F2937;}
-    a{text-decoration:none;color:inherit;}
 
-    /* NAV */
-    .nav{background:#7C3AED;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:100;}
-    .nav-logo{display:flex;align-items:center;gap:9px;}
-    .nav-mark{width:32px;height:32px;background:rgba(255,255,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;}
-    .nav-brand{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.3px;}
-    .nav-links{display:flex;gap:4px;}
-    .nav-link{color:rgba(255,255,255,.75);font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;cursor:pointer;transition:background .12s;}
-    .nav-link:hover{background:rgba(255,255,255,.12);}
-    .nav-entrar{background:#fff;color:#7C3AED;border:none;border-radius:20px;padding:7px 18px;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .12s;}
-    .nav-entrar:hover{opacity:.9;}
+    /* SIDEBAR */
+    .sb{width:230px;min-width:230px;background:#fff;border-right:1px solid #EEE9F8;display:flex;flex-direction:column;padding-bottom:16px;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:50;}
+    .sb-top{padding:20px 20px 12px;}
+    .sb-logo{display:flex;align-items:center;gap:9px;margin-bottom:2px;}
+    .sb-mark{width:34px;height:34px;background:#7C3AED;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .sb-brand{font-size:18px;font-weight:800;color:#6D28D9;letter-spacing:-.4px;}
+    .sb-tagline{font-size:11px;color:#9CA3AF;margin-top:2px;margin-left:43px;}
+    .sb-user{display:flex;align-items:center;gap:10px;padding:14px 20px;border-top:1px solid #F3F0FC;border-bottom:1px solid #F3F0FC;cursor:pointer;}
+    .sb-ava{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:#7C3AED;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;overflow:hidden;}
+    .sb-ava img{width:100%;height:100%;object-fit:cover;}
+    .sb-uname{font-size:13px;font-weight:700;color:#1F2937;}
+    .sb-usub{font-size:11px;color:#9CA3AF;}
+    .sb-sec{font-size:10px;font-weight:800;color:#C4B5FD;text-transform:uppercase;letter-spacing:.8px;padding:16px 20px 6px;}
+    .sbi{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:#6B7280;font-size:13px;font-weight:600;position:relative;transition:all .12s;}
+    .sbi:hover{background:#F5F3FF;color:#6D28D9;}
+    .sbi.on{background:#F5F3FF;color:#6D28D9;}
+    .sbi.on::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;background:#7C3AED;border-radius:0 3px 3px 0;}
+    .sbi i{font-size:17px;}
+    .sb-badge{margin-left:auto;background:#EF4444;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;}
+    .sb-bottom{margin:auto 16px 0;background:#F5F3FF;border-radius:14px;padding:14px;border:1px solid #EDE9FE;}
+    .sb-bb-title{font-size:12px;font-weight:800;color:#6D28D9;margin-bottom:3px;}
+    .sb-bb-sub{font-size:11px;color:#7C3AED;opacity:.75;margin-bottom:10px;line-height:1.4;}
+    .sb-wa{display:flex;align-items:center;justify-content:center;gap:6px;background:#25D366;color:#fff;border:none;border-radius:9px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;width:100%;}
+
+    /* MAIN */
+    .main{margin-left:230px;min-height:100vh;display:flex;flex-direction:column;}
+    .topbar{background:#fff;border-bottom:1px solid #EEE9F8;height:58px;display:flex;align-items:center;padding:0 28px;gap:14px;position:sticky;top:0;z-index:40;}
+    .tb-search{display:flex;align-items:center;gap:8px;background:#F9F8FE;border:1px solid #EDE9FE;border-radius:10px;padding:8px 14px;flex:1;max-width:360px;}
+    .tb-search input{border:none;background:transparent;font-size:13px;color:#374151;outline:none;width:100%;font-family:inherit;}
+    .tb-search input::placeholder{color:#9CA3AF;}
+    .tb-right{display:flex;align-items:center;gap:12px;margin-left:auto;}
+    .tb-icon{width:38px;height:38px;border-radius:10px;border:1px solid #EDE9FE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6D28D9;font-size:19px;position:relative;}
+    .tb-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#EF4444;border:2px solid #fff;}
+    .tb-ava{width:38px;height:38px;border-radius:50%;overflow:hidden;cursor:pointer;background:#7C3AED;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;}
+    .tb-ava img{width:100%;height:100%;object-fit:cover;}
+
+    /* CONTENT */
+    .content{flex:1;padding:28px 32px;overflow-y:auto;}
 
     /* HERO */
-    .hero{background:#7C3AED;padding:64px 32px 96px;text-align:center;position:relative;overflow:hidden;}
-    .hero-deco{position:absolute;inset:0;pointer-events:none;}
-    .hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:.5px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,.8);font-weight:600;margin-bottom:20px;}
-    .hero h1{font-size:36px;font-weight:800;color:#fff;letter-spacing:-.7px;margin-bottom:10px;line-height:1.2;}
-    .hero h1 b{color:#D9C9FB;}
-    .hero-sub{font-size:14px;color:rgba(255,255,255,.65);margin-bottom:34px;max-width:360px;margin-left:auto;margin-right:auto;line-height:1.6;}
-    .search-wrap{background:#fff;border-radius:18px;padding:6px 6px 6px 20px;display:flex;align-items:center;gap:10px;max-width:480px;margin:0 auto;box-shadow:0 8px 32px rgba(91,33,182,.25);}
-    .search-wrap input{flex:1;border:none;background:transparent;font-size:15px;outline:none;color:#1F2937;font-family:inherit;}
-    .search-wrap input::placeholder{color:#9CA3AF;}
-    .search-btn{background:#7C3AED;color:#fff;border:none;border-radius:13px;padding:10px 22px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:background .12s;}
-    .search-btn:hover{background:#6D28D9;}
-    .search-error{color:#FCA5A5;font-size:12px;margin-top:10px;display:none;}
+    .hero{background:#7239D6;border-radius:24px;padding:36px;margin-bottom:24px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;}
+    .hero-content{position:relative;z-index:1;}
+    .hero-greet{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:8px;}
+    .hero-title{font-size:28px;font-weight:800;color:#fff;line-height:1.25;letter-spacing:-.6px;}
+    .hero-title b{color:#D9C9FB;}
+    .hero-sub{font-size:14px;color:rgba(255,255,255,.6);margin-top:8px;max-width:320px;line-height:1.5;}
+    .hero-star{position:absolute;right:32px;top:50%;transform:translateY(-50%);opacity:.9;}
 
-    /* FLOAT CARD */
-    .float-section{max-width:580px;margin:-36px auto 0;position:relative;z-index:2;padding:0 20px;}
-    .avisos-card{background:#fff;border-radius:20px;border:1px solid #F0EDFB;padding:18px 22px;box-shadow:0 4px 20px rgba(91,33,182,.08);}
-    .avisos-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-    .avisos-title{font-size:13px;font-weight:800;color:#1F2937;display:flex;align-items:center;gap:7px;}
-    .av-ic{width:22px;height:22px;border-radius:7px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;color:#7C3AED;font-size:12px;}
-    .av-link{font-size:12px;color:#7C3AED;font-weight:700;cursor:pointer;}
-    .av-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:.5px solid #F9F8FE;}
-    .av-item:last-child{border-bottom:none;padding-bottom:0;}
-    .av-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
-    .av-text{font-size:13px;color:#374151;line-height:1.4;flex:1;}
-    .av-time{font-size:11px;color:#9CA3AF;white-space:nowrap;flex-shrink:0;}
-    .av-empty{font-size:13px;color:#9CA3AF;text-align:center;padding:12px 0;}
+    /* SUMMARY */
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+    .sum-card{background:#fff;border-radius:18px;border:1px solid #F0EDFB;padding:18px;cursor:pointer;transition:all .15s;}
+    .sum-card:hover{box-shadow:0 8px 24px rgba(124,58,237,.1);transform:translateY(-2px);}
+    .sum-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+    .sum-label{font-size:12px;color:#9CA3AF;margin-bottom:5px;font-weight:600;}
+    .sum-val{font-size:24px;font-weight:800;color:#1F2937;}
+    .sum-link{font-size:12px;color:#7C3AED;font-weight:700;margin-top:8px;display:flex;align-items:center;gap:3px;}
 
-    /* HOW */
-    .how{max-width:580px;margin:36px auto;padding:0 20px;}
-    .how-title{font-size:15px;font-weight:800;color:#1F2937;text-align:center;margin-bottom:18px;}
-    .how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-    .how-step{background:#fff;border-radius:16px;border:1px solid #F0EDFB;padding:20px 14px;text-align:center;}
-    .how-num{width:34px;height:34px;border-radius:50%;background:#7C3AED;color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
-    .how-step-title{font-size:13px;font-weight:800;color:#1F2937;margin-bottom:5px;}
-    .how-step-sub{font-size:12px;color:#9CA3AF;line-height:1.5;}
+    /* SEC */
+    .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+    .sec-title{font-size:15px;font-weight:800;color:#1F2937;display:flex;align-items:center;gap:8px;}
+    .sec-ic{width:26px;height:26px;border-radius:8px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;color:#7C3AED;font-size:14px;}
+    .sec-link{font-size:12px;color:#7C3AED;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;}
 
-    /* CTA */
-    .cta-bar{max-width:580px;margin:0 auto 40px;padding:0 20px;}
-    .cta-card{background:#5B21B6;border-radius:18px;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
-    .cta-title{font-size:16px;font-weight:800;color:#fff;margin-bottom:4px;}
-    .cta-sub{font-size:13px;color:rgba(255,255,255,.65);line-height:1.5;}
-    .cta-btn{background:#fff;color:#6D28D9;border:none;border-radius:11px;padding:10px 22px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:opacity .12s;}
-    .cta-btn:hover{opacity:.9;}
+    /* TABS */
+    .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+    .tab{padding:7px 18px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #EDE9FE;color:#9CA3AF;transition:all .12s;}
+    .tab.on{background:#7C3AED;color:#fff;border-color:#7C3AED;}
+
+    /* ITEM CARD */
+    .item-card{background:#fff;border-radius:18px;border:1px solid #F0EDFB;padding:18px;margin-bottom:12px;cursor:pointer;transition:all .15s;}
+    .item-card:hover{box-shadow:0 6px 20px rgba(124,58,237,.08);border-color:#C4B5FD;}
+    .item-top{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;}
+    .item-img{width:68px;height:68px;border-radius:14px;flex-shrink:0;overflow:hidden;position:relative;}
+    .item-status-badge{position:absolute;top:0;left:0;right:0;padding:4px 0;text-align:center;font-size:9px;font-weight:800;color:#fff;}
+    .item-name{font-size:14px;font-weight:800;color:#1F2937;margin-bottom:4px;}
+    .item-meta{font-size:11px;color:#9CA3AF;line-height:1.5;}
+    .item-price{font-size:16px;font-weight:800;color:#1F2937;text-align:right;white-space:nowrap;}
+    .item-price-lbl{font-size:10px;color:#9CA3AF;text-align:right;font-weight:600;}
+
+    /* PIPELINE */
+    .pipe{display:flex;align-items:flex-start;}
+    .pipe-step{flex:1;text-align:center;position:relative;}
+    .pipe-node{width:26px;height:26px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:11px;position:relative;z-index:1;}
+    .pipe-conn{position:absolute;top:12px;left:50%;right:-50%;height:2px;z-index:0;}
+    .pn-done{background:#7C3AED;color:#fff;}
+    .pn-curr{background:#7C3AED;color:#fff;box-shadow:0 0 0 5px #EDE9FE;}
+    .pn-warn{background:#D97706;color:#fff;box-shadow:0 0 0 5px #FEF3C7;}
+    .pn-off{background:#F3F0FC;color:#C4B5FD;border:1.5px solid #EDE9FE;}
+    .pc-done{background:#7C3AED;}
+    .pc-off{background:#EDE9FE;}
+    .pipe-lbl{font-size:10px;color:#9CA3AF;font-weight:600;}
+    .pipe-lbl.curr{color:#7C3AED;font-weight:800;}
+    .pipe-lbl.warn{color:#D97706;font-weight:800;}
+
+    /* PAY ALERT */
+    .pay-alert{display:flex;align-items:center;justify-content:space-between;background:#FFFBEB;border:1px solid #FDE68A;border-radius:12px;padding:11px 16px;margin-top:14px;}
+    .pay-alert-text{font-size:12px;color:#92400E;font-weight:700;}
+    .pay-btn{background:#7C3AED;color:#fff;border:none;border-radius:9px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;}
+
+    /* BADGES */
+    .badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;display:inline-block;}
+    .b-ok{background:#D1FAE5;color:#065F46;}
+    .b-warn{background:#FEF3C7;color:#92400E;}
+    .b-late{background:#FEE2E2;color:#991B1B;}
+    .b-soon{background:#F3F4F6;color:#6B7280;}
+    .b-sent{background:#EFF6FF;color:#1D4ED8;}
+    .b-purple{background:#EDE9FE;color:#6D28D9;}
+
+    /* PAG CARD */
+    .pag-card{background:#fff;border-radius:14px;border:1px solid #F0EDFB;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+    .pag-date{width:46px;background:#F5F3FF;border-radius:10px;text-align:center;padding:6px 4px;flex-shrink:0;}
+    .pag-day{font-size:18px;font-weight:800;color:#7C3AED;line-height:1;}
+    .pag-month{font-size:9px;color:#9CA3AF;text-transform:uppercase;font-weight:700;}
+    .pag-name{font-size:12px;font-weight:800;color:#1F2937;}
+    .pag-sub{font-size:11px;color:#9CA3AF;margin-top:2px;}
+    .pag-val{font-size:14px;font-weight:800;color:#1F2937;margin-left:auto;text-align:right;flex-shrink:0;}
+    .pag-btn{background:#7C3AED;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;margin-left:8px;}
+
+    /* COT CARD */
+    .cot-card{background:#fff;border-radius:14px;border:1px solid #F0EDFB;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+    .cot-plat{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+    .nova-cot{display:flex;align-items:center;justify-content:center;gap:6px;background:#F5F3FF;border:1.5px dashed #C4B5FD;border-radius:11px;padding:12px;font-size:12px;font-weight:800;color:#7C3AED;cursor:pointer;width:100%;margin-top:12px;border-radius:14px;}
+
+    /* REP CARD */
+    .rep-card{background:#fff;border-radius:14px;border:1px solid #F0EDFB;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+
+    /* AVISO CARD */
+    .av-card{background:#F5F3FF;border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;display:flex;gap:11px;border:1px solid #EDE9FE;}
+    .av-ic{width:34px;height:34px;border-radius:10px;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;}
+    .av-title{font-size:12px;font-weight:800;color:#6D28D9;margin-bottom:3px;}
+    .av-body{font-size:11px;color:#6D28D9;opacity:.8;line-height:1.45;}
+
+    /* MODAL */
+    .modal-bg{display:none;position:fixed;inset:0;background:rgba(91,33,182,.18);z-index:200;align-items:center;justify-content:center;}
+    .modal-bg.open{display:flex;}
+    .modal{background:#fff;border-radius:20px;padding:24px;width:380px;max-width:90vw;box-shadow:0 12px 40px rgba(91,33,182,.18);}
+    .modal-title{font-size:17px;font-weight:800;color:#1F2937;margin-bottom:4px;}
+    .modal-sub{font-size:13px;color:#9CA3AF;margin-bottom:18px;}
+    .modal-lbl{font-size:12px;font-weight:700;color:#374151;margin:10px 0 4px;display:block;}
+    .modal-sel,.modal-input,.modal-ta{width:100%;font-size:13px;border:1.5px solid #EDE9FE;border-radius:11px;padding:9px 13px;background:#F9F8FE;color:#1F2937;outline:none;font-family:inherit;}
+    .modal-ta{resize:none;}
+    .modal-acts{display:flex;gap:9px;margin-top:18px;}
+    .modal-cancel{flex:1;padding:11px;background:#F5F3FF;color:#7C3AED;border:none;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;}
+    .modal-confirm{flex:1;padding:11px;background:#7C3AED;color:#fff;border:none;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;}
 
     /* LOADING */
-    .loading{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+    .loading-wrap{display:flex;align-items:center;justify-content:center;padding:40px;color:#9CA3AF;font-size:13px;gap:10px;}
+    .spinner{width:20px;height:20px;border:2px solid #EDE9FE;border-top-color:#7C3AED;border-radius:50%;animation:spin .7s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
+    .empty{text-align:center;padding:32px;color:#9CA3AF;font-size:13px;}
+    .empty i{font-size:32px;display:block;margin-bottom:10px;color:#C4B5FD;}
 
-    /* RESPONSIVE */
-    @media(max-width:600px){
-      .nav-links{display:none;}
-      .hero h1{font-size:26px;}
-      .how-steps{grid-template-columns:1fr;}
-      .cta-card{flex-direction:column;text-align:center;}
+    /* TOAST */
+    .toast-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:999;transition:opacity .3s;opacity:0;pointer-events:none;}
+    .toast-wrap.show{opacity:1;}
+    .toast-pill{background:#7C3AED;color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;white-space:nowrap;box-shadow:0 4px 16px rgba(109,40,217,.3);}
+
+    /* TWO COL */
+    .two-col{display:grid;grid-template-columns:1fr 290px;gap:18px;}
+
+    /* HIDDEN */
+    .hidden{display:none!important;}
+
+    @media(max-width:900px){
+      .sb{display:none;}
+      .main{margin-left:0;}
+      .summary{grid-template-columns:repeat(2,1fr);}
+      .two-col{grid-template-columns:1fr;}
     }
   </style>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-logo">
-    <div class="nav-mark">
-      <svg width="18" height="13" viewBox="0 0 40 28" fill="none">
-        <path d="M8 20C8 20 4 18 2 12C2 8 6 4 10 6L14 2L16 8C18 7 22 7 24 8L26 2L30 6C34 4 38 8 38 12C36 18 32 20 32 20" stroke="#EFD5C1" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <span class="nav-brand">wonuskiz</span>
-  </div>
-  <div class="nav-links">
-    <span class="nav-link">cegs abertas</span>
-    <span class="nav-link">caixinhas</span>
-    <span class="nav-link">avisos</span>
-  </div>
-  <button class="nav-entrar" onclick="loginGoogle()">
-    <i class="ti ti-brand-google"></i> entrar
-  </button>
-</nav>
-
-<div class="hero">
-  <svg class="hero-deco" viewBox="0 0 680 300" preserveAspectRatio="none" fill="none">
-    <circle cx="80" cy="60" r="3" fill="#fff" opacity=".2"/>
-    <circle cx="600" cy="40" r="2" fill="#fff" opacity=".25"/>
-    <circle cx="640" cy="150" r="2" fill="#fff" opacity=".2"/>
-    <circle cx="40" cy="190" r="2" fill="#fff" opacity=".2"/>
-    <path d="M597 36L599 42L605 42L600 46L602 52L597 48L592 52L594 46L589 42L595 42Z" fill="#fff" opacity=".3"/>
-    <path d="M77 57L79 62L84 62L80 65L81 70L77 67L73 70L74 65L70 62L75 62Z" fill="#D9C9FB" opacity=".45"/>
-  </svg>
-  <div class="hero-tag">
-    <i class="ti ti-sparkles" style="font-size:12px;"></i>
-    comunidade de kpop cegs
-  </div>
-  <h1>seus itens,<br><b>todos aqui</b></h1>
-  <p class="hero-sub">busque pelo seu @ do Twitter e acompanhe cada photocard, álbum e merch em um só lugar.</p>
-  <div class="search-wrap">
-    <i class="ti ti-at" style="font-size:18px;color:#9CA3AF;"></i>
-    <input type="text" id="searchInput" placeholder="seuusername" autocomplete="off"/>
-    <button class="search-btn" id="searchBtn" onclick="buscarJoiner()">
-      <i class="ti ti-search" style="font-size:14px;"></i> buscar
-    </button>
-  </div>
-  <div class="search-error" id="searchError">@ não encontrado. verifique o username e tente novamente.</div>
-</div>
-
-<div class="float-section">
-  <div class="avisos-card">
-    <div class="avisos-head">
-      <div class="avisos-title">
-        <div class="av-ic"><i class="ti ti-bell"></i></div>
-        avisos da comunidade
+<!-- SIDEBAR -->
+<div class="sb" id="sidebar">
+  <div class="sb-top">
+    <div class="sb-logo">
+      <div class="sb-mark">
+        <svg width="20" height="14" viewBox="0 0 40 28" fill="none"><path d="M8 20C8 20 4 18 2 12C2 8 6 4 10 6L14 2L16 8C18 7 22 7 24 8L26 2L30 6C34 4 38 8 38 12C36 18 32 20 32 20" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
       </div>
-      <span class="av-link">ver todos</span>
+      <span class="sb-brand">wonuskiz</span>
     </div>
-    <div id="avisosList">
-      <div class="av-empty">carregando avisos...</div>
-    </div>
+    <div class="sb-tagline">comunidade de kpop cegs</div>
   </div>
-</div>
 
-<div class="how">
-  <div class="how-title">como funciona?</div>
-  <div class="how-steps">
-    <div class="how-step">
-      <div class="how-num">1</div>
-      <div class="how-step-title">busque seu @</div>
-      <div class="how-step-sub">digite seu username do Twitter para encontrar seus itens</div>
-    </div>
-    <div class="how-step">
-      <div class="how-num">2</div>
-      <div class="how-step-title">acompanhe tudo</div>
-      <div class="how-step-sub">veja status de cada item, pagamentos e envios em tempo real</div>
-    </div>
-    <div class="how-step">
-      <div class="how-num">3</div>
-      <div class="how-step-title">entre na conta</div>
-      <div class="how-step-sub">faça login com Google para pagamentos e cotações de caixinhas</div>
-    </div>
-  </div>
-</div>
-
-<div class="cta-bar">
-  <div class="cta-card">
+  <div class="sb-user" id="sbUser">
+    <div class="sb-ava" id="sbAva">?</div>
     <div>
-      <div class="cta-title">é joiner da Wonuskiz?</div>
-      <div class="cta-sub">entre com sua conta Google para acessar pagamentos, cotações de caixinhas e muito mais.</div>
+      <div class="sb-uname" id="sbUsername">carregando...</div>
+      <div class="sb-usub" id="sbSince"></div>
     </div>
-    <button class="cta-btn" onclick="loginGoogle()">
-      <i class="ti ti-brand-google" style="font-size:14px;"></i>
-      entrar com Google
-    </button>
   </div>
+
+  <div class="sb-sec">início</div>
+  <div class="sbi on" onclick="nav('inicio',this)"><i class="ti ti-home"></i> Início</div>
+  <div class="sbi" onclick="nav('itens',this)"><i class="ti ti-box"></i> Meus itens <span class="sb-badge" id="badgeItens" style="display:none">0</span></div>
+  <div class="sbi" onclick="nav('pagamentos',this)"><i class="ti ti-credit-card"></i> Pagamentos <span class="sb-badge" id="badgePags" style="display:none">0</span></div>
+  <div class="sbi" onclick="nav('repasses',this)"><i class="ti ti-arrows-exchange"></i> Repasses</div>
+  <div class="sbi" onclick="nav('caixinhas',this)"><i class="ti ti-search"></i> Caixinhas</div>
+  <div class="sbi" onclick="nav('avisos',this)"><i class="ti ti-bell"></i> Avisos</div>
+  <div class="sbi" id="btnAdmin" style="display:none;color:#7C3AED;margin-top:4px;" onclick="window.open('/wonuskiz-portal/admin/index.html','_blank')"><i class="ti ti-shield"></i> Painel Admin</div>
+  <div class="sbi" onclick="logout()" style="margin-top:4px;color:#EF4444;"><i class="ti ti-logout"></i> Sair</div>
+
+  <div class="sb-bottom">
+    <div class="sb-bb-title">dúvidas?</div>
+    <div class="sb-bb-sub">Fale com o suporte no WhatsApp!</div>
+    <button class="sb-wa"><i class="ti ti-brand-whatsapp" style="font-size:15px;"></i> Abrir atendimento</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-search">
+      <i class="ti ti-search" style="font-size:16px;color:#9CA3AF;"></i>
+      <input type="text" placeholder="Buscar no portal..."/>
+    </div>
+    <div class="tb-right">
+      <div class="tb-icon" onclick="nav('avisos')"><i class="ti ti-bell"></i><div class="tb-dot" id="avisoDot" style="display:none"></div></div>
+      <div class="tb-ava" id="tbAva">?</div>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+
+    <!-- INICIO -->
+    <div id="v-inicio">
+      <div class="hero">
+        <div class="hero-content">
+          <div class="hero-greet">olá, joiner! 💜</div>
+          <div class="hero-title">bem-vinda ao<br>portal <b>wonuskiz</b></div>
+          <div class="hero-sub">acompanhe seus itens, pagamentos e tudo sobre suas compras.</div>
+        </div>
+        <svg class="hero-star" width="100" height="100" viewBox="0 0 90 90" fill="none">
+          <path d="M45 6L53 30L80 30L58 46L66 70L45 55L24 70L32 46L10 30L37 30Z" fill="#9D7BE8"/>
+          <path d="M45 6L53 30L80 30L58 46L66 70L45 55L24 70L32 46L10 30L37 30Z" fill="#C4B5FD" opacity=".5" transform="translate(-2,-2) scale(0.97)"/>
+          <ellipse cx="35" cy="28" rx="16" ry="10" fill="#fff" opacity=".2" transform="rotate(-25 35 28)"/>
+          <text x="45" y="52" text-anchor="middle" font-size="20" font-family="sans-serif" font-weight="800" font-style="italic" fill="#fff">w.</text>
+        </svg>
+      </div>
+
+      <div class="summary">
+        <div class="sum-card" onclick="nav('itens')">
+          <div class="sum-ic" style="background:#F5F3FF;">
+            <svg viewBox="0 0 42 42" width="32" height="32"><rect width="42" height="42" rx="13" fill="none"/><path d="M21 11L31 16.5V25.5L21 31L11 25.5V16.5L21 11Z" stroke="#7C3AED" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M11 16.5L21 22L31 16.5M21 22V31" stroke="#7C3AED" stroke-width="2" fill="none"/></svg>
+          </div>
+          <div class="sum-label">itens ativos</div>
+          <div class="sum-val" id="totalItens">—</div>
+          <div class="sum-link">ver itens <i class="ti ti-arrow-right" style="font-size:11px;"></i></div>
+        </div>
+        <div class="sum-card" onclick="nav('pagamentos')">
+          <div class="sum-ic" style="background:#FDF2F8;">
+            <svg viewBox="0 0 42 42" width="32" height="32"><rect width="42" height="42" rx="13" fill="none"/><rect x="10" y="14" width="22" height="16" rx="3" stroke="#DB2777" stroke-width="2" fill="none"/><rect x="10" y="19" width="22" height="3" fill="#DB2777"/><circle cx="16" cy="26" r="1.5" fill="#DB2777"/></svg>
+          </div>
+          <div class="sum-label">pagamentos pendentes</div>
+          <div class="sum-val" id="totalPags">—</div>
+          <div class="sum-link">ver pagamentos <i class="ti ti-arrow-right" style="font-size:11px;"></i></div>
+        </div>
+        <div class="sum-card" onclick="nav('repasses')">
+          <div class="sum-ic" style="background:#EFF6FF;">
+            <svg viewBox="0 0 42 42" width="32" height="32"><rect width="42" height="42" rx="13" fill="none"/><path d="M13 17H29M29 17L24 12M29 17L24 22" stroke="#2563EB" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 25H13M13 25L18 20M13 25L18 30" stroke="#2563EB" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="sum-label">repasses ativos</div>
+          <div class="sum-val" id="totalRep">—</div>
+          <div class="sum-link">ver repasses <i class="ti ti-arrow-right" style="font-size:11px;"></i></div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-ic" style="background:#FFFBEB;">
+            <svg viewBox="0 0 42 42" width="32" height="32"><rect width="42" height="42" rx="13" fill="none"/><path d="M21 30C21 30 11 24 11 17.5C11 14.5 13.5 12 16.5 12C18.5 12 20 13 21 14.5C22 13 23.5 12 25.5 12C28.5 12 31 14.5 31 17.5C31 24 21 30 21 30Z" fill="#D97706"/></svg>
+          </div>
+          <div class="sum-label">total investido</div>
+          <div class="sum-val" id="totalVal" style="font-size:18px;">—</div>
+          <div class="sum-link">ver histórico <i class="ti ti-arrow-right" style="font-size:11px;"></i></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <div class="sec-head">
+            <div class="sec-title"><div class="sec-ic"><i class="ti ti-box"></i></div> meus itens recentes</div>
+            <span class="sec-link" onclick="nav('itens')">ver todos <i class="ti ti-arrow-right" style="font-size:11px;"></i></span>
+          </div>
+          <div id="itensList"><div class="loading-wrap"><div class="spinner"></div> carregando...</div></div>
+        </div>
+        <div>
+          <div class="sec-head">
+            <div class="sec-title"><div class="sec-ic"><i class="ti ti-credit-card"></i></div> próximos pagamentos</div>
+            <span class="sec-link" onclick="nav('pagamentos')">ver todos</span>
+          </div>
+          <div id="pagsList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+
+          <div class="sec-head" style="margin-top:18px;">
+            <div class="sec-title"><div class="sec-ic"><i class="ti ti-bell"></i></div> avisos</div>
+            <span class="sec-link" onclick="nav('avisos')">ver todos</span>
+          </div>
+          <div id="avisosList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ITENS -->
+    <div id="v-itens" class="hidden">
+      <div class="sec-head">
+        <div class="sec-title"><div class="sec-ic"><i class="ti ti-box"></i></div> meus itens</div>
+      </div>
+      <div class="tabs" id="itensTabs">
+        <div class="tab on" onclick="filtrarItens('todos',this)">Todos</div>
+        <div class="tab" onclick="filtrarItens('pendente',this)">Pagamento pendente</div>
+        <div class="tab" onclick="filtrarItens('transito',this)">Em trânsito</div>
+        <div class="tab" onclick="filtrarItens('entregue',this)">Entregues</div>
+      </div>
+      <div id="itensListFull"><div class="loading-wrap"><div class="spinner"></div> carregando...</div></div>
+    </div>
+
+    <!-- PAGAMENTOS -->
+    <div id="v-pagamentos" class="hidden">
+      <div class="sec-head">
+        <div class="sec-title"><div class="sec-ic"><i class="ti ti-credit-card"></i></div> pagamentos</div>
+        <button onclick="openModal('comprovante')" style="background:#7C3AED;color:#fff;border:none;border-radius:9px;padding:8px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="ti ti-upload" style="font-size:13px;"></i> enviar comprovante</button>
+      </div>
+      <div class="tabs">
+        <div class="tab on" onclick="filtrarPags('todos',this)">Todos</div>
+        <div class="tab" onclick="filtrarPags('pendente',this)">Pendentes</div>
+        <div class="tab" onclick="filtrarPags('atrasado',this)">Atrasados</div>
+        <div class="tab" onclick="filtrarPags('pago',this)">Pagos</div>
+      </div>
+      <div id="pagsListFull"><div class="loading-wrap"><div class="spinner"></div> carregando...</div></div>
+    </div>
+
+    <!-- REPASSES -->
+    <div id="v-repasses" class="hidden">
+      <div class="sec-head">
+        <div class="sec-title"><div class="sec-ic"><i class="ti ti-arrows-exchange"></i></div> repasses</div>
+        <button onclick="openModal('repasse')" style="background:#7C3AED;color:#fff;border:none;border-radius:9px;padding:8px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="ti ti-plus" style="font-size:13px;"></i> solicitar repasse</button>
+      </div>
+      <div id="repassesList"><div class="loading-wrap"><div class="spinner"></div> carregando...</div></div>
+    </div>
+
+    <!-- CAIXINHAS -->
+    <div id="v-caixinhas" class="hidden">
+      <div class="sec-head">
+        <div class="sec-title"><div class="sec-ic"><i class="ti ti-search"></i></div> caixinhas</div>
+        <button onclick="openModal('cotacao')" style="background:#7C3AED;color:#fff;border:none;border-radius:9px;padding:8px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="ti ti-plus" style="font-size:13px;"></i> nova cotação</button>
+      </div>
+      <div id="cotacoesList"><div class="loading-wrap"><div class="spinner"></div> carregando...</div></div>
+    </div>
+
+    <!-- AVISOS -->
+    <div id="v-avisos" class="hidden">
+      <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-bell"></i></div> avisos</div></div>
+      <div id="avisosListFull"><div class="loading-wrap"><div class="spinner"></div> carregando...</div></div>
+    </div>
+
+    <div id="modal-area"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap">
+  <div class="toast-pill"><i class="ti ti-check" style="font-size:14px;"></i><span id="toastMsg"></span></div>
 </div>
 
 <script>
-  // ============================================================
-  // CONFIGURAÇÃO DO SUPABASE
-  // Substitua pelos seus valores reais!
-  // ============================================================
-  const SUPABASE_URL = 'https://ozbevopvwtxfpmtnfbbt.supabase.co'
-  const SUPABASE_KEY = 'SUA_CHAVE_PUBLICA_AQUI'
+// ============================================================
+// CONFIG SUPABASE
+// ============================================================
+const SUPABASE_URL = 'https://ozbevopvwtxfpmtnfbbt.supabase.co'
+const SUPABASE_KEY = 'SUA_CHAVE_PUBLICA_AQUI'
+const { createClient } = supabase
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-  const { createClient } = supabase
-  const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
+const PIPELINE = ['Compra confirmada','Em trânsito (Seller→Proxy)','No proxy','Em trânsito (Proxy→GOM)','Alfândega','Com a GOM','Envio liberado','Em trânsito nacional','Entregue']
+const TIPOS_PAG = {1:'Item',2:'Frete Int. 1',3:'Frete Int. 2',4:'Taxa RF',5:'Envio Nacional'}
+const STATUS_PAG = {
+  EM_BREVE:{label:'Em breve',cls:'b-soon'},
+  PENDENTE:{label:'Pendente',cls:'b-warn'},
+  COMPROVANTE_ENVIADO:{label:'Comprovante enviado',cls:'b-sent'},
+  PAGO:{label:'Pago',cls:'b-ok'},
+  ATRASADO:{label:'Atrasado',cls:'b-late'},
+  REPASSE_INADIMPLENCIA:{label:'Inadimplência',cls:'b-purple'},
+}
+const PLATAFORMAS = {MERCARI_JP:{label:'M',cor:'#FF6040'},XIANYU:{label:'X',cor:'#FF6B00'},BUNJANG:{label:'B',cor:'#3A86FF'},POCAMARKET:{label:'P',cor:'#7C3AED'},OUTRO:{label:'O',cor:'#6B7280'}}
 
-  // ============================================================
-  // CARREGAR AVISOS PÚBLICOS
-  // ============================================================
-  async function carregarAvisos() {
-    const lista = document.getElementById('avisosList')
-    try {
-      const { data, error } = await sb
-        .from('avisos')
-        .select('*')
-        .eq('publico', true)
-        .order('created_at', { ascending: false })
-        .limit(5)
+// Estado global
+let perfilId = null
+let username = null
+let todosItens = []
+let todosPags = []
+let todasCotacoes = []
+let todosRepasses = []
 
-      if (error) throw error
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+async function init() {
+  // Verifica sessão
+  const { data: { session } } = await sb.auth.getSession()
 
-      if (!data || data.length === 0) {
-        lista.innerHTML = '<div class="av-empty">nenhum aviso no momento.</div>'
-        return
-      }
+  // Pega username da URL
+  const params = new URLSearchParams(window.location.search)
+  username = params.get('username')
 
-      const cores = { GERAL: '#7C3AED', CEG: '#059669', COBRANCA: '#D97706', PRAZO: '#EF4444', REPASSE: '#2563EB' }
+  if (!session && !username) {
+    window.location.href = '/wonuskiz-portal/'
+    return
+  }
 
-      lista.innerHTML = data.map(a => `
-        <div class="av-item">
-          <div class="av-dot" style="background:${cores[a.tipo] || '#7C3AED'};"></div>
-          <div class="av-text">${escapeHtml(a.titulo)} — ${escapeHtml(a.mensagem)}</div>
-          <div class="av-time">${tempoRelativo(a.created_at)}</div>
+  if (session) {
+    // Usuário logado — mostra avatar
+    const user = session.user
+    const inicial = (user.email || 'U')[0].toUpperCase()
+    document.getElementById('sbAva').innerHTML = user.user_metadata?.avatar_url
+      ? `<img src="${user.user_metadata.avatar_url}"/>`
+      : inicial
+    document.getElementById('tbAva').innerHTML = user.user_metadata?.avatar_url
+      ? `<img src="${user.user_metadata.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`
+      : inicial
+
+    // Verifica se é admin e mostra botão
+    const isAdmin = user.app_metadata?.role === 'admin'
+    if (isAdmin) { const b = document.getElementById('btnAdmin'); if(b) b.style.display='flex'; }
+
+    // Busca perfil pelo user_id
+    const { data: perfil } = await sb.from('perfis_joiner').select('*').eq('user_id', user.id).single()
+    if (perfil) {
+      perfilId = perfil.id
+      username = perfil.usernames_twitter?.[0] || username
+    }
+  }
+
+  if (username) {
+    document.getElementById('sbUsername').textContent = '@' + username
+    document.getElementById('sbSince').textContent = 'joiner wonuskiz'
+  }
+
+  // Carrega dados
+  await Promise.all([carregarItens(), carregarPagamentos(), carregarCotacoes(), carregarRepasses(), carregarAvisos()])
+  renderInicio()
+}
+
+// ============================================================
+// CARREGAR DADOS
+// ============================================================
+async function carregarItens() {
+  if (!perfilId) return
+  const { data } = await sb.from('itens').select(`*, cegs(nome, tipo_identificacao)`).eq('perfil_id', perfilId).order('created_at', { ascending: false })
+  todosItens = data || []
+
+  // Atualiza badge e contador
+  document.getElementById('totalItens').textContent = todosItens.length
+  if (todosItens.length > 0) {
+    document.getElementById('badgeItens').textContent = todosItens.length
+    document.getElementById('badgeItens').style.display = 'inline'
+  }
+}
+
+async function carregarPagamentos() {
+  if (!perfilId) return
+  const itemIds = todosItens.map(i => i.id)
+  if (!itemIds.length) { document.getElementById('totalPags').textContent = '0'; return }
+
+  const { data } = await sb.from('pagamentos').select('*').in('item_id', itemIds).order('vencimento', { ascending: true })
+  todosPags = data || []
+
+  const pendentes = todosPags.filter(p => ['PENDENTE','ATRASADO'].includes(p.status))
+  document.getElementById('totalPags').textContent = pendentes.length
+
+  if (pendentes.length > 0) {
+    document.getElementById('badgePags').textContent = pendentes.length
+    document.getElementById('badgePags').style.display = 'inline'
+    document.getElementById('avisoDot').style.display = 'block'
+  }
+
+  // Total investido
+  const total = todosPags.filter(p => p.status === 'PAGO').reduce((s, p) => s + Number(p.valor || 0), 0)
+  document.getElementById('totalVal').textContent = 'R$ ' + total.toFixed(2).replace('.', ',')
+}
+
+async function carregarCotacoes() {
+  if (!perfilId) return
+  const { data } = await sb.from('cotacoes').select('*').eq('perfil_id', perfilId).order('created_at', { ascending: false })
+  todasCotacoes = data || []
+}
+
+async function carregarRepasses() {
+  if (!perfilId) return
+  const itemIds = todosItens.map(i => i.id)
+  if (!itemIds.length) { document.getElementById('totalRep').textContent = '0'; return }
+  const { data } = await sb.from('repasses').select('*').in('item_id', itemIds).order('created_at', { ascending: false })
+  todosRepasses = data || []
+  document.getElementById('totalRep').textContent = todosRepasses.filter(r => r.status === 'PENDENTE').length
+}
+
+async function carregarAvisos() {
+  const { data } = await sb.from('avisos').select('*').eq('publico', true).order('created_at', { ascending: false }).limit(10)
+  return data || []
+}
+
+// ============================================================
+// RENDER INÍCIO
+// ============================================================
+function renderInicio() {
+  // Itens recentes (3 últimos)
+  const itensEl = document.getElementById('itensList')
+  if (!todosItens.length) {
+    itensEl.innerHTML = '<div class="empty"><i class="ti ti-box"></i>Nenhum item ainda.</div>'
+  } else {
+    itensEl.innerHTML = todosItens.slice(0, 3).map(item => renderItemCard(item)).join('')
+  }
+
+  // Pagamentos pendentes (3 próximos)
+  const pagsEl = document.getElementById('pagsList')
+  const pendentes = todosPags.filter(p => ['PENDENTE','ATRASADO','EM_BREVE'].includes(p.status)).slice(0, 3)
+  if (!pendentes.length) {
+    pagsEl.innerHTML = '<div class="empty"><i class="ti ti-check"></i>Nenhum pagamento pendente.</div>'
+  } else {
+    pagsEl.innerHTML = pendentes.map(p => renderPagCard(p)).join('')
+  }
+
+  // Avisos
+  carregarAvisos().then(avisos => {
+    const el = document.getElementById('avisosList')
+    if (!avisos.length) {
+      el.innerHTML = '<div class="empty">Nenhum aviso.</div>'
+    } else {
+      el.innerHTML = avisos.slice(0, 3).map(a => `
+        <div class="av-card">
+          <div class="av-ic"><i class="ti ti-bell"></i></div>
+          <div>
+            <div class="av-title">${escHtml(a.titulo)}</div>
+            <div class="av-body">${escHtml(a.mensagem)}</div>
+          </div>
         </div>
       `).join('')
-    } catch (e) {
-      lista.innerHTML = '<div class="av-empty">não foi possível carregar os avisos.</div>'
     }
+  })
+}
+
+// ============================================================
+// RENDER ITENS
+// ============================================================
+function renderItemCard(item) {
+  const stepAtual = item.status_pipeline || 1
+  const pags = todosPags.filter(p => p.item_id === item.id)
+  const pendente = pags.find(p => p.status === 'PENDENTE' || p.status === 'ATRASADO')
+  const total = pags.reduce((s, p) => s + Number(p.valor || 0), 0)
+
+  const bgColors = ['#8B5CF6','#F472B6','#60D9A8','#F59E0B','#3B82F6','#EF4444']
+  const bg = bgColors[Math.abs(hashStr(item.id)) % bgColors.length]
+
+  const statusLabel = stepAtual >= 9 ? 'Entregue' : stepAtual >= 7 ? 'Envio liberado' : stepAtual >= 5 ? 'Na alfândega' : 'Em andamento'
+  const statusBg = stepAtual >= 9 ? '#059669' : stepAtual >= 7 ? '#2563EB' : stepAtual >= 5 ? '#D97706' : '#7C3AED'
+
+  return `
+    <div class="item-card">
+      <div class="item-top">
+        <div class="item-img" style="background:${bg};">
+          <div class="item-status-badge" style="background:${statusBg}aa;">${statusLabel}</div>
+        </div>
+        <div style="flex:1;">
+          <div class="item-name">${escHtml(item.cegs?.nome || 'Sem ceg')}</div>
+          <div class="item-meta">
+            ${item.membro ? `<b>${escHtml(item.membro)}</b> · ` : ''}
+            ${item.tipo_item ? escHtml(item.tipo_item) + ' · ' : ''}
+            ${item.versao ? escHtml(item.versao) : ''}
+          </div>
+        </div>
+        <div>
+          <div class="item-price-lbl">total</div>
+          <div class="item-price">R$ ${total.toFixed(2).replace('.',',')}</div>
+        </div>
+      </div>
+      ${renderPipeline(stepAtual)}
+      ${pendente ? `
+        <div class="pay-alert">
+          <div class="pay-alert-text"><i class="ti ti-clock" style="vertical-align:-2px;margin-right:4px;"></i>${pendente.status === 'ATRASADO' ? '⚠️ Pagamento em atraso!' : `Pagamento ${TIPOS_PAG[pendente.tipo]} pendente`}</div>
+          <button class="pay-btn" onclick="openModal('comprovante')">Ver pagamento</button>
+        </div>
+      ` : ''}
+    </div>
+  `
+}
+
+function renderPipeline(atual) {
+  const labels = ['Pagamento','Compra JP','Envio JP','Chegou BR','Alfândega','Com GOM','Env. lib.','Trânsito','Entregue']
+  return `
+    <div class="pipe">
+      ${labels.map((lbl, i) => {
+        const step = i + 1
+        const isLast = step === labels.length
+        const isDone = step < atual
+        const isCurr = step === atual
+        let nodeClass = isDone ? 'pn-done' : isCurr ? 'pn-curr' : 'pn-off'
+        let connClass = isDone ? 'pc-done' : 'pc-off'
+        let lblClass = isCurr ? 'curr' : ''
+        return `
+          <div class="pipe-step">
+            <div style="position:relative;">
+              <div class="pipe-node ${nodeClass}">${isDone ? '<i class="ti ti-check" style="font-size:10px;"></i>' : isCurr ? step : ''}</div>
+              ${!isLast ? `<div class="pipe-conn ${connClass}"></div>` : ''}
+            </div>
+            <div class="pipe-lbl ${lblClass}">${lbl}</div>
+          </div>
+        `
+      }).join('')}
+    </div>
+  `
+}
+
+// ============================================================
+// RENDER PAGAMENTOS
+// ============================================================
+function renderPagCard(pag) {
+  const item = todosItens.find(i => i.id === pag.item_id)
+  const s = STATUS_PAG[pag.status] || { label: pag.status, cls: 'b-soon' }
+  const data = pag.vencimento ? new Date(pag.vencimento) : null
+  return `
+    <div class="pag-card">
+      ${data ? `<div class="pag-date"><div class="pag-day">${data.getDate()}</div><div class="pag-month">${data.toLocaleString('pt-BR',{month:'short'}).replace('.','')}</div></div>` : ''}
+      <div style="flex:1;">
+        <div class="pag-name">${item ? escHtml(item.cegs?.nome || 'Item') : 'Pagamento'} — ${TIPOS_PAG[pag.tipo] || pag.tipo}</div>
+        <div class="pag-sub"><span class="badge ${s.cls}">${s.label}</span>${pag.multa_acumulada > 0 ? ` · multa R$ ${Number(pag.multa_acumulada).toFixed(2).replace('.',',')}` : ''}</div>
+      </div>
+      <div class="pag-val">R$ ${Number(pag.valor||0).toFixed(2).replace('.',',')}</div>
+      ${['PENDENTE','ATRASADO'].includes(pag.status) ? `<button class="pag-btn" onclick="openModal('comprovante')">Pagar</button>` : ''}
+    </div>
+  `
+}
+
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+const views = ['inicio','itens','pagamentos','repasses','caixinhas','avisos']
+const sbItems = document.querySelectorAll('.sbi')
+
+function nav(view, el) {
+  views.forEach(v => { const e = document.getElementById('v-'+v); if(e) e.classList.toggle('hidden', v!==view) })
+  sbItems.forEach(i => i.classList.remove('on'))
+  if (el && el.classList) el.classList.add('on')
+  else { const m = document.querySelector(`.sbi[onclick="nav('${view}',this)"]`); if(m) m.classList.add('on') }
+  document.getElementById('content').scrollTop = 0
+
+  // Render sob demanda
+  if (view === 'itens') renderItensCompleto()
+  if (view === 'pagamentos') renderPagsCompleto()
+  if (view === 'repasses') renderRepassesCompleto()
+  if (view === 'caixinhas') renderCaixinhas()
+  if (view === 'avisos') renderAvisosCompleto()
+}
+
+// ============================================================
+// RENDERS COMPLETOS
+// ============================================================
+function renderItensCompleto(filtro = 'todos') {
+  const el = document.getElementById('itensListFull')
+  let itens = todosItens
+  if (filtro === 'pendente') itens = itens.filter(i => todosPags.some(p => p.item_id === i.id && ['PENDENTE','ATRASADO'].includes(p.status)))
+  if (filtro === 'transito') itens = itens.filter(i => i.status_pipeline >= 2 && i.status_pipeline <= 8)
+  if (filtro === 'entregue') itens = itens.filter(i => i.status_pipeline === 9)
+  if (!itens.length) { el.innerHTML = '<div class="empty"><i class="ti ti-box"></i>Nenhum item encontrado.</div>'; return }
+  el.innerHTML = itens.map(i => renderItemCard(i)).join('')
+}
+
+function renderPagsCompleto(filtro = 'todos') {
+  const el = document.getElementById('pagsListFull')
+  let pags = todosPags
+  if (filtro === 'pendente') pags = pags.filter(p => p.status === 'PENDENTE')
+  if (filtro === 'atrasado') pags = pags.filter(p => p.status === 'ATRASADO')
+  if (filtro === 'pago') pags = pags.filter(p => p.status === 'PAGO')
+  if (!pags.length) { el.innerHTML = '<div class="empty"><i class="ti ti-credit-card"></i>Nenhum pagamento encontrado.</div>'; return }
+  el.innerHTML = pags.map(p => renderPagCard(p)).join('')
+}
+
+function renderRepassesCompleto() {
+  const el = document.getElementById('repassesList')
+  if (!todosRepasses.length) {
+    el.innerHTML = '<div class="empty"><i class="ti ti-arrows-exchange"></i>Nenhum repasse ainda.</div>'
+    return
+  }
+  el.innerHTML = todosRepasses.map(r => {
+    const item = todosItens.find(i => i.id === r.item_id)
+    return `
+      <div class="rep-card">
+        <div style="flex:1;">
+          <div class="pag-name">${item ? escHtml(item.cegs?.nome || 'Item') : 'Item'}</div>
+          <div class="pag-sub">Tipo: ${r.tipo} · <span class="badge ${r.status==='CONFIRMADO'?'b-ok':r.status==='CANCELADO'?'b-late':'b-warn'}">${r.status}</span></div>
+        </div>
+        ${r.valor_negociado ? `<div class="pag-val">R$ ${Number(r.valor_negociado).toFixed(2).replace('.',',')}</div>` : ''}
+      </div>
+    `
+  }).join('')
+}
+
+function renderCaixinhas() {
+  const el = document.getElementById('cotacoesList')
+  const html = todasCotacoes.length ? todasCotacoes.map(c => {
+    const plat = PLATAFORMAS[c.plataforma] || PLATAFORMAS.OUTRO
+    const sMap = { AGUARDANDO:'b-warn', RESPONDIDA:'b-ok', SOLD_OUT:'b-late', NAO_ENCONTRADO:'b-late', CANCELADA:'b-soon' }
+    return `
+      <div class="cot-card">
+        <div class="cot-plat" style="background:${plat.cor};">${plat.label}</div>
+        <div style="flex:1;">
+          <div class="pag-name">${escHtml(c.descricao)}</div>
+          <div class="pag-sub">${c.plataforma.replace('_',' ')} · ${c.tipo_pedido.replace('_',' ')} · <span class="badge ${sMap[c.status]||'b-soon'}">${c.status}</span></div>
+        </div>
+        ${c.valor_brl ? `<div class="pag-val">R$ ${Number(c.valor_brl).toFixed(2).replace('.',',')}</div>` : ''}
+      </div>
+    `
+  }).join('') : '<div class="empty"><i class="ti ti-search"></i>Nenhuma cotação ainda.</div>'
+  el.innerHTML = html + `<div class="nova-cot" onclick="openModal('cotacao')"><i class="ti ti-plus" style="font-size:14px;"></i> Nova cotação</div>`
+}
+
+function renderAvisosCompleto() {
+  const el = document.getElementById('avisosListFull')
+  carregarAvisos().then(avisos => {
+    if (!avisos.length) { el.innerHTML = '<div class="empty"><i class="ti ti-bell"></i>Nenhum aviso.</div>'; return }
+    el.innerHTML = avisos.map(a => `
+      <div class="av-card">
+        <div class="av-ic"><i class="ti ti-bell"></i></div>
+        <div>
+          <div class="av-title">${escHtml(a.titulo)}</div>
+          <div class="av-body">${escHtml(a.mensagem)}</div>
+          <div style="font-size:10px;color:#9CA3AF;margin-top:4px;">${new Date(a.created_at).toLocaleDateString('pt-BR')}</div>
+        </div>
+      </div>
+    `).join('')
+  })
+}
+
+// ============================================================
+// FILTROS
+// ============================================================
+function filtrarItens(f, el) {
+  document.querySelectorAll('#itensTabs .tab').forEach(t => t.classList.remove('on'))
+  el.classList.add('on')
+  renderItensCompleto(f)
+}
+function filtrarPags(f, el) {
+  el.closest('.content').querySelectorAll('.tab').forEach(t => t.classList.remove('on'))
+  el.classList.add('on')
+  renderPagsCompleto(f)
+}
+
+// ============================================================
+// MODAIS
+// ============================================================
+const modals = {
+  comprovante: `
+    <div class="modal-title">enviar comprovante</div>
+    <div class="modal-sub">selecione o pagamento e envie o arquivo</div>
+    <label class="modal-lbl">pagamento</label>
+    <select class="modal-sel" id="mPagSel">
+      ${todosPags.filter(p => ['PENDENTE','ATRASADO'].includes(p.status)).map(p => {
+        const item = todosItens.find(i => i.id === p.item_id)
+        return `<option value="${p.id}">${item?.cegs?.nome || 'Item'} — ${TIPOS_PAG[p.tipo]} · R$ ${Number(p.valor||0).toFixed(2)}</option>`
+      }).join('')}
+    </select>
+    <label class="modal-lbl">nota (opcional)</label>
+    <textarea class="modal-ta" rows="2" id="mNota" placeholder="ex: pagando os dois juntos"></textarea>
+    <label class="modal-lbl">arquivo do comprovante</label>
+    <input type="file" accept="image/*,.pdf" id="mArquivo" style="font-size:12px;margin-top:4px;"/>
+    <div class="modal-acts">
+      <button class="modal-cancel" onclick="closeModal()">cancelar</button>
+      <button class="modal-confirm" onclick="enviarComprovante()">enviar</button>
+    </div>
+  `,
+  cotacao: `
+    <div class="modal-title">nova cotação</div>
+    <div class="modal-sub">qual tipo de pedido você quer fazer?</div>
+    <label class="modal-lbl">plataforma</label>
+    <select class="modal-sel" id="mPlat">
+      <option value="MERCARI_JP">Mercari JP</option>
+      <option value="XIANYU">Xianyu</option>
+      <option value="BUNJANG">Bunjang</option>
+      <option value="POCAMARKET">PocaMarket</option>
+      <option value="OUTRO">Outro</option>
+    </select>
+    <label class="modal-lbl">tipo de pedido</label>
+    <select class="modal-sel" id="mTipoCot">
+      <option value="INDIVIDUAL">Individual (item único)</option>
+      <option value="SET_PEQUENO">Abertura de set pequeno (até 35 itens)</option>
+      <option value="SET_GRANDE">Abertura de set grande (acima de 35 itens)</option>
+    </select>
+    <label class="modal-lbl">descrição do item / link</label>
+    <textarea class="modal-ta" rows="3" id="mDescCot" placeholder="ex: Woozi Figurine HOR! · mercari.jp/item/xxx"></textarea>
+    <div class="modal-acts">
+      <button class="modal-cancel" onclick="closeModal()">cancelar</button>
+      <button class="modal-confirm" onclick="enviarCotacao()">solicitar cotação</button>
+    </div>
+  `,
+  repasse: `
+    <div class="modal-title">solicitar repasse</div>
+    <div class="modal-sub">escolha o item e o tipo de repasse</div>
+    <label class="modal-lbl">item</label>
+    <select class="modal-sel" id="mItemRep">
+      ${todosItens.filter(i => i.disponivel_repasse).map(i => `<option value="${i.id}">${i.cegs?.nome} — ${i.membro || i.tipo_item}</option>`).join('') || '<option>Nenhum item disponível para repasse</option>'}
+    </select>
+    <label class="modal-lbl">tipo de repasse</label>
+    <select class="modal-sel" id="mTipoRep">
+      <option value="ANUNCIADO">Anunciado (para a comunidade)</option>
+      <option value="DIRETO">Direto (para uma joiner específica)</option>
+    </select>
+    <label class="modal-lbl">@ da joiner destino (se direto)</label>
+    <input type="text" class="modal-input" id="mDestRep" placeholder="@username"/>
+    <div class="modal-acts">
+      <button class="modal-cancel" onclick="closeModal()">cancelar</button>
+      <button class="modal-confirm" onclick="solicitarRepasse()">solicitar</button>
+    </div>
+  `
+}
+
+function openModal(type) {
+  const area = document.getElementById('modal-area')
+  area.innerHTML = `
+    <div class="modal-bg open" id="modalBg" onclick="closeBg(event)">
+      <div class="modal">
+        ${modals[type] || ''}
+      </div>
+    </div>
+  `
+}
+function closeModal() { document.getElementById('modal-area').innerHTML = '' }
+function closeBg(e) { if (e.target.id === 'modalBg') closeModal() }
+
+// ============================================================
+// AÇÕES
+// ============================================================
+async function enviarComprovante() {
+  if (!perfilId) { toast('Faça login para enviar comprovantes.'); return }
+  const pagId = document.getElementById('mPagSel')?.value
+  const nota = document.getElementById('mNota')?.value
+  const arquivo = document.getElementById('mArquivo')?.files[0]
+
+  if (!pagId) { toast('Selecione um pagamento.'); return }
+
+  let arquivoUrl = null
+  if (arquivo) {
+    const ext = arquivo.name.split('.').pop()
+    const path = `${perfilId}/${Date.now()}.${ext}`
+    const { data, error } = await sb.storage.from('comprovantes').upload(path, arquivo)
+    if (error) { toast('Erro ao enviar arquivo. Tente novamente.'); return }
+    arquivoUrl = data.path
   }
 
-  // ============================================================
-  // BUSCAR JOINER POR @
-  // ============================================================
-  async function buscarJoiner() {
-    const input = document.getElementById('searchInput')
-    const btn = document.getElementById('searchBtn')
-    const erro = document.getElementById('searchError')
-    const username = input.value.trim().replace('@', '').toLowerCase()
-
-    if (!username) { input.focus(); return }
-
-    btn.innerHTML = '<span class="loading"></span>'
-    btn.disabled = true
-    erro.style.display = 'none'
-
-    try {
-      const { data, error } = await sb
-        .from('perfis_joiner')
-        .select('id, usernames_twitter, tipo_perfil')
-        .contains('usernames_twitter', [username])
-        .single()
-
-      if (error || !data) {
-        erro.style.display = 'block'
-        btn.innerHTML = '<i class="ti ti-search" style="font-size:14px;"></i> buscar'
-        btn.disabled = false
-        return
-      }
-
-      // Redireciona para o portal do joiner
-      window.location.href = `/wonuskiz-portal/portal/index.html?username=${encodeURIComponent(username)}`
-    } catch (e) {
-      erro.style.display = 'block'
-      btn.innerHTML = '<i class="ti ti-search" style="font-size:14px;"></i> buscar'
-      btn.disabled = false
-    }
-  }
-
-  // ============================================================
-  // LOGIN COM GOOGLE
-  // ============================================================
-  async function loginGoogle() {
-    const { error } = await sb.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin + '/wonuskiz-portal/portal/index.html'
-      }
-    })
-    if (error) alert('Erro ao fazer login. Tente novamente.')
-  }
-
-  // ============================================================
-  // VERIFICAR SE JÁ ESTÁ LOGADO
-  // ============================================================
-  async function verificarSessao() {
-    const { data: { session } } = await sb.auth.getSession()
-    if (session) {
-      window.location.href = '/wonuskiz-portal/portal/index.html'
-    }
-  }
-
-  // ============================================================
-  // UTILITÁRIOS
-  // ============================================================
-  function escapeHtml(text) {
-    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
-  }
-
-  function tempoRelativo(dateStr) {
-    const diff = Date.now() - new Date(dateStr).getTime()
-    const min = Math.floor(diff / 60000)
-    const h = Math.floor(min / 60)
-    const d = Math.floor(h / 24)
-    if (d > 0) return d === 1 ? 'ontem' : `${d} dias`
-    if (h > 0) return `${h}h`
-    if (min > 0) return `${min}min`
-    return 'agora'
-  }
-
-  // Enter para buscar
-  document.getElementById('searchInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') buscarJoiner()
+  const { error } = await sb.from('comprovantes').insert({
+    pagamento_ids: [pagId],
+    perfil_id: perfilId,
+    nota,
+    arquivo_url: arquivoUrl,
+    status: 'PENDENTE'
   })
 
-  // Inicializar
-  verificarSessao()
-  carregarAvisos()
+  if (error) { toast('Erro ao enviar comprovante.'); return }
+
+  // Atualiza status do pagamento
+  await sb.from('pagamentos').update({ status: 'COMPROVANTE_ENVIADO' }).eq('id', pagId)
+  await carregarPagamentos()
+
+  closeModal()
+  toast('Comprovante enviado! Aguardando aprovação da GOM.')
+}
+
+async function enviarCotacao() {
+  if (!perfilId) { toast('Faça login para solicitar cotações.'); return }
+  const plataforma = document.getElementById('mPlat').value
+  const tipo_pedido = document.getElementById('mTipoCot').value
+  const descricao = document.getElementById('mDescCot').value.trim()
+
+  if (!descricao) { toast('Descreva o item.'); return }
+
+  const { error } = await sb.from('cotacoes').insert({ perfil_id: perfilId, plataforma, tipo_pedido, descricao })
+  if (error) { toast('Erro ao enviar cotação.'); return }
+
+  await carregarCotacoes()
+  closeModal()
+  toast('Cotação enviada! A GOM vai responder em breve.')
+  renderCaixinhas()
+}
+
+async function solicitarRepasse() {
+  if (!perfilId) { toast('Faça login para solicitar repasses.'); return }
+  const itemId = document.getElementById('mItemRep').value
+  const tipo = document.getElementById('mTipoRep').value
+
+  if (!itemId) { toast('Nenhum item disponível para repasse.'); return }
+
+  const { error } = await sb.from('repasses').insert({ item_id: itemId, perfil_origem_id: perfilId, tipo, status: 'PENDENTE' })
+  if (error) { toast('Erro ao solicitar repasse.'); return }
+
+  await carregarRepasses()
+  closeModal()
+  toast('Repasse solicitado! Aguardando confirmação da GOM.')
+}
+
+// ============================================================
+// LOGOUT
+// ============================================================
+async function logout() {
+  await sb.auth.signOut()
+  window.location.href = '/wonuskiz-portal/'
+}
+
+// ============================================================
+// UTILITÁRIOS
+// ============================================================
+function escHtml(t) {
+  if (!t) return ''
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
+function hashStr(s) {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = Math.imul(31, h) + s.charCodeAt(i) | 0
+  return h
+}
+
+let toastTimer
+function toast(msg) {
+  document.getElementById('toastMsg').textContent = msg
+  const w = document.getElementById('toastWrap')
+  w.classList.add('show')
+  clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => w.classList.remove('show'), 3500)
+}
+
+// Inicia
+init()
 </script>
 </body>
 </html>
