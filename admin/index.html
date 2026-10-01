@@ -471,10 +471,6 @@ function addMem(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!v
 let tt;function toast(m){document.getElementById('tm').textContent=m;const w=document.getElementById('tw');w.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>w.classList.remove('show'),3500)}
 async function logout(){await sb.auth.signOut();window.location.href='/'}
 init()
-</script>
-</body>
-</html>
-<script>
 // ============================================================
 // PERFIL ADMIN
 // ============================================================
