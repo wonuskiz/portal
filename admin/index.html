@@ -287,18 +287,17 @@ let todosComp=[], todosRep=[], todosInad=[], todasCegs=[], todosItens=[], todosJ
 let perfilAdminAtual=null, currentUserId=null
 
 async function init() {
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (!session) { window.location.href = '/wonuskiz-portal/'; return }
-    const u = session.user
-    currentUserId = u.id
-    const ini = (u.email||'A')[0].toUpperCase()
-    document.getElementById('sbAva').textContent = ini
-    document.getElementById('tbAva').textContent = ini
-    document.getElementById('sbName').textContent = u.email?.split('@')[0]||'admin'
-    await carregarTudo()
-    renderDashboard()
-    popularSelects()
-  })
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) return
+  const u = session.user
+  currentUserId = u.id
+  const ini = (u.email||'A')[0].toUpperCase()
+  document.getElementById('sbAva').textContent = ini
+  document.getElementById('tbAva').textContent = ini
+  document.getElementById('sbName').textContent = u.email?.split('@')[0]||'admin'
+  await carregarTudo()
+  renderDashboard()
+  popularSelects()
 }
 
 async function carregarTudo() {
