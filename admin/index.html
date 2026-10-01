@@ -286,9 +286,12 @@ const AREAS_OPTIONS = ['Pagamentos e repasses','Atualização de status','Cobran
 let todosComp=[], todosRep=[], todosInad=[], todasCegs=[], todosItens=[], todosJoiners=[], todosGrupos=[], todasCot=[], freteItensCalc=[]
 let perfilAdminAtual=null, currentUserId=null
 
+let _iniciado = false
 async function init() {
+  if (_iniciado) return
   const { data: { session } } = await sb.auth.getSession()
   if (!session) return
+  _iniciado = true
   const u = session.user
   currentUserId = u.id
   const ini = (u.email||'A')[0].toUpperCase()
