@@ -10,6 +10,19 @@
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Inter',system-ui,sans-serif;font-size:14px;background:#F7F6FB;color:#1F2937;}
+
+    /* LOGIN */
+    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F7F6FB;}
+    .login-box{background:#fff;border-radius:20px;padding:40px;width:340px;max-width:90vw;box-shadow:0 8px 32px rgba(124,58,237,.12);text-align:center;}
+    .login-mark{width:52px;height:52px;background:#7C3AED;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+    .login-title{font-size:20px;font-weight:800;color:#1F2937;margin-bottom:6px;}
+    .login-sub{font-size:13px;color:#9CA3AF;margin-bottom:28px;line-height:1.5;}
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;background:#fff;border:1.5px solid #EDE9FE;border-radius:11px;font-size:14px;font-weight:700;color:#374151;cursor:pointer;transition:all .15s;}
+    .btn-google:hover{background:#F5F3FF;border-color:#C4B5FD;}
+    .login-err{margin-top:14px;padding:10px;background:#FEE2E2;border-radius:9px;font-size:12px;color:#991B1B;display:none;}
+
+    /* LAYOUT */
+    .app{display:none;}
     .sb{width:210px;min-width:210px;background:#fff;border-right:1px solid #EEE9F8;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:50;}
     .sb-top{padding:16px 16px 10px;}
     .sb-logo{display:flex;align-items:center;gap:8px;}
@@ -32,7 +45,6 @@
     .topbar{background:#fff;border-bottom:1px solid #EEE9F8;height:50px;display:flex;align-items:center;padding:0 20px;gap:10px;position:sticky;top:0;z-index:40;}
     .tb-src{display:flex;align-items:center;gap:7px;background:#F9F8FE;border:1px solid #EDE9FE;border-radius:9px;padding:6px 12px;flex:1;max-width:280px;}
     .tb-src input{border:none;background:transparent;font-size:12px;color:#374151;outline:none;width:100%;font-family:inherit;}
-    .tb-src input::placeholder{color:#9CA3AF;}
     .content{flex:1;padding:20px;}
     .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
     .sec-title{font-size:13px;font-weight:800;color:#1F2937;display:flex;align-items:center;gap:7px;}
@@ -51,7 +63,7 @@
     .badge{font-size:10px;font-weight:800;padding:2px 7px;border-radius:7px;display:inline-block;}
     .b-ok{background:#D1FAE5;color:#065F46;} .b-warn{background:#FEF3C7;color:#92400E;} .b-late{background:#FEE2E2;color:#991B1B;} .b-act{background:#EDE9FE;color:#6D28D9;}
     .comp-row{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:11px;margin-bottom:8px;border:1px solid;}
-    .cw{background:#FFFBEB;border-color:#FDE68A;} .cl{background:#FEF2F2;border-color:#FECACA;}
+    .cw{background:#FFFBEB;border-color:#FDE68A;}
     .comp-name{font-size:12px;font-weight:800;color:#1F2937;}
     .comp-ref{font-size:11px;color:#9CA3AF;margin-top:2px;}
     .comp-acts{display:flex;gap:5px;margin-top:7px;}
@@ -87,7 +99,7 @@
     .modal-acts{display:flex;gap:7px;margin-top:14px;}
     .mc{flex:1;padding:9px;background:#F5F3FF;color:#7C3AED;border:none;border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;}
     .mok{flex:1;padding:9px;background:#7C3AED;color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;}
-    .mok.red{background:#EF4444;} .mok.green{background:#059669;}
+    .mok.red{background:#EF4444;}
     .loading-wrap{display:flex;align-items:center;justify-content:center;padding:32px;color:#9CA3AF;font-size:13px;gap:10px;}
     .spinner{width:18px;height:18px;border:2px solid #EDE9FE;border-top-color:#7C3AED;border-radius:50%;animation:spin .7s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
@@ -101,166 +113,183 @@
 </head>
 <body>
 
-<div class="sb">
-  <div class="sb-top">
-    <div class="sb-logo">
-      <div class="sb-mark"><svg width="16" height="11" viewBox="0 0 40 28" fill="none"><path d="M8 20C4 18 2 12 2 12C2 8 6 4 10 6L14 2L16 8C18 7 22 7 24 8L26 2L30 6C34 4 38 8 38 12C36 18 32 20 32 20" stroke="#EFD5C1" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div>
-      <span class="sb-brand">wonuskiz</span>
+<!-- TELA DE LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-mark">
+      <svg width="18" height="12" viewBox="0 0 40 28" fill="none"><path d="M8 20C4 18 2 12 2 12C2 8 6 4 10 6L14 2L16 8C18 7 22 7 24 8L26 2L30 6C34 4 38 8 38 12C36 18 32 20 32 20" stroke="#EFD5C1" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
     </div>
-    <div class="sb-role"><i class="ti ti-shield" style="font-size:9px;"></i> painel admin</div>
+    <div class="login-title">painel admin</div>
+    <div class="login-sub">wonuskiz · acesso restrito<br>entre com sua conta Google autorizada</div>
+    <button class="btn-google" onclick="loginGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      entrar com Google
+    </button>
+    <div class="login-err" id="loginErr">acesso negado. sua conta não tem permissão de admin.</div>
   </div>
-  <div class="sb-user">
-    <div class="ava" id="sbAva">G</div>
-    <div><div class="sb-uname" id="sbName">carregando...</div><div class="sb-urole">acesso total</div></div>
-  </div>
-  <div class="sb-sec">visão geral</div>
-  <div class="sbi on" onclick="nav('dashboard',this)"><i class="ti ti-layout-dashboard"></i> dashboard</div>
-  <div class="sbi" onclick="nav('comprovantes',this)"><i class="ti ti-file-check"></i> comprovantes <span class="sb-badge" id="badgeComp" style="display:none">0</span></div>
-  <div class="sbi" onclick="nav('repasses',this)"><i class="ti ti-arrows-exchange"></i> repasses <span class="sb-badge amb" id="badgeRep" style="display:none">0</span></div>
-  <div class="sbi" onclick="nav('inadimplentes',this)"><i class="ti ti-alert-circle"></i> inadimplentes <span class="sb-badge" id="badgeInad" style="display:none">0</span></div>
-  <div class="sb-sec">cegs</div>
-  <div class="sbi" onclick="nav('cegs',this)"><i class="ti ti-box"></i> gerenciar cegs</div>
-  <div class="sbi" onclick="nav('claims',this)"><i class="ti ti-list-check"></i> claims e itens</div>
-  <div class="sbi" onclick="nav('pagamentos',this)"><i class="ti ti-credit-card"></i> pagamentos</div>
-  <div class="sbi" onclick="nav('envios',this)"><i class="ti ti-truck-delivery"></i> envio nacional</div>
-  <div class="sb-sec">caixinhas</div>
-  <div class="sbi" onclick="nav('cotacoes',this)"><i class="ti ti-search"></i> cotações <span class="sb-badge amb" id="badgeCot" style="display:none">0</span></div>
-  <div class="sb-sec">ferramentas</div>
-  <div class="sbi" onclick="nav('frete',this)"><i class="ti ti-calculator"></i> calculadora de frete</div>
-  <div class="sbi" onclick="nav('whatsapp',this)"><i class="ti ti-brand-whatsapp"></i> gerador WhatsApp</div>
-  <div class="sb-sec">configurações</div>
-  <div class="sbi" onclick="nav('grupos',this)"><i class="ti ti-users"></i> cadastro de grupos</div>
-  <div class="sbi" onclick="nav('joiners',this)"><i class="ti ti-user-check"></i> joiners e @s</div>
-  <div class="sbi" onclick="nav('avisos',this)"><i class="ti ti-bell"></i> publicar aviso</div>
-  <div class="sbi" onclick="nav('time',this)"><i class="ti ti-users"></i> time de admins</div>
-  <div class="sbi" onclick="nav('perfil',this)"><i class="ti ti-user-circle"></i> meu perfil</div>
-  <div class="sbi" onclick="logout()" style="color:#EF4444;margin-top:8px;"><i class="ti ti-logout"></i> sair</div>
 </div>
 
-<div class="main">
-  <div class="topbar">
-    <div class="tb-src"><i class="ti ti-search" style="font-size:14px;color:#9CA3AF;"></i><input type="text" placeholder="buscar joiner, ceg, item..."/></div>
-    <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
-      <div style="width:32px;height:32px;border-radius:8px;border:1px solid #EDE9FE;display:flex;align-items:center;justify-content:center;color:#6D28D9;font-size:15px;"><i class="ti ti-bell"></i></div>
-      <div class="ava" style="width:32px;height:32px;font-size:11px;" id="tbAva">G</div>
+<!-- PAINEL ADMIN -->
+<div class="app" id="app">
+  <div class="sb">
+    <div class="sb-top">
+      <div class="sb-logo">
+        <div class="sb-mark"><svg width="16" height="11" viewBox="0 0 40 28" fill="none"><path d="M8 20C4 18 2 12 2 12C2 8 6 4 10 6L14 2L16 8C18 7 22 7 24 8L26 2L30 6C34 4 38 8 38 12C36 18 32 20 32 20" stroke="#EFD5C1" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div>
+        <span class="sb-brand">wonuskiz</span>
+      </div>
+      <div class="sb-role"><i class="ti ti-shield" style="font-size:9px;"></i> painel admin</div>
     </div>
+    <div class="sb-user">
+      <div class="ava" id="sbAva">A</div>
+      <div><div class="sb-uname" id="sbName">carregando...</div><div class="sb-urole">acesso total</div></div>
+    </div>
+    <div class="sb-sec">visão geral</div>
+    <div class="sbi on" onclick="nav('dashboard',this)"><i class="ti ti-layout-dashboard"></i> dashboard</div>
+    <div class="sbi" onclick="nav('comprovantes',this)"><i class="ti ti-file-check"></i> comprovantes <span class="sb-badge" id="badgeComp" style="display:none">0</span></div>
+    <div class="sbi" onclick="nav('repasses',this)"><i class="ti ti-arrows-exchange"></i> repasses <span class="sb-badge amb" id="badgeRep" style="display:none">0</span></div>
+    <div class="sbi" onclick="nav('inadimplentes',this)"><i class="ti ti-alert-circle"></i> inadimplentes <span class="sb-badge" id="badgeInad" style="display:none">0</span></div>
+    <div class="sb-sec">cegs</div>
+    <div class="sbi" onclick="nav('cegs',this)"><i class="ti ti-box"></i> gerenciar cegs</div>
+    <div class="sbi" onclick="nav('claims',this)"><i class="ti ti-list-check"></i> claims e itens</div>
+    <div class="sbi" onclick="nav('pagamentos',this)"><i class="ti ti-credit-card"></i> pagamentos</div>
+    <div class="sbi" onclick="nav('envios',this)"><i class="ti ti-truck-delivery"></i> envio nacional</div>
+    <div class="sb-sec">caixinhas</div>
+    <div class="sbi" onclick="nav('cotacoes',this)"><i class="ti ti-search"></i> cotações <span class="sb-badge amb" id="badgeCot" style="display:none">0</span></div>
+    <div class="sb-sec">ferramentas</div>
+    <div class="sbi" onclick="nav('frete',this)"><i class="ti ti-calculator"></i> calculadora de frete</div>
+    <div class="sbi" onclick="nav('whatsapp',this)"><i class="ti ti-brand-whatsapp"></i> gerador WhatsApp</div>
+    <div class="sb-sec">configurações</div>
+    <div class="sbi" onclick="nav('grupos',this)"><i class="ti ti-users"></i> cadastro de grupos</div>
+    <div class="sbi" onclick="nav('joiners',this)"><i class="ti ti-user-check"></i> joiners e @s</div>
+    <div class="sbi" onclick="nav('avisos',this)"><i class="ti ti-bell"></i> publicar aviso</div>
+    <div class="sbi" onclick="nav('time',this)"><i class="ti ti-users"></i> time de admins</div>
+    <div class="sbi" onclick="nav('perfil',this)"><i class="ti ti-user-circle"></i> meu perfil</div>
+    <div class="sbi" onclick="logout()" style="color:#EF4444;margin-top:8px;"><i class="ti ti-logout"></i> sair</div>
   </div>
 
-  <div class="content" id="content">
-
-    <div id="v-dashboard">
-      <div class="metrics">
-        <div class="met" onclick="nav('cegs')"><div class="met-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-box"></i></div><div class="met-lbl">cegs ativas</div><div class="met-val" id="mCegs">0</div><div class="met-sub">projetos em andamento</div></div>
-        <div class="met" onclick="nav('comprovantes')"><div class="met-ic" style="background:#FEF3C7;color:#D97706;"><i class="ti ti-file-check"></i></div><div class="met-lbl">comprovantes</div><div class="met-val" id="mComp">0</div><div class="met-sub">aguardando aprovação</div></div>
-        <div class="met" onclick="nav('inadimplentes')"><div class="met-ic" style="background:#FEE2E2;color:#EF4444;"><i class="ti ti-alert-circle"></i></div><div class="met-lbl">inadimplentes</div><div class="met-val" id="mInad">0</div><div class="met-sub" id="mInadSub">sem multas</div></div>
-        <div class="met" onclick="nav('envios')"><div class="met-ic" style="background:#F0FDF4;color:#059669;"><i class="ti ti-truck-delivery"></i></div><div class="met-lbl">prontos p/ envio</div><div class="met-val" id="mEnvio">0</div><div class="met-sub">aguardando liberação</div></div>
-      </div>
-      <div class="two-col">
-        <div>
-          <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-file-check"></i></div> comprovantes para aprovar</div><span class="sec-lnk" onclick="nav('comprovantes')">ver todos</span></div>
-          <div id="dashComp"><div class="loading-wrap"><div class="spinner"></div></div></div>
-          <div class="sec-head" style="margin-top:18px;"><div class="sec-title"><div class="sec-ic" style="background:#FEE2E2;color:#EF4444;"><i class="ti ti-alert-circle"></i></div> inadimplentes</div><span class="sec-lnk" onclick="nav('inadimplentes')">ver todos</span></div>
-          <div id="dashInad"><div class="loading-wrap"><div class="spinner"></div></div></div>
-        </div>
-        <div>
-          <div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#FEF3C7;color:#D97706;"><i class="ti ti-arrows-exchange"></i></div> repasses pendentes</div><span class="sec-lnk" onclick="nav('repasses')">ver todos</span></div>
-          <div class="card" id="dashRep"><div class="loading-wrap"><div class="spinner"></div></div></div>
-          <div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#F0FDF4;color:#059669;"><i class="ti ti-truck-delivery"></i></div> liberar envio</div></div>
-          <div class="card" id="dashEnvio"><div class="loading-wrap"><div class="spinner"></div></div></div>
-        </div>
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-src"><i class="ti ti-search" style="font-size:14px;color:#9CA3AF;"></i><input type="text" placeholder="buscar joiner, ceg, item..."/></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+        <div style="width:32px;height:32px;border-radius:8px;border:1px solid #EDE9FE;display:flex;align-items:center;justify-content:center;color:#6D28D9;font-size:15px;"><i class="ti ti-bell"></i></div>
+        <div class="ava" style="width:32px;height:32px;font-size:11px;" id="tbAva">A</div>
       </div>
     </div>
 
-    <div id="v-comprovantes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-file-check"></i></div> comprovantes para aprovar</div></div><div id="compList"></div></div>
-    <div id="v-repasses" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-arrows-exchange"></i></div> repasses pendentes</div></div><div class="card" id="repList"></div></div>
-    <div id="v-inadimplentes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#FEE2E2;color:#EF4444;"><i class="ti ti-alert-circle"></i></div> inadimplentes</div></div><div id="inadList"></div></div>
-    <div id="v-cegs" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-box"></i></div> gerenciar cegs</div><button class="sec-btn" onclick="openModal('nova-ceg')"><i class="ti ti-plus" style="font-size:12px;"></i> nova ceg</button></div><div class="card" id="cegList"></div></div>
-    <div id="v-claims" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-list-check"></i></div> claims e itens</div><button class="sec-btn" onclick="openModal('nova-claim')"><i class="ti ti-plus" style="font-size:12px;"></i> registrar claim</button></div><div class="card" id="claimList"></div></div>
-    <div id="v-pagamentos" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-credit-card"></i></div> pagamentos</div></div><div id="pagList"></div></div>
-    <div id="v-envios" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#F0FDF4;color:#059669;"><i class="ti ti-truck-delivery"></i></div> envio nacional</div><button class="sec-btn green" onclick="liberarTodos()">liberar todos</button></div><div class="card" id="envioList"></div></div>
-    <div id="v-cotacoes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#EFF6FF;color:#2563EB;"><i class="ti ti-search"></i></div> cotações caixinhas</div></div><div class="card" id="cotList"></div></div>
-
-    <div id="v-frete" class="hidden">
-      <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-calculator"></i></div> calculadora de frete</div></div>
-      <div class="card">
-        <div style="font-size:11px;color:#9CA3AF;margin-bottom:12px;line-height:1.5;">informe a ceg e o valor total do frete. o sistema divide proporcionalmente pelo peso de cada item.</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-          <div><label class="fi-label">ceg</label><select class="fi" id="freteCeg"></select></div>
-          <div><label class="fi-label">valor total (R$)</label><input type="number" id="freteVal" class="fi" placeholder="ex: 45.00"/></div>
+    <div class="content" id="content">
+      <div id="v-dashboard">
+        <div class="metrics">
+          <div class="met" onclick="nav('cegs')"><div class="met-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-box"></i></div><div class="met-lbl">cegs ativas</div><div class="met-val" id="mCegs">0</div><div class="met-sub">em andamento</div></div>
+          <div class="met" onclick="nav('comprovantes')"><div class="met-ic" style="background:#FEF3C7;color:#D97706;"><i class="ti ti-file-check"></i></div><div class="met-lbl">comprovantes</div><div class="met-val" id="mComp">0</div><div class="met-sub">aguardando aprovação</div></div>
+          <div class="met" onclick="nav('inadimplentes')"><div class="met-ic" style="background:#FEE2E2;color:#EF4444;"><i class="ti ti-alert-circle"></i></div><div class="met-lbl">inadimplentes</div><div class="met-val" id="mInad">0</div><div class="met-sub" id="mInadSub">sem multas</div></div>
+          <div class="met" onclick="nav('envios')"><div class="met-ic" style="background:#F0FDF4;color:#059669;"><i class="ti ti-truck-delivery"></i></div><div class="met-lbl">prontos p/ envio</div><div class="met-val" id="mEnvio">0</div><div class="met-sub">aguardando liberação</div></div>
         </div>
-        <button class="sec-btn" onclick="calcFrete()">calcular divisão</button>
-        <div id="freteRes" class="hidden" style="margin-top:12px;">
-          <div style="font-size:11px;font-weight:800;color:#1F2937;margin-bottom:8px;">divisão proporcional:</div>
-          <div id="freteItens"></div>
-          <button class="sec-btn green" style="width:100%;justify-content:center;margin-top:10px;" onclick="liberarFrete()">confirmar e liberar cobranças</button>
+        <div class="two-col">
+          <div>
+            <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-file-check"></i></div> comprovantes para aprovar</div><span class="sec-lnk" onclick="nav('comprovantes')">ver todos</span></div>
+            <div id="dashComp"><div class="loading-wrap"><div class="spinner"></div></div></div>
+            <div class="sec-head" style="margin-top:18px;"><div class="sec-title"><div class="sec-ic" style="background:#FEE2E2;color:#EF4444;"><i class="ti ti-alert-circle"></i></div> inadimplentes</div><span class="sec-lnk" onclick="nav('inadimplentes')">ver todos</span></div>
+            <div id="dashInad"><div class="loading-wrap"><div class="spinner"></div></div></div>
+          </div>
+          <div>
+            <div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#FEF3C7;color:#D97706;"><i class="ti ti-arrows-exchange"></i></div> repasses pendentes</div><span class="sec-lnk" onclick="nav('repasses')">ver todos</span></div>
+            <div class="card" id="dashRep"><div class="loading-wrap"><div class="spinner"></div></div></div>
+            <div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#F0FDF4;color:#059669;"><i class="ti ti-truck-delivery"></i></div> liberar envio</div></div>
+            <div class="card" id="dashEnvio"><div class="loading-wrap"><div class="spinner"></div></div></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div id="v-whatsapp" class="hidden">
-      <div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#F0FDF4;color:#25D366;"><i class="ti ti-brand-whatsapp"></i></div> gerador WhatsApp</div></div>
-      <div class="card">
-        <label class="fi-label">tipo de mensagem</label>
-        <select class="fi" id="waTipo" onchange="updateWA()" style="margin-bottom:8px;">
-          <option value="cob">cobrança de pagamento</option>
-          <option value="cheg">itens chegaram ao Brasil</option>
-          <option value="env">liberação de envio nacional</option>
-          <option value="pz">aviso de prazo de repasse</option>
-          <option value="caixa">caixinhas abertas</option>
-        </select>
-        <label class="fi-label">ceg relacionada</label>
-        <select class="fi" id="waCeg" onchange="updateWA()" style="margin-bottom:8px;"></select>
-        <label class="fi-label">preview</label>
-        <div class="wa-preview" id="waPreview"></div>
-        <button class="wa-btn" onclick="copiarWA()"><i class="ti ti-brand-whatsapp" style="font-size:14px;"></i> copiar mensagem</button>
-      </div>
-    </div>
+      <div id="v-comprovantes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-file-check"></i></div> comprovantes para aprovar</div></div><div id="compList"></div></div>
+      <div id="v-repasses" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-arrows-exchange"></i></div> repasses pendentes</div></div><div class="card" id="repList"></div></div>
+      <div id="v-inadimplentes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#FEE2E2;color:#EF4444;"><i class="ti ti-alert-circle"></i></div> inadimplentes</div></div><div id="inadList"></div></div>
+      <div id="v-cegs" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-box"></i></div> gerenciar cegs</div><button class="sec-btn" onclick="openModal('nova-ceg')"><i class="ti ti-plus" style="font-size:12px;"></i> nova ceg</button></div><div class="card" id="cegList"></div></div>
+      <div id="v-claims" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-list-check"></i></div> claims e itens</div><button class="sec-btn" onclick="openModal('nova-claim')"><i class="ti ti-plus" style="font-size:12px;"></i> registrar claim</button></div><div class="card" id="claimList"></div></div>
+      <div id="v-pagamentos" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-credit-card"></i></div> pagamentos</div></div><div id="pagList"></div></div>
+      <div id="v-envios" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#F0FDF4;color:#059669;"><i class="ti ti-truck-delivery"></i></div> envio nacional</div><button class="sec-btn green" onclick="liberarTodos()">liberar todos</button></div><div class="card" id="envioList"></div></div>
+      <div id="v-cotacoes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#EFF6FF;color:#2563EB;"><i class="ti ti-search"></i></div> cotações</div></div><div class="card" id="cotList"></div></div>
 
-    <div id="v-grupos" class="hidden">
-      <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-users"></i></div> cadastro de grupos</div><button class="sec-btn" onclick="openModal('novo-grupo')"><i class="ti ti-plus" style="font-size:12px;"></i> novo grupo</button></div>
-      <div class="card" id="grupoList"></div>
-    </div>
-
-    <div id="v-joiners" class="hidden">
-      <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-user-check"></i></div> joiners e @s</div></div>
-      <div style="font-size:11px;color:#9CA3AF;margin-bottom:8px;font-weight:600;">vínculos aguardando aprovação:</div>
-      <div id="vinculosList"></div>
-      <div style="font-size:11px;color:#9CA3AF;margin:14px 0 8px;font-weight:600;">promover usuária a admin:</div>
-      <div class="card" style="margin-bottom:14px;">
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input type="text" class="fi" id="emailPromover" placeholder="email@gmail.com" style="flex:1;"/>
-          <button class="sec-btn" onclick="promoverAdmin(document.getElementById('emailPromover').value)"><i class="ti ti-shield" style="font-size:12px;"></i> promover</button>
+      <div id="v-frete" class="hidden">
+        <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-calculator"></i></div> calculadora de frete</div></div>
+        <div class="card">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+            <div><label class="fi-label">ceg</label><select class="fi" id="freteCeg"></select></div>
+            <div><label class="fi-label">valor total (R$)</label><input type="number" id="freteVal" class="fi" placeholder="ex: 45.00"/></div>
+          </div>
+          <button class="sec-btn" onclick="calcFrete()">calcular divisão</button>
+          <div id="freteRes" class="hidden" style="margin-top:12px;">
+            <div style="font-size:11px;font-weight:800;color:#1F2937;margin-bottom:8px;">divisão proporcional:</div>
+            <div id="freteItens"></div>
+            <button class="sec-btn green" style="width:100%;justify-content:center;margin-top:10px;" onclick="liberarFrete()">confirmar e liberar cobranças</button>
+          </div>
         </div>
-        <div style="font-size:11px;color:#9CA3AF;margin-top:8px;">a usuária precisa ter feito login pelo menos uma vez antes de ser promovida.</div>
       </div>
-      <div style="font-size:11px;color:#9CA3AF;margin:14px 0 8px;font-weight:600;">todas as joiners:</div>
-      <div class="card" id="joinerList"></div>
-    </div>
 
-    <div id="v-avisos" class="hidden">
-      <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-bell"></i></div> publicar aviso</div></div>
-      <div class="card">
-        <label class="fi-label">tipo</label>
-        <select class="fi" id="avTipo" style="margin-bottom:8px;"><option value="GERAL">geral</option><option value="CEG">ceg específica</option><option value="COBRANCA">cobrança</option><option value="REPASSE">repasse</option></select>
-        <label class="fi-label">título</label>
-        <input type="text" class="fi" id="avTitulo" placeholder="ex: caixinhas abertas!" style="margin-bottom:8px;"/>
-        <label class="fi-label">mensagem</label>
-        <textarea class="fi" id="avMsg" rows="3" style="resize:none;" placeholder="descreva o aviso..."></textarea>
-        <button class="sec-btn" style="margin-top:10px;width:100%;justify-content:center;" onclick="publicarAviso()"><i class="ti ti-bell" style="font-size:12px;"></i> publicar aviso</button>
+      <div id="v-whatsapp" class="hidden">
+        <div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#F0FDF4;color:#25D366;"><i class="ti ti-brand-whatsapp"></i></div> gerador WhatsApp</div></div>
+        <div class="card">
+          <label class="fi-label">tipo de mensagem</label>
+          <select class="fi" id="waTipo" onchange="updateWA()" style="margin-bottom:8px;">
+            <option value="cob">cobrança de pagamento</option>
+            <option value="cheg">itens chegaram ao Brasil</option>
+            <option value="env">liberação de envio nacional</option>
+            <option value="pz">prazo de repasse</option>
+            <option value="caixa">caixinhas abertas</option>
+          </select>
+          <label class="fi-label">ceg relacionada</label>
+          <select class="fi" id="waCeg" onchange="updateWA()" style="margin-bottom:8px;"></select>
+          <label class="fi-label">preview</label>
+          <div class="wa-preview" id="waPreview"></div>
+          <button class="wa-btn" onclick="copiarWA()"><i class="ti ti-brand-whatsapp" style="font-size:14px;"></i> copiar mensagem</button>
+        </div>
       </div>
-    </div>
 
-    <div id="v-perfil" class="hidden">
-      <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-user-circle"></i></div> meu perfil</div></div>
-      <div class="card" id="perfilForm"><div class="loading-wrap"><div class="spinner"></div></div></div>
-    </div>
+      <div id="v-grupos" class="hidden">
+        <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-users"></i></div> cadastro de grupos</div><button class="sec-btn" onclick="openModal('novo-grupo')"><i class="ti ti-plus" style="font-size:12px;"></i> novo grupo</button></div>
+        <div class="card" id="grupoList"></div>
+      </div>
 
-    <div id="v-time" class="hidden">
-      <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-users"></i></div> time de admins</div></div>
-      <div class="card" id="timeList"><div class="loading-wrap"><div class="spinner"></div></div></div>
-    </div>
+      <div id="v-joiners" class="hidden">
+        <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-user-check"></i></div> joiners e @s</div></div>
+        <div style="font-size:11px;color:#9CA3AF;margin-bottom:8px;font-weight:600;">vínculos aguardando aprovação:</div>
+        <div id="vinculosList"></div>
+        <div style="font-size:11px;color:#9CA3AF;margin:14px 0 8px;font-weight:600;">promover usuária a admin:</div>
+        <div class="card" style="margin-bottom:14px;">
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" class="fi" id="emailPromover" placeholder="email@gmail.com" style="flex:1;"/>
+            <button class="sec-btn" onclick="promoverAdmin(document.getElementById('emailPromover').value)"><i class="ti ti-shield" style="font-size:12px;"></i> promover</button>
+          </div>
+          <div style="font-size:11px;color:#9CA3AF;margin-top:8px;">a usuária precisa ter feito login pelo menos uma vez antes de ser promovida.</div>
+        </div>
+        <div style="font-size:11px;color:#9CA3AF;margin:14px 0 8px;font-weight:600;">todas as joiners:</div>
+        <div class="card" id="joinerList"></div>
+      </div>
 
-    <div id="modal-area"></div>
+      <div id="v-avisos" class="hidden">
+        <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-bell"></i></div> publicar aviso</div></div>
+        <div class="card">
+          <label class="fi-label">tipo</label>
+          <select class="fi" id="avTipo" style="margin-bottom:8px;"><option value="GERAL">geral</option><option value="CEG">ceg específica</option><option value="COBRANCA">cobrança</option><option value="REPASSE">repasse</option></select>
+          <label class="fi-label">título</label>
+          <input type="text" class="fi" id="avTitulo" placeholder="ex: caixinhas abertas!" style="margin-bottom:8px;"/>
+          <label class="fi-label">mensagem</label>
+          <textarea class="fi" id="avMsg" rows="3" style="resize:none;" placeholder="descreva o aviso..."></textarea>
+          <button class="sec-btn" style="margin-top:10px;width:100%;justify-content:center;" onclick="publicarAviso()"><i class="ti ti-bell" style="font-size:12px;"></i> publicar aviso</button>
+        </div>
+      </div>
+
+      <div id="v-perfil" class="hidden">
+        <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-user-circle"></i></div> meu perfil</div></div>
+        <div class="card" id="perfilForm"><div class="loading-wrap"><div class="spinner"></div></div></div>
+      </div>
+
+      <div id="v-time" class="hidden">
+        <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-users"></i></div> time de admins</div></div>
+        <div class="card" id="timeList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+      </div>
+
+      <div id="modal-area"></div>
+    </div>
   </div>
 </div>
 
@@ -275,34 +304,74 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
 const TIPOS_PAG = {1:'Item',2:'Frete Int. 1',3:'Frete Int. 2',4:'Taxa RF',5:'Envio Nacional'}
 const PESOS = {'PC':3,'ID Card':3,'Postcard':3,'Álbum Plataforma':80,'Compact':100,'Jewel Case':200,'Standard':450,'Limited':600,'Vinil':425,'Chaveiro':12,'Pelúcia 10cm':80,'Pelúcia 20cm':200,'Camisa':200}
 const WA = {
-  cob: c => `Oi, joiners! O pagamento da *${c}* está com vencimento chegando. Verifique o portal. Dúvidas me chamem!`,
-  cheg: c => `Os itens da *${c}* chegaram ao Brasil! Em breve liberarei o envio nacional.`,
-  env: c => `Liberado o envio nacional da *${c}*! Acesse o portal e solicite sua modalidade de frete.`,
-  pz: c => `Prazo para repasse da *${c}* está chegando. Acesse o portal!`,
-  caixa: () => `Caixinhas abertas! Faça seu pedido de cotação no portal.`
+  cob: c=>`Oi, joiners! O pagamento da *${c}* está com vencimento chegando. Verifique o portal!`,
+  cheg: c=>`Os itens da *${c}* chegaram ao Brasil! Em breve liberarei o envio nacional.`,
+  env: c=>`Liberado o envio nacional da *${c}*! Acesse o portal e solicite sua modalidade de frete.`,
+  pz: c=>`Prazo para repasse da *${c}* está chegando. Acesse o portal!`,
+  caixa: ()=>`Caixinhas abertas! Faça seu pedido de cotação no portal.`
 }
 const AREAS_OPTIONS = ['Pagamentos e repasses','Atualização de status','Cobranças de cegs','Compras e cotações','Envios internacionais','Envios nacionais','Organização de pedidos','Design e identidade visual','Webpages']
 
 let todosComp=[], todosRep=[], todosInad=[], todasCegs=[], todosItens=[], todosJoiners=[], todosGrupos=[], todasCot=[], freteItensCalc=[]
 let perfilAdminAtual=null, currentUserId=null
 
-let _iniciado = false
-async function init() {
-  if (_iniciado) return
-  const { data: { session } } = await sb.auth.getSession()
-  if (!session) return
-  _iniciado = true
-  const u = session.user
-  currentUserId = u.id
-  const ini = (u.email||'A')[0].toUpperCase()
-  document.getElementById('sbAva').textContent = ini
-  document.getElementById('tbAva').textContent = ini
-  document.getElementById('sbName').textContent = u.email?.split('@')[0]||'admin'
-  await carregarTudo()
-  renderDashboard()
-  popularSelects()
+// ============================================================
+// AUTH — lógica central e limpa
+// ============================================================
+async function loginGoogle() {
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: 'https://wonuskiz.github.io/wonuskiz-portal/admin/' }
+  })
 }
 
+async function logout() {
+  await sb.auth.signOut()
+  document.getElementById('app').style.display = 'none'
+  document.getElementById('loginWrap').style.display = 'flex'
+  document.getElementById('loginErr').style.display = 'none'
+}
+
+// Roda ao carregar a página — verifica sessão uma única vez
+;(async () => {
+  const { data: { session } } = await sb.auth.getSession()
+
+  if (!session) {
+    // Sem sessão — mostra tela de login
+    return
+  }
+
+  const isAdmin = session.user.app_metadata?.role === 'admin'
+
+  if (!isAdmin) {
+    // Tem sessão mas não é admin — mostra erro
+    document.getElementById('loginErr').style.display = 'block'
+    return
+  }
+
+  // É admin — esconde login e mostra painel
+  iniciarPainel(session.user)
+})()
+
+function iniciarPainel(user) {
+  document.getElementById('loginWrap').style.display = 'none'
+  document.getElementById('app').style.display = 'flex'
+
+  currentUserId = user.id
+  const ini = (user.email||'A')[0].toUpperCase()
+  document.getElementById('sbAva').textContent = ini
+  document.getElementById('tbAva').textContent = ini
+  document.getElementById('sbName').textContent = user.email?.split('@')[0]||'admin'
+
+  carregarTudo().then(() => {
+    renderDashboard()
+    popularSelects()
+  })
+}
+
+// ============================================================
+// DADOS
+// ============================================================
 async function carregarTudo() {
   const [c,r,cegs,itens,join,grup,cot,pags] = await Promise.all([
     sb.from('comprovantes').select('*,perfis_joiner(usernames_twitter)').eq('status','PENDENTE'),
@@ -327,10 +396,17 @@ async function carregarTudo() {
   document.getElementById('mEnvio').textContent=todosItens.filter(i=>i.status_pipeline===6).length
 }
 
+// ============================================================
+// UTILITÁRIOS
+// ============================================================
 function setBadge(id,n){const e=document.getElementById(id);if(!e)return;e.textContent=n;e.style.display=n>0?'inline':'none';}
 function uname(p){if(!p)return'?';const a=p.usernames_twitter||[];return a.length?'@'+a[0]:'?';}
 function esc(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+let tt; function toast(m){document.getElementById('tm').textContent=m;const w=document.getElementById('tw');w.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>w.classList.remove('show'),3500)}
 
+// ============================================================
+// RENDERS
+// ============================================================
 function popularSelects(){
   const fc=document.getElementById('freteCeg');if(fc)fc.innerHTML=todasCegs.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('')
   const wc=document.getElementById('waCeg');if(wc){wc.innerHTML='<option value="">-- nenhuma --</option>'+todasCegs.map(c=>`<option value="${esc(c.nome)}">${esc(c.nome)}</option>`).join('');updateWA();}
@@ -341,32 +417,35 @@ function renderDashboard(){
   document.getElementById('dashInad').innerHTML=!todosInad.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosInad.slice(0,3).map(renderInad).join('')
   document.getElementById('dashRep').innerHTML=!todosRep.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosRep.slice(0,3).map(renderRep).join('')
   const prontos=todosItens.filter(i=>i.status_pipeline===6)
-  document.getElementById('dashEnvio').innerHTML=!prontos.length?'<div class="empty">Nenhum pronto.</div>':prontos.slice(0,3).map(i=>`<div class="row"><div class="chk on"><i class="ti ti-check" style="font-size:9px;color:#fff;"></i></div><div style="flex:1;"><div class="row-name">${esc(uname(i.perfis_joiner))} — ${esc(i.cegs?.nome||'')}</div><div class="row-sub">${i.tipo_item||''} ${i.membro||''}</div></div><button class="b-ap" onclick="liberarEnvioItem('${i.id}')">liberar</button></div>`).join('')+'<button class="sec-btn green" style="width:100%;justify-content:center;margin-top:10px;" onclick="liberarTodos()">liberar todos</button>'
+  document.getElementById('dashEnvio').innerHTML=!prontos.length?'<div class="empty">Nenhum pronto.</div>':prontos.slice(0,3).map(i=>`<div class="row"><div class="chk on"><i class="ti ti-check" style="font-size:9px;color:#fff;"></i></div><div style="flex:1;"><div class="row-name">${esc(uname(i.perfis_joiner))} — ${esc(i.cegs?.nome||'')}</div><div class="row-sub">${i.tipo_item||''}</div></div><button class="b-ap" onclick="liberarEnvioItem('${i.id}')">liberar</button></div>`).join('')+'<button class="sec-btn green" style="width:100%;justify-content:center;margin-top:10px;" onclick="liberarTodos()">liberar todos</button>'
 }
 
 function renderComp(c){const u=uname(c.perfis_joiner);return`<div class="comp-row cw"><div class="ava" style="width:28px;height:28px;font-size:11px;">${u[0]?.toUpperCase()||'?'}</div><div style="flex:1;"><div class="comp-name">${esc(u)}</div><div class="comp-ref">${c.nota||'sem nota'}</div><div class="comp-acts"><button class="b-ap" onclick="aprovarComp('${c.id}')">aprovar</button><button class="b-rp" onclick="openModal('reprovar','${c.id}')">reprovar</button></div></div></div>`}
-function renderInad(p){const item=todosItens.find(i=>i.id===p.item_id);const u=item?uname(item.perfis_joiner):'?';return`<div class="inad-row"><div class="ava" style="background:#EF4444;width:28px;height:28px;font-size:11px;">${u[0]?.toUpperCase()||'?'}</div><div style="flex:1;"><div style="font-size:12px;font-weight:800;color:#1F2937;">${esc(u)}</div><div style="font-size:11px;color:#EF4444;font-weight:600;">${item?.cegs?.nome||'Item'} · ${TIPOS_PAG[p.tipo]||''} · multa R$${Number(p.multa_acumulada||0).toFixed(2)}</div></div><button class="inad-btn" onclick="repassarInad('${p.item_id}')">repassar</button></div>`}
+function renderInad(p){const item=todosItens.find(i=>i.id===p.item_id);const u=item?uname(item.perfis_joiner):'?';return`<div class="inad-row"><div class="ava" style="background:#EF4444;width:28px;height:28px;font-size:11px;">${u[0]?.toUpperCase()||'?'}</div><div style="flex:1;"><div style="font-size:12px;font-weight:800;">${esc(u)}</div><div style="font-size:11px;color:#EF4444;">${item?.cegs?.nome||'Item'} · multa R$${Number(p.multa_acumulada||0).toFixed(2)}</div></div><button class="inad-btn" onclick="repassarInad('${p.item_id}')">repassar</button></div>`}
 function renderRep(r){const u=uname(r.perfis_joiner);return`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;">${u[0]?.toUpperCase()||'?'}</div><div style="flex:1;"><div class="row-name">${esc(u)} → ${r.tipo==='ANUNCIADO'?'comunidade':'direto'}</div><div class="row-sub">${esc(r.itens?.cegs?.nome||'')} · ${r.tipo}</div></div><button class="row-btn" onclick="confirmarRep('${r.id}')">confirmar</button></div>`}
 
 function renderView(v){
   if(v==='comprovantes'){document.getElementById('compList').innerHTML=!todosComp.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosComp.map(renderComp).join('')}
   else if(v==='repasses'){document.getElementById('repList').innerHTML=!todosRep.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosRep.map(renderRep).join('')}
   else if(v==='inadimplentes'){document.getElementById('inadList').innerHTML=!todosInad.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosInad.map(renderInad).join('')}
-  else if(v==='cegs'){document.getElementById('cegList').innerHTML=!todasCegs.length?'<div class="empty">Nenhuma ceg.</div>':todasCegs.map(c=>`<div class="row"><div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-box"></i></div><div style="flex:1;"><div class="row-name">${esc(c.nome)}</div><div class="row-sub">${c.tipo_identificacao||c.tipo} · ${c.status}</div></div><span class="badge ${c.status==='ABERTA'?'b-act':c.status==='ENTREGUE'?'b-ok':'b-warn'}">${c.status}</span></div>`).join('')}
+  else if(v==='cegs'){document.getElementById('cegList').innerHTML=!todasCegs.length?'<div class="empty">Nenhuma ceg.</div>':todasCegs.map(c=>`<div class="row"><div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-box"></i></div><div style="flex:1;"><div class="row-name">${esc(c.nome)}</div><div class="row-sub">${c.status}</div></div><span class="badge ${c.status==='ABERTA'?'b-act':c.status==='ENTREGUE'?'b-ok':'b-warn'}">${c.status}</span></div>`).join('')}
   else if(v==='claims'){document.getElementById('claimList').innerHTML=!todosItens.length?'<div class="empty">Nenhum item.</div>':todosItens.slice(0,30).map(i=>`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;">${(uname(i.perfis_joiner)||'?')[0].toUpperCase()}</div><div style="flex:1;"><div class="row-name">${esc(uname(i.perfis_joiner))} — ${i.membro||'?'}</div><div class="row-sub">${esc(i.cegs?.nome||'')} · ${i.tipo_item||''}</div></div><span class="badge b-ok">etapa ${i.status_pipeline}</span></div>`).join('')}
   else if(v==='pagamentos'){document.getElementById('pagList').innerHTML=todosComp.map(renderComp).join('')||'<div class="empty">Nenhum pendente.</div>'}
   else if(v==='envios'){const p=todosItens.filter(i=>i.status_pipeline===6);document.getElementById('envioList').innerHTML=!p.length?'<div class="empty">Nenhum pronto.</div>':p.map(i=>`<div class="row"><div class="chk on"><i class="ti ti-check" style="font-size:9px;color:#fff;"></i></div><div style="flex:1;"><div class="row-name">${esc(uname(i.perfis_joiner))} — ${esc(i.cegs?.nome||'')}</div><div class="row-sub">${i.tipo_item||''}</div></div><button class="b-ap" onclick="liberarEnvioItem('${i.id}')">liberar</button></div>`).join('')}
-  else if(v==='cotacoes'){document.getElementById('cotList').innerHTML=!todasCot.length?'<div class="empty"><i class="ti ti-check"></i>Nenhuma.</div>':todasCot.map(c=>`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;background:#FF6040;">${c.plataforma[0]}</div><div style="flex:1;"><div class="row-name">${esc(uname(c.perfis_joiner))} · ${esc(c.descricao)}</div><div class="row-sub">${c.plataforma} · ${c.tipo_pedido}</div></div><button class="row-btn" onclick="openModal('responder-cot','${c.id}')">responder</button></div>`).join('')}
-  else if(v==='grupos'){document.getElementById('grupoList').innerHTML=!todosGrupos.length?'<div class="empty">Nenhum grupo.</div>':todosGrupos.map(g=>`<div class="grupo-row"><div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-star"></i></div><div style="flex:1;"><div class="row-name">${esc(g.nome_grupo)}</div><div class="row-sub">${(g.membros||[]).length} membros · ${(g.membros||[]).join(', ')}</div></div><button class="ico-btn red" onclick="deletarGrupo('${g.id}')"><i class="ti ti-trash"></i></button></div>`).join('')}
+  else if(v==='cotacoes'){document.getElementById('cotList').innerHTML=!todasCot.length?'<div class="empty"><i class="ti ti-check"></i>Nenhuma.</div>':todasCot.map(c=>`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;background:#FF6040;">${c.plataforma[0]}</div><div style="flex:1;"><div class="row-name">${esc(uname(c.perfis_joiner))} · ${esc(c.descricao)}</div><div class="row-sub">${c.plataforma}</div></div><button class="row-btn" onclick="openModal('responder-cot','${c.id}')">responder</button></div>`).join('')}
+  else if(v==='grupos'){document.getElementById('grupoList').innerHTML=!todosGrupos.length?'<div class="empty">Nenhum grupo.</div>':todosGrupos.map(g=>`<div class="grupo-row"><div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-star"></i></div><div style="flex:1;"><div class="row-name">${esc(g.nome_grupo)}</div><div class="row-sub">${(g.membros||[]).join(', ')}</div></div><button class="ico-btn red" onclick="deletarGrupo('${g.id}')"><i class="ti ti-trash"></i></button></div>`).join('')}
   else if(v==='joiners'){
     const pend=todosJoiners.filter(j=>j.username_vinculo_pendente)
     document.getElementById('vinculosList').innerHTML=!pend.length?'<div class="empty">Nenhum vínculo pendente.</div>':pend.map(j=>`<div class="comp-row cw"><div class="ava" style="width:28px;height:28px;font-size:11px;">${(uname(j)||'?')[0].toUpperCase()}</div><div style="flex:1;"><div class="comp-name">${esc(uname(j))}</div><div class="comp-ref">quer vincular @${esc(j.username_vinculo_pendente)}</div><div class="comp-acts"><button class="b-ap" onclick="aprovarVinculo('${j.id}','${j.username_vinculo_pendente}')">aprovar</button><button class="b-rp" onclick="recusarVinculo('${j.id}')">recusar</button></div></div></div>`).join('')
-    document.getElementById('joinerList').innerHTML=todosJoiners.map(j=>`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;">${(uname(j)||'?')[0].toUpperCase()}</div><div style="flex:1;"><div class="row-name">${esc(uname(j))}</div><div class="row-sub">${(j.usernames_twitter||[]).length} username(s) · ${j.tipo_perfil}</div></div><span class="badge b-ok">ativa</span></div>`).join('')
+    document.getElementById('joinerList').innerHTML=todosJoiners.map(j=>`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;">${(uname(j)||'?')[0].toUpperCase()}</div><div style="flex:1;"><div class="row-name">${esc(uname(j))}</div><div class="row-sub">${(j.usernames_twitter||[]).length} username(s)</div></div><span class="badge b-ok">ativa</span></div>`).join('')
   }
   else if(v==='perfil'){carregarPerfil();}
   else if(v==='time'){carregarTime();}
 }
 
+// ============================================================
+// PERFIL ADMIN
+// ============================================================
 async function carregarPerfil(){
   const el=document.getElementById('perfilForm');if(!el)return
   const{data}=await sb.from('perfis_admin').select('*').eq('user_id',currentUserId).single()
@@ -401,17 +480,13 @@ async function carregarTime(){
 
 async function promoverAdmin(email){
   if(!email){toast('Informe o email.');return}
-  const{error}=await sb.rpc('promover_admin',{user_email:email})
-  if(error){toast('Para promover, use o SQL Editor: UPDATE auth.users SET raw_app_meta_data = raw_app_meta_data || \'{"role":"admin"}\' WHERE email = \''+email+'\';');return}
-  toast(`${email} promovida a admin!`)
+  toast('Para promover, rode no SQL Editor: UPDATE auth.users SET raw_app_meta_data = raw_app_meta_data || \'{"role":"admin"}\' WHERE email = \''+email+'\';')
 }
 
-async function aprovarComp(id){
-  const c=todosComp.find(x=>x.id===id)
-  await sb.from('comprovantes').update({status:'APROVADO',aprovado_por:'admin',aprovado_em:new Date().toISOString()}).eq('id',id)
-  if(c?.pagamento_ids?.length)await sb.from('pagamentos').update({status:'PAGO'}).in('id',c.pagamento_ids)
-  await carregarTudo();renderDashboard();renderView('comprovantes');toast('Aprovado!')
-}
+// ============================================================
+// AÇÕES
+// ============================================================
+async function aprovarComp(id){const c=todosComp.find(x=>x.id===id);await sb.from('comprovantes').update({status:'APROVADO',aprovado_por:'admin',aprovado_em:new Date().toISOString()}).eq('id',id);if(c?.pagamento_ids?.length)await sb.from('pagamentos').update({status:'PAGO'}).in('id',c.pagamento_ids);await carregarTudo();renderDashboard();renderView('comprovantes');toast('Aprovado!')}
 async function reprovarComp(id,motivo){await sb.from('comprovantes').update({status:'REPROVADO',motivo_reprovacao:motivo}).eq('id',id);await carregarTudo();renderDashboard();renderView('comprovantes');toast('Reprovado.')}
 async function confirmarRep(id){await sb.from('repasses').update({status:'CONFIRMADO',confirmado_por:'admin',confirmado_em:new Date().toISOString()}).eq('id',id);await carregarTudo();renderDashboard();renderView('repasses');toast('Repasse confirmado!')}
 async function repassarInad(itemId){const item=todosItens.find(i=>i.id===itemId);if(item)await sb.from('repasses').insert({item_id:itemId,perfil_origem_id:item.perfil_id,tipo:'INADIMPLENCIA',status:'PENDENTE'});await sb.from('pagamentos').update({status:'REPASSE_INADIMPLENCIA'}).eq('item_id',itemId).eq('status','ATRASADO');await carregarTudo();renderDashboard();toast('Repasse por inadimplência iniciado.')}
@@ -429,10 +504,7 @@ async function criarCeg(dados){await sb.from('cegs').insert({...dados,created_by
 async function criarGrupo(nome,membros){if(!nome){toast('Informe o nome.');return}await sb.from('grupos').insert({nome_grupo:nome,membros,created_by:'admin'});await carregarTudo();renderView('grupos');toast('Grupo criado!')}
 async function responderCotacao(id,status,val,obs){await sb.from('cotacoes').update({status,valor_brl:val||null,observacao:obs,respondido_por:'admin',respondido_em:new Date().toISOString()}).eq('id',id);await carregarTudo();renderView('cotacoes');toast('Cotação respondida!')}
 async function registrarClaim(){
-  const cegId=document.getElementById('mClCeg').value
-  const u=document.getElementById('mClU').value.replace('@','').trim()
-  const membro=document.getElementById('mClM').value.trim()
-  const tipo=document.getElementById('mClT').value.trim()
+  const cegId=document.getElementById('mClCeg').value,u=document.getElementById('mClU').value.replace('@','').trim(),membro=document.getElementById('mClM').value.trim(),tipo=document.getElementById('mClT').value.trim()
   if(!u||!membro){toast('Preencha @ e membro.');return}
   let{data:p}=await sb.from('perfis_joiner').select('id').contains('usernames_twitter',[u]).single()
   if(!p){const{data:n}=await sb.from('perfis_joiner').insert({usernames_twitter:[u],tipo_perfil:'CLAIM'}).select().single();p=n}
@@ -441,6 +513,9 @@ async function registrarClaim(){
   await carregarTudo();closeModal();toast('Claim registrado!')
 }
 
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
 const views=['dashboard','comprovantes','repasses','inadimplentes','cegs','claims','pagamentos','envios','cotacoes','frete','whatsapp','grupos','joiners','avisos','perfil','time']
 const sbItems=document.querySelectorAll('.sbi')
 function nav(v,el){
@@ -452,6 +527,9 @@ function nav(v,el){
   if(v!=='dashboard')renderView(v)
 }
 
+// ============================================================
+// MODAIS
+// ============================================================
 function openModal(type,id=''){
   let h=''
   if(type==='reprovar')h=`<div class="modal-title">reprovar comprovante</div><div class="modal-sub">informe o motivo</div><label class="modal-lbl">motivo</label><select class="fi"><option>imagem ilegível</option><option>valor incorreto</option><option>comprovante errado</option><option>outro</option></select><label class="modal-lbl">observação</label><textarea class="fi" rows="2" id="mMot" style="resize:none;"></textarea><div class="modal-acts"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok red" onclick="reprovarComp('${id}',document.getElementById('mMot').value);closeModal()">reprovar</button></div>`
@@ -464,9 +542,6 @@ function openModal(type,id=''){
 function closeModal(){document.getElementById('modal-area').innerHTML=''}
 function closeMBg(e){if(e.target.id==='mBg')closeModal()}
 function addMem(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!v)return;const t=document.getElementById('mMT');const d=document.createElement('div');d.className='mem-tag';d.innerHTML=`<span data-m="${esc(v)}">${esc(v)}</span> <span style="cursor:pointer;color:#C4B5FD;" onclick="this.parentElement.remove()">x</span>`;t.appendChild(d);e.target.value=''}
-let tt;function toast(m){document.getElementById('tm').textContent=m;const w=document.getElementById('tw');w.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>w.classList.remove('show'),3500)}
-async function logout(){await sb.auth.signOut();window.location.href='/wonuskiz-portal/'}
-init()
 </script>
 </body>
 </html>
