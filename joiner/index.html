@@ -146,6 +146,9 @@
     .toast-wrap.show{opacity:1;}
     .toast-pill{background:#7C3AED;color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;white-space:nowrap;}
     .hidden{display:none!important;}
+    .back-btn{display:none;align-items:center;gap:6px;background:none;border:none;color:#7C3AED;font-size:13px;font-weight:700;cursor:pointer;padding:0 0 16px 0;font-family:inherit;}
+    .back-btn i{font-size:16px;}
+
 
     @media(max-width:900px){
       .sb{display:none;} .main{margin-left:0;}
@@ -200,6 +203,7 @@
       <div class="tb-ava" id="tbAva">?</div>
     </div>
     <div class="content" id="content">
+      <button class="back-btn" id="backBtn" onclick="voltar()"><i class="ti ti-arrow-left"></i> voltar</button>
 
       <div id="v-inicio">
         <div class="hero">
@@ -492,18 +496,30 @@ function renderPagCard(pag) {
 // ============================================================
 const views=['inicio','itens','pagamentos','repasses','caixinhas','avisos']
 const sbItems=document.querySelectorAll('.sbi')
+let navHistory=[]
+let navAtual='inicio'
 
-function nav(view,el) {
+function nav(view,el,addHistory=true) {
+  if(addHistory && navAtual && navAtual!==view) navHistory.push(navAtual)
+  navAtual=view
   views.forEach(v=>{const e=document.getElementById('v-'+v);if(e)e.classList.toggle('hidden',v!==view)})
   sbItems.forEach(i=>i.classList.remove('on'))
   if(el&&el.classList)el.classList.add('on')
   else{const m=document.querySelector(`.sbi[onclick="nav('${view}',this)"]`);if(m)m.classList.add('on')}
   document.getElementById('content').scrollTop=0
+  const backBtn=document.getElementById('backBtn')
+  if(backBtn)backBtn.style.display=navHistory.length>0?'flex':'none'
   if(view==='itens')renderItensCompleto()
   if(view==='pagamentos')renderPagsCompleto()
   if(view==='repasses')renderRepassesCompleto()
   if(view==='caixinhas')renderCaixinhas()
   if(view==='avisos')renderAvisosCompleto()
+}
+
+function voltar(){
+  if(navHistory.length===0)return
+  const anterior=navHistory.pop()
+  nav(anterior,null,false)
 }
 
 // ============================================================
