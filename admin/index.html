@@ -109,6 +109,9 @@
     .toast-wrap.show{opacity:1;}
     .toast-pill{background:#7C3AED;color:#fff;padding:10px 20px;border-radius:22px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px;white-space:nowrap;}
     .hidden{display:none!important;}
+    .back-btn{display:none;align-items:center;gap:6px;background:none;border:none;color:#7C3AED;font-size:13px;font-weight:700;cursor:pointer;padding:0 0 16px 0;font-family:inherit;}
+    .back-btn i{font-size:16px;}
+
   </style>
 </head>
 <body>
@@ -177,6 +180,7 @@
     </div>
 
     <div class="content" id="content">
+      <button class="back-btn" id="backBtn" onclick="voltar()"><i class="ti ti-arrow-left"></i> voltar</button>
       <div id="v-dashboard">
         <div class="metrics">
           <div class="met" onclick="nav('cegs')"><div class="met-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-box"></i></div><div class="met-lbl">cegs ativas</div><div class="met-val" id="mCegs">0</div><div class="met-sub">em andamento</div></div>
@@ -518,13 +522,26 @@ async function registrarClaim(){
 // ============================================================
 const views=['dashboard','comprovantes','repasses','inadimplentes','cegs','claims','pagamentos','envios','cotacoes','frete','whatsapp','grupos','joiners','avisos','perfil','time']
 const sbItems=document.querySelectorAll('.sbi')
-function nav(v,el){
+let navHistory=[]
+let navAtual='dashboard'
+
+function nav(v,el,addHistory=true){
+  if(addHistory && navAtual && navAtual!==v) navHistory.push(navAtual)
+  navAtual=v
   views.forEach(x=>{const e=document.getElementById('v-'+x);if(e)e.classList.toggle('hidden',x!==v)})
   sbItems.forEach(i=>i.classList.remove('on'))
   if(el&&el.classList)el.classList.add('on')
   else{const m=document.querySelector(`.sbi[onclick="nav('${v}',this)"]`);if(m)m.classList.add('on')}
   document.getElementById('content').scrollTop=0
+  const backBtn=document.getElementById('backBtn')
+  if(backBtn)backBtn.style.display=navHistory.length>0?'flex':'none'
   if(v!=='dashboard')renderView(v)
+}
+
+function voltar(){
+  if(navHistory.length===0)return
+  const anterior=navHistory.pop()
+  nav(anterior,null,false)
 }
 
 // ============================================================
