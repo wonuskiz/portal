@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wonuskiz — Portal da Joiner</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',system-ui,sans-serif;font-size:14px;background:#F7F6FB;color:#1F2937;}
+
+    /* LOGIN */
+    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F7F6FB;}
+    .login-box{background:#fff;border-radius:20px;padding:40px;width:340px;max-width:90vw;box-shadow:0 8px 32px rgba(124,58,237,.12);text-align:center;}
+    .login-mark{width:52px;height:52px;background:#7C3AED;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+    .login-title{font-size:20px;font-weight:800;color:#1F2937;margin-bottom:6px;}
+    .login-sub{font-size:13px;color:#9CA3AF;margin-bottom:28px;line-height:1.5;}
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;background:#fff;border:1.5px solid #EDE9FE;border-radius:11px;font-size:14px;font-weight:700;color:#374151;cursor:pointer;transition:all .15s;}
+    .btn-google:hover{background:#F5F3FF;border-color:#C4B5FD;}
+
+    /* LAYOUT */
+    .app{display:none;}
+    .sb{width:230px;min-width:230px;background:#fff;border-right:1px solid #EEE9F8;display:flex;flex-direction:column;padding-bottom:16px;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:50;}
+    .sb-top{padding:20px 20px 12px;}
+    .sb-logo{display:flex;align-items:center;gap:9px;}
+    .sb-mark{width:34px;height:34px;background:#7C3AED;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .sb-brand{font-size:18px;font-weight:800;color:#6D28D9;}
+    .sb-user{display:flex;align-items:center;gap:10px;padding:14px 20px;border-top:1px solid #F3F0FC;border-bottom:1px solid #F3F0FC;}
+    .sb-ava{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:#7C3AED;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;overflow:hidden;}
+    .sb-ava img{width:100%;height:100%;object-fit:cover;}
+    .sb-uname{font-size:13px;font-weight:700;color:#1F2937;}
+    .sb-usub{font-size:11px;color:#9CA3AF;}
+    .sb-sec{font-size:10px;font-weight:800;color:#C4B5FD;text-transform:uppercase;letter-spacing:.8px;padding:16px 20px 6px;}
+    .sbi{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:#6B7280;font-size:13px;font-weight:600;position:relative;transition:all .12s;}
+    .sbi:hover{background:#F5F3FF;color:#6D28D9;}
+    .sbi.on{background:#F5F3FF;color:#6D28D9;}
+    .sbi.on::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;background:#7C3AED;border-radius:0 3px 3px 0;}
+    .sbi i{font-size:17px;}
+    .sb-badge{margin-left:auto;background:#EF4444;color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;}
+    .main{margin-left:230px;min-height:100vh;display:flex;flex-direction:column;}
+    .topbar{background:#fff;border-bottom:1px solid #EEE9F8;height:58px;display:flex;align-items:center;padding:0 28px;gap:14px;position:sticky;top:0;z-index:40;}
+    .tb-search{display:flex;align-items:center;gap:8px;background:#F9F8FE;border:1px solid #EDE9FE;border-radius:10px;padding:8px 14px;flex:1;max-width:360px;}
+    .tb-search input{border:none;background:transparent;font-size:13px;color:#374151;outline:none;width:100%;font-family:inherit;}
+    .tb-ava{width:38px;height:38px;border-radius:50%;overflow:hidden;background:#7C3AED;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;margin-left:auto;}
+    .tb-ava img{width:100%;height:100%;object-fit:cover;}
+    .content{flex:1;padding:28px 32px;}
+
+    /* HERO */
+    .hero{background:#7239D6;border-radius:24px;padding:36px;margin-bottom:24px;position:relative;overflow:hidden;}
+    .hero-greet{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:8px;}
+    .hero-title{font-size:28px;font-weight:800;color:#fff;line-height:1.25;}
+    .hero-title b{color:#D9C9FB;}
+    .hero-sub{font-size:14px;color:rgba(255,255,255,.6);margin-top:8px;line-height:1.5;}
+
+    /* SUMMARY */
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+    .sum-card{background:#fff;border-radius:18px;border:1px solid #F0EDFB;padding:18px;cursor:pointer;}
+    .sum-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+    .sum-label{font-size:12px;color:#9CA3AF;margin-bottom:5px;font-weight:600;}
+    .sum-val{font-size:24px;font-weight:800;color:#1F2937;}
+    .sum-link{font-size:12px;color:#7C3AED;font-weight:700;margin-top:8px;}
+
+    /* SEC */
+    .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+    .sec-title{font-size:15px;font-weight:800;color:#1F2937;display:flex;align-items:center;gap:8px;}
+    .sec-ic{width:26px;height:26px;border-radius:8px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;color:#7C3AED;font-size:14px;}
+    .sec-link{font-size:12px;color:#7C3AED;font-weight:700;cursor:pointer;}
+    .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+    .tab{padding:7px 18px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #EDE9FE;color:#9CA3AF;}
+    .tab.on{background:#7C3AED;color:#fff;border-color:#7C3AED;}
+
+    /* ITEM CARD */
+    .item-card{background:#fff;border-radius:18px;border:1px solid #F0EDFB;padding:18px;margin-bottom:12px;}
+    .item-top{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;}
+    .item-img{width:68px;height:68px;border-radius:14px;flex-shrink:0;position:relative;}
+    .item-status-badge{position:absolute;top:0;left:0;right:0;padding:4px 0;text-align:center;font-size:9px;font-weight:800;color:#fff;border-radius:14px 14px 0 0;}
+    .item-name{font-size:14px;font-weight:800;color:#1F2937;margin-bottom:4px;}
+    .item-meta{font-size:11px;color:#9CA3AF;line-height:1.5;}
+    .item-price{font-size:16px;font-weight:800;color:#1F2937;text-align:right;}
+    .item-price-lbl{font-size:10px;color:#9CA3AF;text-align:right;font-weight:600;}
+
+    /* PIPELINE */
+    .pipe{display:flex;align-items:flex-start;}
+    .pipe-step{flex:1;text-align:center;position:relative;}
+    .pipe-node{width:26px;height:26px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:11px;position:relative;z-index:1;}
+    .pipe-conn{position:absolute;top:12px;left:50%;right:-50%;height:2px;z-index:0;}
+    .pn-done{background:#7C3AED;color:#fff;}
+    .pn-curr{background:#7C3AED;color:#fff;box-shadow:0 0 0 5px #EDE9FE;}
+    .pn-off{background:#F3F0FC;color:#C4B5FD;border:1.5px solid #EDE9FE;}
+    .pc-done{background:#7C3AED;}
+    .pc-off{background:#EDE9FE;}
+    .pipe-lbl{font-size:10px;color:#9CA3AF;font-weight:600;}
+    .pipe-lbl.curr{color:#7C3AED;font-weight:800;}
+
+    /* PAY ALERT */
+    .pay-alert{display:flex;align-items:center;justify-content:space-between;background:#FFFBEB;border:1px solid #FDE68A;border-radius:12px;padding:11px 16px;margin-top:14px;}
+    .pay-alert-text{font-size:12px;color:#92400E;font-weight:700;}
+    .pay-btn{background:#7C3AED;color:#fff;border:none;border-radius:9px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;}
+
+    /* PAG CARD */
+    .pag-card{background:#fff;border-radius:14px;border:1px solid #F0EDFB;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+    .pag-date{width:46px;background:#F5F3FF;border-radius:10px;text-align:center;padding:6px 4px;flex-shrink:0;}
+    .pag-day{font-size:18px;font-weight:800;color:#7C3AED;line-height:1;}
+    .pag-month{font-size:9px;color:#9CA3AF;text-transform:uppercase;font-weight:700;}
+    .pag-name{font-size:12px;font-weight:800;color:#1F2937;}
+    .pag-sub{font-size:11px;color:#9CA3AF;margin-top:2px;}
+    .pag-val{font-size:14px;font-weight:800;color:#1F2937;margin-left:auto;flex-shrink:0;}
+    .pag-btn{background:#7C3AED;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:800;cursor:pointer;margin-left:8px;}
+
+    /* COT / REP */
+    .cot-card{background:#fff;border-radius:14px;border:1px solid #F0EDFB;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+    .cot-plat{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+    .nova-cot{display:flex;align-items:center;justify-content:center;gap:6px;background:#F5F3FF;border:1.5px dashed #C4B5FD;border-radius:14px;padding:12px;font-size:12px;font-weight:800;color:#7C3AED;cursor:pointer;width:100%;margin-top:12px;}
+    .rep-card{background:#fff;border-radius:14px;border:1px solid #F0EDFB;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+    .av-card{background:#F5F3FF;border-radius:14px;padding:14px;margin-bottom:10px;display:flex;gap:11px;border:1px solid #EDE9FE;}
+    .av-ic{width:34px;height:34px;border-radius:10px;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;}
+    .av-title{font-size:12px;font-weight:800;color:#6D28D9;margin-bottom:3px;}
+    .av-body{font-size:11px;color:#6D28D9;opacity:.8;line-height:1.45;}
+
+    /* BADGES */
+    .badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px;display:inline-block;}
+    .b-ok{background:#D1FAE5;color:#065F46;} .b-warn{background:#FEF3C7;color:#92400E;} .b-late{background:#FEE2E2;color:#991B1B;} .b-soon{background:#F3F4F6;color:#6B7280;} .b-sent{background:#EFF6FF;color:#1D4ED8;}
+
+    /* MODAL */
+    .modal-bg{display:none;position:fixed;inset:0;background:rgba(91,33,182,.18);z-index:200;align-items:center;justify-content:center;}
+    .modal-bg.open{display:flex;}
+    .modal{background:#fff;border-radius:20px;padding:24px;width:380px;max-width:90vw;box-shadow:0 12px 40px rgba(91,33,182,.18);max-height:90vh;overflow-y:auto;}
+    .modal-title{font-size:17px;font-weight:800;color:#1F2937;margin-bottom:4px;}
+    .modal-sub{font-size:13px;color:#9CA3AF;margin-bottom:18px;}
+    .modal-lbl{font-size:12px;font-weight:700;color:#374151;margin:10px 0 4px;display:block;}
+    .modal-sel,.modal-input,.modal-ta{width:100%;font-size:13px;border:1.5px solid #EDE9FE;border-radius:11px;padding:9px 13px;background:#F9F8FE;color:#1F2937;outline:none;font-family:inherit;}
+    .modal-ta{resize:none;}
+    .modal-acts{display:flex;gap:9px;margin-top:18px;}
+    .modal-cancel{flex:1;padding:11px;background:#F5F3FF;color:#7C3AED;border:none;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;}
+    .modal-confirm{flex:1;padding:11px;background:#7C3AED;color:#fff;border:none;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;}
+
+    .two-col{display:grid;grid-template-columns:1fr 290px;gap:18px;}
+    .loading-wrap{display:flex;align-items:center;justify-content:center;padding:40px;color:#9CA3AF;font-size:13px;gap:10px;}
+    .spinner{width:20px;height:20px;border:2px solid #EDE9FE;border-top-color:#7C3AED;border-radius:50%;animation:spin .7s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .empty{text-align:center;padding:32px;color:#9CA3AF;font-size:13px;}
+    .empty i{font-size:32px;display:block;margin-bottom:10px;color:#C4B5FD;}
+    .toast-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:999;transition:opacity .3s;opacity:0;pointer-events:none;}
+    .toast-wrap.show{opacity:1;}
+    .toast-pill{background:#7C3AED;color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+    .hidden{display:none!important;}
+
+    @media(max-width:900px){
+      .sb{display:none;} .main{margin-left:0;}
+      .summary{grid-template-columns:repeat(2,1fr);}
+      .two-col{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- TELA DE LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-mark">
+      <svg width="20" height="14" viewBox="0 0 40 28" fill="none"><path d="M8 20C8 20 4 18 2 12C2 8 6 4 10 6L14 2L16 8C18 7 22 7 24 8L26 2L30 6C34 4 38 8 38 12C36 18 32 20 32 20" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+    </div>
+    <div class="login-title">portal wonuskiz</div>
+    <div class="login-sub">entre com sua conta Google para acessar seus itens, pagamentos e muito mais</div>
+    <button class="btn-google" onclick="loginGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      entrar com Google
+    </button>
+  </div>
+</div>
+
+<!-- PORTAL DO JOINER -->
+<div class="app" id="app">
+  <div class="sb">
+    <div class="sb-top">
+      <div class="sb-logo">
+        <div class="sb-mark"><svg width="20" height="14" viewBox="0 0 40 28" fill="none"><path d="M8 20C8 20 4 18 2 12C2 8 6 4 10 6L14 2L16 8C18 7 22 7 24 8L26 2L30 6C34 4 38 8 38 12C36 18 32 20 32 20" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+        <span class="sb-brand">wonuskiz</span>
+      </div>
+    </div>
+    <div class="sb-user">
+      <div class="sb-ava" id="sbAva">?</div>
+      <div><div class="sb-uname" id="sbUsername">carregando...</div><div class="sb-usub">joiner wonuskiz</div></div>
+    </div>
+    <div class="sb-sec">início</div>
+    <div class="sbi on" onclick="nav('inicio',this)"><i class="ti ti-home"></i> Início</div>
+    <div class="sbi" onclick="nav('itens',this)"><i class="ti ti-box"></i> Meus itens <span class="sb-badge" id="badgeItens" style="display:none">0</span></div>
+    <div class="sbi" onclick="nav('pagamentos',this)"><i class="ti ti-credit-card"></i> Pagamentos <span class="sb-badge" id="badgePags" style="display:none">0</span></div>
+    <div class="sbi" onclick="nav('repasses',this)"><i class="ti ti-arrows-exchange"></i> Repasses</div>
+    <div class="sbi" onclick="nav('caixinhas',this)"><i class="ti ti-search"></i> Caixinhas</div>
+    <div class="sbi" onclick="nav('avisos',this)"><i class="ti ti-bell"></i> Avisos</div>
+    <div class="sbi" onclick="logout()" style="margin-top:8px;color:#EF4444;"><i class="ti ti-logout"></i> Sair</div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-search"><i class="ti ti-search" style="font-size:16px;color:#9CA3AF;"></i><input type="text" placeholder="Buscar no portal..."/></div>
+      <div class="tb-ava" id="tbAva">?</div>
+    </div>
+    <div class="content" id="content">
+
+      <div id="v-inicio">
+        <div class="hero">
+          <div class="hero-greet">olá, joiner! 💜</div>
+          <div class="hero-title">bem-vinda ao<br>portal <b>wonuskiz</b></div>
+          <div class="hero-sub">acompanhe seus itens, pagamentos e tudo sobre suas compras.</div>
+        </div>
+        <div class="summary">
+          <div class="sum-card" onclick="nav('itens')">
+            <div class="sum-ic" style="background:#F5F3FF;"><i class="ti ti-box" style="font-size:20px;color:#7C3AED;"></i></div>
+            <div class="sum-label">itens ativos</div>
+            <div class="sum-val" id="totalItens">—</div>
+            <div class="sum-link">ver itens →</div>
+          </div>
+          <div class="sum-card" onclick="nav('pagamentos')">
+            <div class="sum-ic" style="background:#FDF2F8;"><i class="ti ti-credit-card" style="font-size:20px;color:#DB2777;"></i></div>
+            <div class="sum-label">pagamentos pendentes</div>
+            <div class="sum-val" id="totalPags">—</div>
+            <div class="sum-link">ver pagamentos →</div>
+          </div>
+          <div class="sum-card" onclick="nav('repasses')">
+            <div class="sum-ic" style="background:#EFF6FF;"><i class="ti ti-arrows-exchange" style="font-size:20px;color:#2563EB;"></i></div>
+            <div class="sum-label">repasses ativos</div>
+            <div class="sum-val" id="totalRep">—</div>
+            <div class="sum-link">ver repasses →</div>
+          </div>
+          <div class="sum-card">
+            <div class="sum-ic" style="background:#FFFBEB;"><i class="ti ti-heart" style="font-size:20px;color:#D97706;"></i></div>
+            <div class="sum-label">total investido</div>
+            <div class="sum-val" id="totalVal" style="font-size:18px;">—</div>
+            <div class="sum-link">ver histórico →</div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div>
+            <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-box"></i></div> meus itens recentes</div><span class="sec-link" onclick="nav('itens')">ver todos →</span></div>
+            <div id="itensList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+          </div>
+          <div>
+            <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-credit-card"></i></div> próximos pagamentos</div></div>
+            <div id="pagsList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+            <div class="sec-head" style="margin-top:18px;"><div class="sec-title"><div class="sec-ic"><i class="ti ti-bell"></i></div> avisos</div></div>
+            <div id="avisosList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="v-itens" class="hidden">
+        <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-box"></i></div> meus itens</div></div>
+        <div class="tabs" id="itensTabs">
+          <div class="tab on" onclick="filtrarItens('todos',this)">Todos</div>
+          <div class="tab" onclick="filtrarItens('pendente',this)">Pagamento pendente</div>
+          <div class="tab" onclick="filtrarItens('transito',this)">Em trânsito</div>
+          <div class="tab" onclick="filtrarItens('entregue',this)">Entregues</div>
+        </div>
+        <div id="itensListFull"></div>
+      </div>
+
+      <div id="v-pagamentos" class="hidden">
+        <div class="sec-head">
+          <div class="sec-title"><div class="sec-ic"><i class="ti ti-credit-card"></i></div> pagamentos</div>
+          <button onclick="openModal('comprovante')" style="background:#7C3AED;color:#fff;border:none;border-radius:9px;padding:8px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="ti ti-upload" style="font-size:13px;"></i> enviar comprovante</button>
+        </div>
+        <div class="tabs">
+          <div class="tab on" onclick="filtrarPags('todos',this)">Todos</div>
+          <div class="tab" onclick="filtrarPags('pendente',this)">Pendentes</div>
+          <div class="tab" onclick="filtrarPags('atrasado',this)">Atrasados</div>
+          <div class="tab" onclick="filtrarPags('pago',this)">Pagos</div>
+        </div>
+        <div id="pagsListFull"></div>
+      </div>
+
+      <div id="v-repasses" class="hidden">
+        <div class="sec-head">
+          <div class="sec-title"><div class="sec-ic"><i class="ti ti-arrows-exchange"></i></div> repasses</div>
+          <button onclick="openModal('repasse')" style="background:#7C3AED;color:#fff;border:none;border-radius:9px;padding:8px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="ti ti-plus"></i> solicitar repasse</button>
+        </div>
+        <div id="repassesList"></div>
+      </div>
+
+      <div id="v-caixinhas" class="hidden">
+        <div class="sec-head">
+          <div class="sec-title"><div class="sec-ic"><i class="ti ti-search"></i></div> caixinhas</div>
+          <button onclick="openModal('cotacao')" style="background:#7C3AED;color:#fff;border:none;border-radius:9px;padding:8px 16px;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="ti ti-plus"></i> nova cotação</button>
+        </div>
+        <div id="cotacoesList"></div>
+      </div>
+
+      <div id="v-avisos" class="hidden">
+        <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-bell"></i></div> avisos</div></div>
+        <div id="avisosListFull"></div>
+      </div>
+
+      <div id="modal-area"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"><div class="toast-pill"><i class="ti ti-check" style="font-size:14px;"></i><span id="toastMsg"></span></div></div>
+
+<script>
+const SUPABASE_URL = 'https://ozbevopvwtxfpmtnfbbt.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_AQ-Fz9jW41bznMLeNlUeYQ_MVFSbYdM'
+const { createClient } = supabase
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+const PIPELINE = ['Compra confirmada','Em trânsito (Seller→Proxy)','No proxy','Em trânsito (Proxy→GOM)','Alfândega','Com a GOM','Envio liberado','Em trânsito nacional','Entregue']
+const TIPOS_PAG = {1:'Item',2:'Frete Int. 1',3:'Frete Int. 2',4:'Taxa RF',5:'Envio Nacional'}
+const STATUS_PAG = {
+  EM_BREVE:{label:'Em breve',cls:'b-soon'},
+  PENDENTE:{label:'Pendente',cls:'b-warn'},
+  COMPROVANTE_ENVIADO:{label:'Comprovante enviado',cls:'b-sent'},
+  PAGO:{label:'Pago',cls:'b-ok'},
+  ATRASADO:{label:'Atrasado',cls:'b-late'},
+}
+const PLATAFORMAS = {MERCARI_JP:{label:'M',cor:'#FF6040'},XIANYU:{label:'X',cor:'#FF6B00'},BUNJANG:{label:'B',cor:'#3A86FF'},POCAMARKET:{label:'P',cor:'#7C3AED'},OUTRO:{label:'O',cor:'#6B7280'}}
+
+let perfilId=null, todosItens=[], todosPags=[], todasCotacoes=[], todosRepasses=[]
+
+// ============================================================
+// AUTH — lógica central e limpa
+// ============================================================
+async function loginGoogle() {
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: 'https://wonuskiz.github.io/wonuskiz-portal/joiner/' }
+  })
+}
+
+async function logout() {
+  await sb.auth.signOut()
+  document.getElementById('app').style.display = 'none'
+  document.getElementById('loginWrap').style.display = 'flex'
+}
+
+// Roda ao carregar a página — verifica sessão uma única vez
+;(async () => {
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) return // sem sessão: mostra tela de login
+  iniciarPortal(session.user)
+})()
+
+async function iniciarPortal(user) {
+  document.getElementById('loginWrap').style.display = 'none'
+  document.getElementById('app').style.display = 'flex'
+
+  // Avatar
+  const ini = (user.email||'U')[0].toUpperCase()
+  const avaHtml = user.user_metadata?.avatar_url
+    ? `<img src="${user.user_metadata.avatar_url}"/>`
+    : ini
+  document.getElementById('sbAva').innerHTML = avaHtml
+  document.getElementById('tbAva').innerHTML = user.user_metadata?.avatar_url
+    ? `<img src="${user.user_metadata.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`
+    : ini
+
+  // Busca perfil
+  const { data: perfil } = await sb.from('perfis_joiner').select('*').eq('user_id', user.id).single()
+  if (perfil) {
+    perfilId = perfil.id
+    const username = perfil.usernames_twitter?.[0] || ''
+    if (username) document.getElementById('sbUsername').textContent = '@' + username
+  } else {
+    document.getElementById('sbUsername').textContent = user.email?.split('@')[0] || 'joiner'
+  }
+
+  // Carrega dados
+  await carregarDados()
+  renderInicio()
+}
+
+// ============================================================
+// DADOS
+// ============================================================
+async function carregarDados() {
+  if (!perfilId) return
+
+  const { data: itens } = await sb.from('itens').select('*,cegs(nome,tipo_identificacao)').eq('perfil_id', perfilId).order('created_at',{ascending:false})
+  todosItens = itens || []
+
+  const itemIds = todosItens.map(i => i.id)
+  if (itemIds.length) {
+    const { data: pags } = await sb.from('pagamentos').select('*').in('item_id', itemIds).order('vencimento',{ascending:true})
+    todosPags = pags || []
+  }
+
+  const { data: cots } = await sb.from('cotacoes').select('*').eq('perfil_id', perfilId).order('created_at',{ascending:false})
+  todasCotacoes = cots || []
+
+  const itemIds2 = todosItens.map(i => i.id)
+  if (itemIds2.length) {
+    const { data: reps } = await sb.from('repasses').select('*').in('item_id', itemIds2).order('created_at',{ascending:false})
+    todosRepasses = reps || []
+  }
+
+  // Atualiza contadores
+  document.getElementById('totalItens').textContent = todosItens.length
+  const pendentes = todosPags.filter(p=>['PENDENTE','ATRASADO'].includes(p.status))
+  document.getElementById('totalPags').textContent = pendentes.length
+  document.getElementById('totalRep').textContent = todosRepasses.filter(r=>r.status==='PENDENTE').length
+  const totalPago = todosPags.filter(p=>p.status==='PAGO').reduce((s,p)=>s+Number(p.valor||0),0)
+  document.getElementById('totalVal').textContent = 'R$ ' + totalPago.toFixed(2).replace('.',',')
+
+  if (pendentes.length > 0) {
+    document.getElementById('badgePags').textContent = pendentes.length
+    document.getElementById('badgePags').style.display = 'inline'
+  }
+  if (todosItens.length > 0) {
+    document.getElementById('badgeItens').textContent = todosItens.length
+    document.getElementById('badgeItens').style.display = 'inline'
+  }
+}
+
+async function carregarAvisos() {
+  const { data } = await sb.from('avisos').select('*').eq('publico',true).order('created_at',{ascending:false}).limit(10)
+  return data || []
+}
+
+// ============================================================
+// RENDERS
+// ============================================================
+function renderInicio() {
+  // Itens
+  const elItens = document.getElementById('itensList')
+  elItens.innerHTML = !todosItens.length
+    ? '<div class="empty"><i class="ti ti-box"></i>Nenhum item ainda.</div>'
+    : todosItens.slice(0,3).map(renderItemCard).join('')
+
+  // Pagamentos
+  const elPags = document.getElementById('pagsList')
+  const pend = todosPags.filter(p=>['PENDENTE','ATRASADO','EM_BREVE'].includes(p.status)).slice(0,3)
+  elPags.innerHTML = !pend.length
+    ? '<div class="empty"><i class="ti ti-check"></i>Nenhum pagamento pendente.</div>'
+    : pend.map(renderPagCard).join('')
+
+  // Avisos
+  carregarAvisos().then(avisos => {
+    const elAv = document.getElementById('avisosList')
+    elAv.innerHTML = !avisos.length
+      ? '<div class="empty">Nenhum aviso.</div>'
+      : avisos.slice(0,3).map(a=>`<div class="av-card"><div class="av-ic"><i class="ti ti-bell"></i></div><div><div class="av-title">${esc(a.titulo)}</div><div class="av-body">${esc(a.mensagem)}</div></div></div>`).join('')
+  })
+}
+
+function renderItemCard(item) {
+  const stepAtual = item.status_pipeline || 1
+  const pags = todosPags.filter(p=>p.item_id===item.id)
+  const pendente = pags.find(p=>['PENDENTE','ATRASADO'].includes(p.status))
+  const total = pags.reduce((s,p)=>s+Number(p.valor||0),0)
+  const bgs = ['#8B5CF6','#F472B6','#60D9A8','#F59E0B','#3B82F6','#EF4444']
+  const bg = bgs[Math.abs(hashStr(item.id))%bgs.length]
+  const statusLabel = stepAtual>=9?'Entregue':stepAtual>=7?'Envio liberado':stepAtual>=5?'Na alfândega':'Em andamento'
+  const statusBg = stepAtual>=9?'#059669':stepAtual>=7?'#2563EB':stepAtual>=5?'#D97706':'#7C3AED'
+  return `<div class="item-card">
+    <div class="item-top">
+      <div class="item-img" style="background:${bg};"><div class="item-status-badge" style="background:${statusBg};">${statusLabel}</div></div>
+      <div style="flex:1;">
+        <div class="item-name">${esc(item.cegs?.nome||'Sem ceg')}</div>
+        <div class="item-meta">${item.membro?`<b>${esc(item.membro)}</b> · `:''}${item.tipo_item?esc(item.tipo_item):''}</div>
+      </div>
+      <div><div class="item-price-lbl">total</div><div class="item-price">R$ ${total.toFixed(2).replace('.',',')}</div></div>
+    </div>
+    ${renderPipeline(stepAtual)}
+    ${pendente?`<div class="pay-alert"><div class="pay-alert-text">${pendente.status==='ATRASADO'?'⚠️ Pagamento em atraso!':'Pagamento pendente'}</div><button class="pay-btn" onclick="nav('pagamentos')">Ver</button></div>`:''}
+  </div>`
+}
+
+function renderPipeline(atual) {
+  const labels=['Pagamento','Compra JP','Envio JP','Chegou BR','Alfândega','Com GOM','Env. lib.','Trânsito','Entregue']
+  return `<div class="pipe">${labels.map((lbl,i)=>{
+    const step=i+1,isLast=step===labels.length,isDone=step<atual,isCurr=step===atual
+    return `<div class="pipe-step"><div style="position:relative;"><div class="pipe-node ${isDone?'pn-done':isCurr?'pn-curr':'pn-off'}">${isDone?'<i class="ti ti-check" style="font-size:10px;"></i>':isCurr?step:''}</div>${!isLast?`<div class="pipe-conn ${isDone?'pc-done':'pc-off'}"></div>`:''}</div><div class="pipe-lbl ${isCurr?'curr':''}">${lbl}</div></div>`
+  }).join('')}</div>`
+}
+
+function renderPagCard(pag) {
+  const item = todosItens.find(i=>i.id===pag.item_id)
+  const s = STATUS_PAG[pag.status]||{label:pag.status,cls:'b-soon'}
+  const data = pag.vencimento ? new Date(pag.vencimento) : null
+  return `<div class="pag-card">
+    ${data?`<div class="pag-date"><div class="pag-day">${data.getDate()}</div><div class="pag-month">${data.toLocaleString('pt-BR',{month:'short'}).replace('.','')}</div></div>`:''}
+    <div style="flex:1;"><div class="pag-name">${item?esc(item.cegs?.nome||'Item'):'Pagamento'} — ${TIPOS_PAG[pag.tipo]||pag.tipo}</div><div class="pag-sub"><span class="badge ${s.cls}">${s.label}</span></div></div>
+    <div class="pag-val">R$ ${Number(pag.valor||0).toFixed(2).replace('.',',')}</div>
+    ${['PENDENTE','ATRASADO'].includes(pag.status)?`<button class="pag-btn" onclick="openModal('comprovante')">Pagar</button>`:''}
+  </div>`
+}
+
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+const views=['inicio','itens','pagamentos','repasses','caixinhas','avisos']
+const sbItems=document.querySelectorAll('.sbi')
+
+function nav(view,el) {
+  views.forEach(v=>{const e=document.getElementById('v-'+v);if(e)e.classList.toggle('hidden',v!==view)})
+  sbItems.forEach(i=>i.classList.remove('on'))
+  if(el&&el.classList)el.classList.add('on')
+  else{const m=document.querySelector(`.sbi[onclick="nav('${view}',this)"]`);if(m)m.classList.add('on')}
+  document.getElementById('content').scrollTop=0
+  if(view==='itens')renderItensCompleto()
+  if(view==='pagamentos')renderPagsCompleto()
+  if(view==='repasses')renderRepassesCompleto()
+  if(view==='caixinhas')renderCaixinhas()
+  if(view==='avisos')renderAvisosCompleto()
+}
+
+// ============================================================
+// RENDERS COMPLETOS
+// ============================================================
+function renderItensCompleto(filtro='todos'){
+  let itens=todosItens
+  if(filtro==='pendente')itens=itens.filter(i=>todosPags.some(p=>p.item_id===i.id&&['PENDENTE','ATRASADO'].includes(p.status)))
+  if(filtro==='transito')itens=itens.filter(i=>i.status_pipeline>=2&&i.status_pipeline<=8)
+  if(filtro==='entregue')itens=itens.filter(i=>i.status_pipeline===9)
+  document.getElementById('itensListFull').innerHTML=!itens.length?'<div class="empty"><i class="ti ti-box"></i>Nenhum item encontrado.</div>':itens.map(renderItemCard).join('')
+}
+
+function renderPagsCompleto(filtro='todos'){
+  let pags=todosPags
+  if(filtro==='pendente')pags=pags.filter(p=>p.status==='PENDENTE')
+  if(filtro==='atrasado')pags=pags.filter(p=>p.status==='ATRASADO')
+  if(filtro==='pago')pags=pags.filter(p=>p.status==='PAGO')
+  document.getElementById('pagsListFull').innerHTML=!pags.length?'<div class="empty"><i class="ti ti-credit-card"></i>Nenhum pagamento encontrado.</div>':pags.map(renderPagCard).join('')
+}
+
+function renderRepassesCompleto(){
+  document.getElementById('repassesList').innerHTML=!todosRepasses.length
+    ?'<div class="empty"><i class="ti ti-arrows-exchange"></i>Nenhum repasse ainda.</div>'
+    :todosRepasses.map(r=>{
+      const item=todosItens.find(i=>i.id===r.item_id)
+      return `<div class="rep-card"><div style="flex:1;"><div class="pag-name">${item?esc(item.cegs?.nome||'Item'):'Item'}</div><div class="pag-sub">Tipo: ${r.tipo} · <span class="badge ${r.status==='CONFIRMADO'?'b-ok':r.status==='CANCELADO'?'b-late':'b-warn'}">${r.status}</span></div></div>${r.valor_negociado?`<div class="pag-val">R$ ${Number(r.valor_negociado).toFixed(2).replace('.',',')}</div>`:''}</div>`
+    }).join('')
+}
+
+function renderCaixinhas(){
+  const html=todasCotacoes.map(c=>{
+    const plat=PLATAFORMAS[c.plataforma]||PLATAFORMAS.OUTRO
+    const sMap={AGUARDANDO:'b-warn',RESPONDIDA:'b-ok',SOLD_OUT:'b-late',NAO_ENCONTRADO:'b-late',CANCELADA:'b-soon'}
+    return `<div class="cot-card"><div class="cot-plat" style="background:${plat.cor};">${plat.label}</div><div style="flex:1;"><div class="pag-name">${esc(c.descricao)}</div><div class="pag-sub">${c.plataforma} · <span class="badge ${sMap[c.status]||'b-soon'}">${c.status}</span></div></div>${c.valor_brl?`<div class="pag-val">R$ ${Number(c.valor_brl).toFixed(2).replace('.',',')}</div>`:''}</div>`
+  }).join('')
+  document.getElementById('cotacoesList').innerHTML=(html||'<div class="empty"><i class="ti ti-search"></i>Nenhuma cotação ainda.</div>')+`<div class="nova-cot" onclick="openModal('cotacao')"><i class="ti ti-plus"></i> Nova cotação</div>`
+}
+
+function renderAvisosCompleto(){
+  carregarAvisos().then(avisos=>{
+    document.getElementById('avisosListFull').innerHTML=!avisos.length
+      ?'<div class="empty"><i class="ti ti-bell"></i>Nenhum aviso.</div>'
+      :avisos.map(a=>`<div class="av-card"><div class="av-ic"><i class="ti ti-bell"></i></div><div><div class="av-title">${esc(a.titulo)}</div><div class="av-body">${esc(a.mensagem)}</div><div style="font-size:10px;color:#9CA3AF;margin-top:4px;">${new Date(a.created_at).toLocaleDateString('pt-BR')}</div></div></div>`).join('')
+  })
+}
+
+// ============================================================
+// FILTROS
+// ============================================================
+function filtrarItens(f,el){document.querySelectorAll('#itensTabs .tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderItensCompleto(f)}
+function filtrarPags(f,el){el.closest('.content').querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderPagsCompleto(f)}
+
+// ============================================================
+// MODAIS
+// ============================================================
+function openModal(type){
+  let h=''
+  if(type==='comprovante')h=`<div class="modal-title">enviar comprovante</div><div class="modal-sub">selecione o pagamento e envie o arquivo</div><label class="modal-lbl">pagamento</label><select class="modal-sel" id="mPagSel">${todosPags.filter(p=>['PENDENTE','ATRASADO'].includes(p.status)).map(p=>{const item=todosItens.find(i=>i.id===p.item_id);return`<option value="${p.id}">${item?.cegs?.nome||'Item'} — ${TIPOS_PAG[p.tipo]} · R$ ${Number(p.valor||0).toFixed(2)}</option>`}).join('')}</select><label class="modal-lbl">nota (opcional)</label><textarea class="modal-ta" rows="2" id="mNota" placeholder="ex: pagando os dois juntos"></textarea><label class="modal-lbl">arquivo do comprovante</label><input type="file" accept="image/*,.pdf" id="mArquivo" style="font-size:12px;margin-top:4px;"/><div class="modal-acts"><button class="modal-cancel" onclick="closeModal()">cancelar</button><button class="modal-confirm" onclick="enviarComprovante()">enviar</button></div>`
+  else if(type==='cotacao')h=`<div class="modal-title">nova cotação</div><div class="modal-sub">qual tipo de pedido você quer fazer?</div><label class="modal-lbl">plataforma</label><select class="modal-sel" id="mPlat"><option value="MERCARI_JP">Mercari JP</option><option value="XIANYU">Xianyu</option><option value="BUNJANG">Bunjang</option><option value="POCAMARKET">PocaMarket</option><option value="OUTRO">Outro</option></select><label class="modal-lbl">tipo de pedido</label><select class="modal-sel" id="mTipoCot"><option value="INDIVIDUAL">Individual</option><option value="SET_PEQUENO">Set pequeno (até 35 itens)</option><option value="SET_GRANDE">Set grande (acima de 35 itens)</option></select><label class="modal-lbl">descrição / link</label><textarea class="modal-ta" rows="3" id="mDescCot" placeholder="ex: Woozi Figurine · mercari.jp/item/xxx"></textarea><div class="modal-acts"><button class="modal-cancel" onclick="closeModal()">cancelar</button><button class="modal-confirm" onclick="enviarCotacao()">solicitar</button></div>`
+  else if(type==='repasse')h=`<div class="modal-title">solicitar repasse</div><label class="modal-lbl">item</label><select class="modal-sel" id="mItemRep">${todosItens.filter(i=>i.disponivel_repasse).map(i=>`<option value="${i.id}">${esc(i.cegs?.nome||'')} — ${i.membro||i.tipo_item}</option>`).join('')||'<option>Nenhum item disponível</option>'}</select><label class="modal-lbl">tipo</label><select class="modal-sel" id="mTipoRep"><option value="ANUNCIADO">Anunciado (para a comunidade)</option><option value="DIRETO">Direto (para uma joiner)</option></select><div class="modal-acts"><button class="modal-cancel" onclick="closeModal()">cancelar</button><button class="modal-confirm" onclick="solicitarRepasse()">solicitar</button></div>`
+  document.getElementById('modal-area').innerHTML=`<div class="modal-bg open" id="modalBg" onclick="closeBg(event)"><div class="modal">${h}</div></div>`
+}
+function closeModal(){document.getElementById('modal-area').innerHTML=''}
+function closeBg(e){if(e.target.id==='modalBg')closeModal()}
+
+// ============================================================
+// AÇÕES
+// ============================================================
+async function enviarComprovante(){
+  if(!perfilId){toast('Faça login para enviar comprovantes.');return}
+  const pagId=document.getElementById('mPagSel')?.value
+  const nota=document.getElementById('mNota')?.value
+  const arquivo=document.getElementById('mArquivo')?.files[0]
+  if(!pagId){toast('Selecione um pagamento.');return}
+  let arquivoUrl=null
+  if(arquivo){
+    const ext=arquivo.name.split('.').pop()
+    const path=`${perfilId}/${Date.now()}.${ext}`
+    const{data,error}=await sb.storage.from('comprovantes').upload(path,arquivo)
+    if(error){toast('Erro ao enviar arquivo.');return}
+    arquivoUrl=data.path
+  }
+  const{error}=await sb.from('comprovantes').insert({pagamento_ids:[pagId],perfil_id:perfilId,nota,arquivo_url:arquivoUrl,status:'PENDENTE'})
+  if(error){toast('Erro ao enviar comprovante.');return}
+  await sb.from('pagamentos').update({status:'COMPROVANTE_ENVIADO'}).eq('id',pagId)
+  await carregarDados()
+  closeModal()
+  toast('Comprovante enviado! Aguardando aprovação.')
+}
+
+async function enviarCotacao(){
+  if(!perfilId){toast('Faça login para solicitar cotações.');return}
+  const plataforma=document.getElementById('mPlat').value
+  const tipo_pedido=document.getElementById('mTipoCot').value
+  const descricao=document.getElementById('mDescCot').value.trim()
+  if(!descricao){toast('Descreva o item.');return}
+  const{error}=await sb.from('cotacoes').insert({perfil_id:perfilId,plataforma,tipo_pedido,descricao})
+  if(error){toast('Erro ao enviar cotação.');return}
+  await carregarDados()
+  closeModal()
+  toast('Cotação enviada!')
+  renderCaixinhas()
+}
+
+async function solicitarRepasse(){
+  if(!perfilId){toast('Faça login para solicitar repasses.');return}
+  const itemId=document.getElementById('mItemRep').value
+  const tipo=document.getElementById('mTipoRep').value
+  if(!itemId){toast('Nenhum item disponível.');return}
+  const{error}=await sb.from('repasses').insert({item_id:itemId,perfil_origem_id:perfilId,tipo,status:'PENDENTE'})
+  if(error){toast('Erro ao solicitar repasse.');return}
+  await carregarDados()
+  closeModal()
+  toast('Repasse solicitado!')
+}
+
+// ============================================================
+// UTILITÁRIOS
+// ============================================================
+function esc(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function hashStr(s){let h=0;for(let i=0;i<s.length;i++)h=Math.imul(31,h)+s.charCodeAt(i)|0;return h}
+let toastTimer
+function toast(msg){document.getElementById('toastMsg').textContent=msg;const w=document.getElementById('toastWrap');w.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>w.classList.remove('show'),3500)}
+</script>
+</body>
+</html>
