@@ -132,6 +132,8 @@
   <div class="sbi" onclick="nav('grupos',this)"><i class="ti ti-users"></i> cadastro de grupos</div>
   <div class="sbi" onclick="nav('joiners',this)"><i class="ti ti-user-check"></i> joiners e @s</div>
   <div class="sbi" onclick="nav('avisos',this)"><i class="ti ti-bell"></i> publicar aviso</div>
+  <div class="sbi" onclick="nav('time',this)"><i class="ti ti-users"></i> time de admins</div>
+  <div class="sbi" onclick="nav('perfil',this)"><i class="ti ti-user-circle"></i> meu perfil</div>
   <div class="sbi" onclick="logout()" style="color:#EF4444;margin-top:8px;"><i class="ti ti-logout"></i> sair</div>
 </div>
 
@@ -223,6 +225,14 @@
       <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-user-check"></i></div> joiners e @s</div></div>
       <div style="font-size:11px;color:#9CA3AF;margin-bottom:8px;font-weight:600;">vínculos aguardando aprovação:</div>
       <div id="vinculosList"></div>
+      <div style="font-size:11px;color:#9CA3AF;margin:14px 0 8px;font-weight:600;">promover usuária a admin:</div>
+      <div class="card" style="margin-bottom:14px;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" class="fi" id="emailPromover" placeholder="email@gmail.com" style="flex:1;"/>
+          <button class="sec-btn" onclick="promoverAdmin(document.getElementById('emailPromover').value)"><i class="ti ti-shield" style="font-size:12px;"></i> promover</button>
+        </div>
+        <div style="font-size:11px;color:#9CA3AF;margin-top:8px;">a usuária precisa ter feito login pelo menos uma vez no portal antes de ser promovida.</div>
+      </div>
       <div style="font-size:11px;color:#9CA3AF;margin:14px 0 8px;font-weight:600;">todas as joiners:</div>
       <div class="card" id="joinerList"></div>
     </div>
@@ -240,6 +250,14 @@
       </div>
     </div>
 
+    <div id="v-perfil" class="hidden">
+      <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-user-circle"></i></div> meu perfil</div></div>
+      <div class="card" id="perfilForm"><div class="loading-wrap"><div class="spinner"></div></div></div>
+    </div>
+    <div id="v-time" class="hidden">
+      <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-users"></i></div> time de admins</div></div>
+      <div class="card" id="timeList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+    </div>
     <div id="modal-area"></div>
   </div>
 </div>
@@ -427,7 +445,7 @@ async function registrarClaim(){
   await carregarTudo(); closeModal(); toast('Claim registrado!')
 }
 
-const views=['dashboard','comprovantes','repasses','inadimplentes','cegs','claims','pagamentos','envios','cotacoes','frete','whatsapp','grupos','joiners','avisos']
+const views=['dashboard','comprovantes','repasses','inadimplentes','cegs','claims','pagamentos','envios','cotacoes','frete','whatsapp','grupos','joiners','avisos','perfil','time']
 const sbItems=document.querySelectorAll('.sbi')
 function nav(v,el){
   views.forEach(x=>{const e=document.getElementById('v-'+x);if(e)e.classList.toggle('hidden',x!==v)})
@@ -455,4 +473,157 @@ async function logout(){await sb.auth.signOut();window.location.href='/'}
 init()
 </script>
 </body>
-                                                        </html>
+</html>
+<script>
+// ============================================================
+// PERFIL ADMIN
+// ============================================================
+const AREAS_OPTIONS = [
+  'Pagamentos e repasses',
+  'Atualização de status',
+  'Cobranças de cegs',
+  'Compras e cotações',
+  'Envios internacionais',
+  'Envios nacionais',
+  'Organização de pedidos',
+  'Design e identidade visual',
+  'Webpages'
+]
+
+let perfilAdminAtual = null
+let currentUserId = null
+
+async function carregarPerfil() {
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) return
+  currentUserId = session.user.id
+
+  const { data } = await sb.from('perfis_admin').select('*').eq('user_id', currentUserId).single()
+  perfilAdminAtual = data
+
+  const el = document.getElementById('perfilForm')
+  if (!el) return
+
+  const areasHtml = AREAS_OPTIONS.map(a => `
+    <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:#374151;cursor:pointer;">
+      <input type="checkbox" value="${esc(a)}" ${(perfilAdminAtual?.areas||[]).includes(a)?'checked':''} style="accent-color:#7C3AED;width:15px;height:15px;"/>
+      ${esc(a)}
+    </label>
+  `).join('')
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+      <div>
+        <label class="fi-label">nome</label>
+        <input type="text" class="fi" id="pNome" value="${esc(perfilAdminAtual?.nome||'')}" placeholder="como quer ser chamada"/>
+      </div>
+      <div>
+        <label class="fi-label">pronomes</label>
+        <input type="text" class="fi" id="pPronomes" value="${esc(perfilAdminAtual?.pronomes||'')}" placeholder="ex: ela/dela"/>
+      </div>
+      <div>
+        <label class="fi-label">@ do Twitter/X</label>
+        <input type="text" class="fi" id="pTwitter" value="${esc(perfilAdminAtual?.username_twitter||'')}" placeholder="@username"/>
+      </div>
+      <div>
+        <label class="fi-label">cargo</label>
+        <select class="fi" id="pCargo">
+          <option value="Administradora" ${perfilAdminAtual?.cargo==='Administradora'?'selected':''}>Administradora</option>
+          <option value="GOM" ${perfilAdminAtual?.cargo==='GOM'?'selected':''}>GOM</option>
+        </select>
+      </div>
+    </div>
+    <label class="fi-label">áreas de atuação</label>
+    <div id="pAreas" style="background:#F9F8FE;border-radius:10px;padding:12px;border:1.5px solid #EDE9FE;margin-bottom:14px;">
+      ${areasHtml}
+    </div>
+    <button class="sec-btn" style="width:100%;justify-content:center;" onclick="salvarPerfil()">
+      <i class="ti ti-check" style="font-size:12px;"></i> salvar perfil
+    </button>
+  `
+}
+
+async function salvarPerfil() {
+  const nome = document.getElementById('pNome').value.trim()
+  const pronomes = document.getElementById('pPronomes').value.trim()
+  const username_twitter = document.getElementById('pTwitter').value.replace('@','').trim()
+  const cargo = document.getElementById('pCargo').value
+  const areas = Array.from(document.querySelectorAll('#pAreas input:checked')).map(i => i.value)
+
+  const dados = { user_id: currentUserId, nome, pronomes, username_twitter, cargo, areas, updated_at: new Date().toISOString() }
+
+  let error
+  if (perfilAdminAtual) {
+    ({ error } = await sb.from('perfis_admin').update(dados).eq('user_id', currentUserId))
+  } else {
+    ({ error } = await sb.from('perfis_admin').insert(dados))
+  }
+
+  if (error) { toast('Erro ao salvar perfil.'); return }
+
+  perfilAdminAtual = { ...perfilAdminAtual, ...dados }
+
+  // Atualiza nome na sidebar
+  if (nome) document.getElementById('sbName').textContent = nome
+
+  toast('Perfil salvo com sucesso!')
+}
+
+// ============================================================
+// TIME DE ADMINS
+// ============================================================
+async function carregarTime() {
+  const el = document.getElementById('timeList')
+  if (!el) return
+
+  const { data } = await sb.from('perfis_admin').select('*, user:user_id(email)')
+  const admins = data || []
+
+  if (!admins.length) {
+    el.innerHTML = '<div class="empty"><i class="ti ti-users"></i>Nenhum perfil de admin cadastrado ainda.</div>'
+    return
+  }
+
+  el.innerHTML = admins.map(a => `
+    <div class="grupo-row">
+      <div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;font-size:18px;font-weight:800;">
+        ${a.nome ? a.nome[0].toUpperCase() : '?'}
+      </div>
+      <div style="flex:1;">
+        <div class="row-name">${esc(a.nome||'Sem nome')} ${a.pronomes?`<span style="font-size:10px;color:#9CA3AF;font-weight:400;">(${esc(a.pronomes)})</span>`:''}</div>
+        <div class="row-sub">
+          ${a.cargo?`<span class="badge b-act" style="margin-right:4px;">${esc(a.cargo)}</span>`:''}
+          ${a.username_twitter?`@${esc(a.username_twitter)} · `:''}
+          ${(a.areas||[]).join(', ')}
+        </div>
+      </div>
+    </div>
+  `).join('')
+}
+
+// ============================================================
+// PROMOVER A ADMIN
+// ============================================================
+async function promoverAdmin(email) {
+  if (!email) { toast('Informe o email.'); return }
+
+  // Chama função do Supabase para atualizar app_metadata
+  const { error } = await sb.rpc('promover_admin', { user_email: email })
+
+  if (error) {
+    // Fallback: mostra instrução
+    toast('Use o SQL Editor para promover: UPDATE auth.users SET raw_app_meta_data = raw_app_meta_data || \'{"role":"admin"}\' WHERE email = \'' + email + '\';')
+    return
+  }
+
+  toast(`${email} promovida a admin! Peça para ela fazer logout e login novamente.`)
+}
+
+// Sobrescreve renderView para incluir perfil e time
+const _renderViewOriginal = renderView
+function renderView(v) {
+  if (v === 'perfil') { carregarPerfil(); return }
+  if (v === 'time') { carregarTime(); return }
+  _renderViewOriginal(v)
+}
+</script>
