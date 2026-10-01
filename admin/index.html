@@ -150,10 +150,10 @@
 
     <div id="v-dashboard">
       <div class="metrics">
-        <div class="met" onclick="nav('cegs')"><div class="met-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-box"></i></div><div class="met-lbl">cegs ativas</div><div class="met-val" id="mCegs">—</div><div class="met-sub">projetos em andamento</div></div>
-        <div class="met" onclick="nav('comprovantes')"><div class="met-ic" style="background:#FEF3C7;color:#D97706;"><i class="ti ti-file-check"></i></div><div class="met-lbl">comprovantes</div><div class="met-val" id="mComp">—</div><div class="met-sub">aguardando aprovação</div></div>
-        <div class="met" onclick="nav('inadimplentes')"><div class="met-ic" style="background:#FEE2E2;color:#EF4444;"><i class="ti ti-alert-circle"></i></div><div class="met-lbl">inadimplentes</div><div class="met-val" id="mInad">—</div><div class="met-sub" id="mInadSub">—</div></div>
-        <div class="met" onclick="nav('envios')"><div class="met-ic" style="background:#F0FDF4;color:#059669;"><i class="ti ti-truck-delivery"></i></div><div class="met-lbl">prontos p/ envio</div><div class="met-val" id="mEnvio">—</div><div class="met-sub">aguardando liberação</div></div>
+        <div class="met" onclick="nav('cegs')"><div class="met-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-box"></i></div><div class="met-lbl">cegs ativas</div><div class="met-val" id="mCegs">0</div><div class="met-sub">projetos em andamento</div></div>
+        <div class="met" onclick="nav('comprovantes')"><div class="met-ic" style="background:#FEF3C7;color:#D97706;"><i class="ti ti-file-check"></i></div><div class="met-lbl">comprovantes</div><div class="met-val" id="mComp">0</div><div class="met-sub">aguardando aprovação</div></div>
+        <div class="met" onclick="nav('inadimplentes')"><div class="met-ic" style="background:#FEE2E2;color:#EF4444;"><i class="ti ti-alert-circle"></i></div><div class="met-lbl">inadimplentes</div><div class="met-val" id="mInad">0</div><div class="met-sub" id="mInadSub">sem multas</div></div>
+        <div class="met" onclick="nav('envios')"><div class="met-ic" style="background:#F0FDF4;color:#059669;"><i class="ti ti-truck-delivery"></i></div><div class="met-lbl">prontos p/ envio</div><div class="met-val" id="mEnvio">0</div><div class="met-sub">aguardando liberação</div></div>
       </div>
       <div class="two-col">
         <div>
@@ -171,14 +171,14 @@
       </div>
     </div>
 
-    <div id="v-comprovantes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-file-check"></i></div> comprovantes para aprovar</div></div><div id="compList"><div class="loading-wrap"><div class="spinner"></div></div></div></div>
-    <div id="v-repasses" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-arrows-exchange"></i></div> repasses pendentes</div></div><div class="card" id="repList"><div class="loading-wrap"><div class="spinner"></div></div></div></div>
-    <div id="v-inadimplentes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#FEE2E2;color:#EF4444;"><i class="ti ti-alert-circle"></i></div> inadimplentes</div></div><div id="inadList"><div class="loading-wrap"><div class="spinner"></div></div></div></div>
-    <div id="v-cegs" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-box"></i></div> gerenciar cegs</div><button class="sec-btn" onclick="openModal('nova-ceg')"><i class="ti ti-plus" style="font-size:12px;"></i> nova ceg</button></div><div class="card" id="cegList"><div class="loading-wrap"><div class="spinner"></div></div></div></div>
-    <div id="v-claims" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-list-check"></i></div> claims e itens</div><button class="sec-btn" onclick="openModal('nova-claim')"><i class="ti ti-plus" style="font-size:12px;"></i> registrar claim</button></div><div class="card" id="claimList"><div class="loading-wrap"><div class="spinner"></div></div></div></div>
-    <div id="v-pagamentos" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-credit-card"></i></div> pagamentos</div></div><div id="pagList"><div class="loading-wrap"><div class="spinner"></div></div></div></div>
-    <div id="v-envios" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#F0FDF4;color:#059669;"><i class="ti ti-truck-delivery"></i></div> envio nacional</div><button class="sec-btn green" onclick="liberarTodos()">liberar todos</button></div><div class="card" id="envioList"><div class="loading-wrap"><div class="spinner"></div></div></div></div>
-    <div id="v-cotacoes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#EFF6FF;color:#2563EB;"><i class="ti ti-search"></i></div> cotações caixinhas</div></div><div class="card" id="cotList"><div class="loading-wrap"><div class="spinner"></div></div></div></div>
+    <div id="v-comprovantes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-file-check"></i></div> comprovantes para aprovar</div></div><div id="compList"></div></div>
+    <div id="v-repasses" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-arrows-exchange"></i></div> repasses pendentes</div></div><div class="card" id="repList"></div></div>
+    <div id="v-inadimplentes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#FEE2E2;color:#EF4444;"><i class="ti ti-alert-circle"></i></div> inadimplentes</div></div><div id="inadList"></div></div>
+    <div id="v-cegs" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-box"></i></div> gerenciar cegs</div><button class="sec-btn" onclick="openModal('nova-ceg')"><i class="ti ti-plus" style="font-size:12px;"></i> nova ceg</button></div><div class="card" id="cegList"></div></div>
+    <div id="v-claims" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-list-check"></i></div> claims e itens</div><button class="sec-btn" onclick="openModal('nova-claim')"><i class="ti ti-plus" style="font-size:12px;"></i> registrar claim</button></div><div class="card" id="claimList"></div></div>
+    <div id="v-pagamentos" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-credit-card"></i></div> pagamentos</div></div><div id="pagList"></div></div>
+    <div id="v-envios" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#F0FDF4;color:#059669;"><i class="ti ti-truck-delivery"></i></div> envio nacional</div><button class="sec-btn green" onclick="liberarTodos()">liberar todos</button></div><div class="card" id="envioList"></div></div>
+    <div id="v-cotacoes" class="hidden"><div class="sec-head"><div class="sec-title"><div class="sec-ic" style="background:#EFF6FF;color:#2563EB;"><i class="ti ti-search"></i></div> cotações caixinhas</div></div><div class="card" id="cotList"></div></div>
 
     <div id="v-frete" class="hidden">
       <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-calculator"></i></div> calculadora de frete</div></div>
@@ -186,13 +186,13 @@
         <div style="font-size:11px;color:#9CA3AF;margin-bottom:12px;line-height:1.5;">informe a ceg e o valor total do frete. o sistema divide proporcionalmente pelo peso de cada item.</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
           <div><label class="fi-label">ceg</label><select class="fi" id="freteCeg"></select></div>
-          <div><label class="fi-label">valor total do frete (R$)</label><input type="number" id="freteVal" class="fi" placeholder="ex: 45.00"/></div>
+          <div><label class="fi-label">valor total (R$)</label><input type="number" id="freteVal" class="fi" placeholder="ex: 45.00"/></div>
         </div>
         <button class="sec-btn" onclick="calcFrete()">calcular divisão</button>
         <div id="freteRes" class="hidden" style="margin-top:12px;">
-          <div style="font-size:11px;font-weight:800;color:#1F2937;margin-bottom:8px;">divisão proporcional por item:</div>
+          <div style="font-size:11px;font-weight:800;color:#1F2937;margin-bottom:8px;">divisão proporcional:</div>
           <div id="freteItens"></div>
-          <button class="sec-btn green" style="width:100%;justify-content:center;margin-top:10px;" onclick="liberarFrete()"><i class="ti ti-check" style="font-size:12px;"></i> confirmar e liberar cobranças</button>
+          <button class="sec-btn green" style="width:100%;justify-content:center;margin-top:10px;" onclick="liberarFrete()">confirmar e liberar cobranças</button>
         </div>
       </div>
     </div>
@@ -218,7 +218,7 @@
 
     <div id="v-grupos" class="hidden">
       <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-users"></i></div> cadastro de grupos</div><button class="sec-btn" onclick="openModal('novo-grupo')"><i class="ti ti-plus" style="font-size:12px;"></i> novo grupo</button></div>
-      <div class="card" id="grupoList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+      <div class="card" id="grupoList"></div>
     </div>
 
     <div id="v-joiners" class="hidden">
@@ -231,7 +231,7 @@
           <input type="text" class="fi" id="emailPromover" placeholder="email@gmail.com" style="flex:1;"/>
           <button class="sec-btn" onclick="promoverAdmin(document.getElementById('emailPromover').value)"><i class="ti ti-shield" style="font-size:12px;"></i> promover</button>
         </div>
-        <div style="font-size:11px;color:#9CA3AF;margin-top:8px;">a usuária precisa ter feito login pelo menos uma vez no portal antes de ser promovida.</div>
+        <div style="font-size:11px;color:#9CA3AF;margin-top:8px;">a usuária precisa ter feito login pelo menos uma vez antes de ser promovida.</div>
       </div>
       <div style="font-size:11px;color:#9CA3AF;margin:14px 0 8px;font-weight:600;">todas as joiners:</div>
       <div class="card" id="joinerList"></div>
@@ -254,10 +254,12 @@
       <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-user-circle"></i></div> meu perfil</div></div>
       <div class="card" id="perfilForm"><div class="loading-wrap"><div class="spinner"></div></div></div>
     </div>
+
     <div id="v-time" class="hidden">
       <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-users"></i></div> time de admins</div></div>
       <div class="card" id="timeList"><div class="loading-wrap"><div class="spinner"></div></div></div>
     </div>
+
     <div id="modal-area"></div>
   </div>
 </div>
@@ -273,19 +275,22 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
 const TIPOS_PAG = {1:'Item',2:'Frete Int. 1',3:'Frete Int. 2',4:'Taxa RF',5:'Envio Nacional'}
 const PESOS = {'PC':3,'ID Card':3,'Postcard':3,'Álbum Plataforma':80,'Compact':100,'Jewel Case':200,'Standard':450,'Limited':600,'Vinil':425,'Chaveiro':12,'Pelúcia 10cm':80,'Pelúcia 20cm':200,'Camisa':200}
 const WA = {
-  cob: c => `Oi, joiners! 💜 O pagamento da *${c}* está com vencimento chegando. Por favor verifique o portal. Dúvidas me chamem! 🐱`,
-  cheg: c => `Boa notícia! 🎉 Os itens da *${c}* chegaram ao Brasil! Em breve liberarei o envio nacional. 💜`,
-  env: c => `Liberado o envio nacional da *${c}*! 🚚 Acesse o portal e solicite sua modalidade de frete. 💜`,
-  pz: c => `Lembrete: prazo para repasse da *${c}* está chegando. Acesse o portal! ⏰`,
-  caixa: () => `Caixinhas abertas! 🛒 Faça seu pedido de cotação no portal. 💜`
+  cob: c => `Oi, joiners! O pagamento da *${c}* está com vencimento chegando. Verifique o portal. Dúvidas me chamem!`,
+  cheg: c => `Os itens da *${c}* chegaram ao Brasil! Em breve liberarei o envio nacional.`,
+  env: c => `Liberado o envio nacional da *${c}*! Acesse o portal e solicite sua modalidade de frete.`,
+  pz: c => `Prazo para repasse da *${c}* está chegando. Acesse o portal!`,
+  caixa: () => `Caixinhas abertas! Faça seu pedido de cotação no portal.`
 }
+const AREAS_OPTIONS = ['Pagamentos e repasses','Atualização de status','Cobranças de cegs','Compras e cotações','Envios internacionais','Envios nacionais','Organização de pedidos','Design e identidade visual','Webpages']
 
 let todosComp=[], todosRep=[], todosInad=[], todasCegs=[], todosItens=[], todosJoiners=[], todosGrupos=[], todasCot=[], freteItensCalc=[]
+let perfilAdminAtual=null, currentUserId=null
 
 async function init() {
   const { data: { session } } = await sb.auth.getSession()
-  if (!session) { window.location.href = '/'; return }
+  if (!session) { window.location.href = '/wonuskiz-portal/'; return }
   const u = session.user
+  currentUserId = u.id
   const ini = (u.email||'A')[0].toUpperCase()
   document.getElementById('sbAva').textContent = ini
   document.getElementById('tbAva').textContent = ini
@@ -324,125 +329,113 @@ function uname(p){if(!p)return'?';const a=p.usernames_twitter||[];return a.lengt
 function esc(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 function popularSelects(){
-  const fc=document.getElementById('freteCeg'); if(fc)fc.innerHTML=todasCegs.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('')
-  const wc=document.getElementById('waCeg'); if(wc){wc.innerHTML='<option value="">-- nenhuma --</option>'+todasCegs.map(c=>`<option value="${esc(c.nome)}">${esc(c.nome)}</option>`).join('');updateWA();}
+  const fc=document.getElementById('freteCeg');if(fc)fc.innerHTML=todasCegs.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('')
+  const wc=document.getElementById('waCeg');if(wc){wc.innerHTML='<option value="">-- nenhuma --</option>'+todasCegs.map(c=>`<option value="${esc(c.nome)}">${esc(c.nome)}</option>`).join('');updateWA();}
 }
 
 function renderDashboard(){
-  const dc=document.getElementById('dashComp')
-  dc.innerHTML=!todosComp.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum comprovante pendente.</div>':todosComp.slice(0,3).map(renderComp).join('')
-  const di=document.getElementById('dashInad')
-  di.innerHTML=!todosInad.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum inadimplente.</div>':todosInad.slice(0,3).map(renderInad).join('')
-  const dr=document.getElementById('dashRep')
-  dr.innerHTML=!todosRep.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum repasse pendente.</div>':todosRep.slice(0,3).map(renderRep).join('')
+  document.getElementById('dashComp').innerHTML=!todosComp.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum pendente.</div>':todosComp.slice(0,3).map(renderComp).join('')
+  document.getElementById('dashInad').innerHTML=!todosInad.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosInad.slice(0,3).map(renderInad).join('')
+  document.getElementById('dashRep').innerHTML=!todosRep.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosRep.slice(0,3).map(renderRep).join('')
   const prontos=todosItens.filter(i=>i.status_pipeline===6)
-  const de=document.getElementById('dashEnvio')
-  de.innerHTML=!prontos.length?'<div class="empty">Nenhum item pronto.</div>':prontos.slice(0,3).map(i=>`<div class="row"><div class="chk on"><i class="ti ti-check" style="font-size:9px;color:#fff;"></i></div><div style="flex:1;"><div class="row-name">${esc(uname(i.perfis_joiner))} — ${esc(i.cegs?.nome||'')}</div><div class="row-sub">${i.tipo_item||''} ${i.membro||''}</div></div><button class="b-ap" onclick="liberarEnvioItem('${i.id}')">liberar</button></div>`).join('')+'<button class="sec-btn green" style="width:100%;justify-content:center;margin-top:10px;" onclick="liberarTodos()">liberar todos</button>'
+  document.getElementById('dashEnvio').innerHTML=!prontos.length?'<div class="empty">Nenhum pronto.</div>':prontos.slice(0,3).map(i=>`<div class="row"><div class="chk on"><i class="ti ti-check" style="font-size:9px;color:#fff;"></i></div><div style="flex:1;"><div class="row-name">${esc(uname(i.perfis_joiner))} — ${esc(i.cegs?.nome||'')}</div><div class="row-sub">${i.tipo_item||''} ${i.membro||''}</div></div><button class="b-ap" onclick="liberarEnvioItem('${i.id}')">liberar</button></div>`).join('')+'<button class="sec-btn green" style="width:100%;justify-content:center;margin-top:10px;" onclick="liberarTodos()">liberar todos</button>'
 }
 
-function renderComp(c){
-  const u=uname(c.perfis_joiner)
-  return`<div class="comp-row cw"><div class="ava" style="width:28px;height:28px;font-size:11px;">${u[0]?.toUpperCase()||'?'}</div><div style="flex:1;"><div class="comp-name">${esc(u)}</div><div class="comp-ref">${c.nota||'sem nota'}</div><div class="comp-acts"><button class="b-ap" onclick="aprovarComp('${c.id}')">aprovar</button><button class="b-rp" onclick="openModal('reprovar','${c.id}')">reprovar</button></div></div></div>`
-}
-function renderInad(p){
-  const item=todosItens.find(i=>i.id===p.item_id)
-  const u=item?uname(item.perfis_joiner):'?'
-  return`<div class="inad-row"><div class="ava" style="background:#EF4444;width:28px;height:28px;font-size:11px;">${u[0]?.toUpperCase()||'?'}</div><div style="flex:1;"><div style="font-size:12px;font-weight:800;color:#1F2937;">${esc(u)}</div><div style="font-size:11px;color:#EF4444;font-weight:600;">${item?.cegs?.nome||'Item'} · ${TIPOS_PAG[p.tipo]||''} · multa R$${Number(p.multa_acumulada||0).toFixed(2)}</div></div><button class="inad-btn" onclick="repassarInad('${p.item_id}')">repassar</button></div>`
-}
-function renderRep(r){
-  const u=uname(r.perfis_joiner)
-  return`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;">${u[0]?.toUpperCase()||'?'}</div><div style="flex:1;"><div class="row-name">${esc(u)} → ${r.tipo==='ANUNCIADO'?'comunidade':'direto'}</div><div class="row-sub">${esc(r.itens?.cegs?.nome||'')} · ${r.tipo}</div></div><button class="row-btn" onclick="confirmarRep('${r.id}')">confirmar</button></div>`
-}
+function renderComp(c){const u=uname(c.perfis_joiner);return`<div class="comp-row cw"><div class="ava" style="width:28px;height:28px;font-size:11px;">${u[0]?.toUpperCase()||'?'}</div><div style="flex:1;"><div class="comp-name">${esc(u)}</div><div class="comp-ref">${c.nota||'sem nota'}</div><div class="comp-acts"><button class="b-ap" onclick="aprovarComp('${c.id}')">aprovar</button><button class="b-rp" onclick="openModal('reprovar','${c.id}')">reprovar</button></div></div></div>`}
+function renderInad(p){const item=todosItens.find(i=>i.id===p.item_id);const u=item?uname(item.perfis_joiner):'?';return`<div class="inad-row"><div class="ava" style="background:#EF4444;width:28px;height:28px;font-size:11px;">${u[0]?.toUpperCase()||'?'}</div><div style="flex:1;"><div style="font-size:12px;font-weight:800;color:#1F2937;">${esc(u)}</div><div style="font-size:11px;color:#EF4444;font-weight:600;">${item?.cegs?.nome||'Item'} · ${TIPOS_PAG[p.tipo]||''} · multa R$${Number(p.multa_acumulada||0).toFixed(2)}</div></div><button class="inad-btn" onclick="repassarInad('${p.item_id}')">repassar</button></div>`}
+function renderRep(r){const u=uname(r.perfis_joiner);return`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;">${u[0]?.toUpperCase()||'?'}</div><div style="flex:1;"><div class="row-name">${esc(u)} → ${r.tipo==='ANUNCIADO'?'comunidade':'direto'}</div><div class="row-sub">${esc(r.itens?.cegs?.nome||'')} · ${r.tipo}</div></div><button class="row-btn" onclick="confirmarRep('${r.id}')">confirmar</button></div>`}
 
 function renderView(v){
-  if(v==='comprovantes'){const e=document.getElementById('compList');e.innerHTML=!todosComp.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum pendente.</div>':todosComp.map(renderComp).join('')}
-  if(v==='repasses'){const e=document.getElementById('repList');e.innerHTML=!todosRep.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum pendente.</div>':todosRep.map(renderRep).join('')}
-  if(v==='inadimplentes'){const e=document.getElementById('inadList');e.innerHTML=!todosInad.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosInad.map(renderInad).join('')}
-  if(v==='cegs'){const e=document.getElementById('cegList');e.innerHTML=!todasCegs.length?'<div class="empty">Nenhuma ceg.</div>':todasCegs.map(c=>`<div class="row"><div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-box"></i></div><div style="flex:1;"><div class="row-name">${esc(c.nome)}</div><div class="row-sub">${c.tipo_identificacao||c.tipo} · ${c.status}</div></div><span class="badge ${c.status==='ABERTA'?'b-act':c.status==='ENTREGUE'?'b-ok':'b-warn'}">${c.status}</span></div>`).join('')}
-  if(v==='claims'){const e=document.getElementById('claimList');e.innerHTML=!todosItens.length?'<div class="empty">Nenhum item.</div>':todosItens.slice(0,30).map(i=>`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;">${(uname(i.perfis_joiner)||'?')[0].toUpperCase()}</div><div style="flex:1;"><div class="row-name">${esc(uname(i.perfis_joiner))} — ${i.membro||i.numero_item||'?'}</div><div class="row-sub">${esc(i.cegs?.nome||'')} · ${i.tipo_item||''}</div></div><span class="badge b-ok">etapa ${i.status_pipeline}</span></div>`).join('')}
-  if(v==='pagamentos'){const e=document.getElementById('pagList');e.innerHTML=todosComp.map(renderComp).join('')||'<div class="empty">Nenhum comprovante pendente.</div>'}
-  if(v==='envios'){const prontos=todosItens.filter(i=>i.status_pipeline===6);const e=document.getElementById('envioList');e.innerHTML=!prontos.length?'<div class="empty">Nenhum pronto.</div>':prontos.map(i=>`<div class="row"><div class="chk on"><i class="ti ti-check" style="font-size:9px;color:#fff;"></i></div><div style="flex:1;"><div class="row-name">${esc(uname(i.perfis_joiner))} — ${esc(i.cegs?.nome||'')}</div><div class="row-sub">${i.tipo_item||''} ${i.membro||''}</div></div><button class="b-ap" onclick="liberarEnvioItem('${i.id}')">liberar</button></div>`).join('')}
-  if(v==='cotacoes'){const e=document.getElementById('cotList');e.innerHTML=!todasCot.length?'<div class="empty"><i class="ti ti-check"></i>Nenhuma cotação aguardando.</div>':todasCot.map(c=>`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;background:#FF6040;">${c.plataforma[0]}</div><div style="flex:1;"><div class="row-name">${esc(uname(c.perfis_joiner))} · ${esc(c.descricao)}</div><div class="row-sub">${c.plataforma} · ${c.tipo_pedido}</div></div><button class="row-btn" onclick="openModal('responder-cot','${c.id}')">responder</button></div>`).join('')}
-  if(v==='grupos'){const e=document.getElementById('grupoList');e.innerHTML=!todosGrupos.length?'<div class="empty">Nenhum grupo.</div>':todosGrupos.map(g=>`<div class="grupo-row"><div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-star"></i></div><div style="flex:1;"><div class="row-name">${esc(g.nome_grupo)}</div><div class="row-sub">${(g.membros||[]).length} membros · ${(g.membros||[]).join(', ')}</div></div><div style="display:flex;gap:5px;"><button class="ico-btn red" onclick="deletarGrupo('${g.id}')"><i class="ti ti-trash"></i></button></div></div>`).join('')}
-  if(v==='joiners'){
+  if(v==='comprovantes'){document.getElementById('compList').innerHTML=!todosComp.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosComp.map(renderComp).join('')}
+  else if(v==='repasses'){document.getElementById('repList').innerHTML=!todosRep.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosRep.map(renderRep).join('')}
+  else if(v==='inadimplentes'){document.getElementById('inadList').innerHTML=!todosInad.length?'<div class="empty"><i class="ti ti-check"></i>Nenhum.</div>':todosInad.map(renderInad).join('')}
+  else if(v==='cegs'){document.getElementById('cegList').innerHTML=!todasCegs.length?'<div class="empty">Nenhuma ceg.</div>':todasCegs.map(c=>`<div class="row"><div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-box"></i></div><div style="flex:1;"><div class="row-name">${esc(c.nome)}</div><div class="row-sub">${c.tipo_identificacao||c.tipo} · ${c.status}</div></div><span class="badge ${c.status==='ABERTA'?'b-act':c.status==='ENTREGUE'?'b-ok':'b-warn'}">${c.status}</span></div>`).join('')}
+  else if(v==='claims'){document.getElementById('claimList').innerHTML=!todosItens.length?'<div class="empty">Nenhum item.</div>':todosItens.slice(0,30).map(i=>`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;">${(uname(i.perfis_joiner)||'?')[0].toUpperCase()}</div><div style="flex:1;"><div class="row-name">${esc(uname(i.perfis_joiner))} — ${i.membro||'?'}</div><div class="row-sub">${esc(i.cegs?.nome||'')} · ${i.tipo_item||''}</div></div><span class="badge b-ok">etapa ${i.status_pipeline}</span></div>`).join('')}
+  else if(v==='pagamentos'){document.getElementById('pagList').innerHTML=todosComp.map(renderComp).join('')||'<div class="empty">Nenhum pendente.</div>'}
+  else if(v==='envios'){const p=todosItens.filter(i=>i.status_pipeline===6);document.getElementById('envioList').innerHTML=!p.length?'<div class="empty">Nenhum pronto.</div>':p.map(i=>`<div class="row"><div class="chk on"><i class="ti ti-check" style="font-size:9px;color:#fff;"></i></div><div style="flex:1;"><div class="row-name">${esc(uname(i.perfis_joiner))} — ${esc(i.cegs?.nome||'')}</div><div class="row-sub">${i.tipo_item||''}</div></div><button class="b-ap" onclick="liberarEnvioItem('${i.id}')">liberar</button></div>`).join('')}
+  else if(v==='cotacoes'){document.getElementById('cotList').innerHTML=!todasCot.length?'<div class="empty"><i class="ti ti-check"></i>Nenhuma.</div>':todasCot.map(c=>`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;background:#FF6040;">${c.plataforma[0]}</div><div style="flex:1;"><div class="row-name">${esc(uname(c.perfis_joiner))} · ${esc(c.descricao)}</div><div class="row-sub">${c.plataforma} · ${c.tipo_pedido}</div></div><button class="row-btn" onclick="openModal('responder-cot','${c.id}')">responder</button></div>`).join('')}
+  else if(v==='grupos'){document.getElementById('grupoList').innerHTML=!todosGrupos.length?'<div class="empty">Nenhum grupo.</div>':todosGrupos.map(g=>`<div class="grupo-row"><div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;"><i class="ti ti-star"></i></div><div style="flex:1;"><div class="row-name">${esc(g.nome_grupo)}</div><div class="row-sub">${(g.membros||[]).length} membros · ${(g.membros||[]).join(', ')}</div></div><button class="ico-btn red" onclick="deletarGrupo('${g.id}')"><i class="ti ti-trash"></i></button></div>`).join('')}
+  else if(v==='joiners'){
     const pend=todosJoiners.filter(j=>j.username_vinculo_pendente)
     document.getElementById('vinculosList').innerHTML=!pend.length?'<div class="empty">Nenhum vínculo pendente.</div>':pend.map(j=>`<div class="comp-row cw"><div class="ava" style="width:28px;height:28px;font-size:11px;">${(uname(j)||'?')[0].toUpperCase()}</div><div style="flex:1;"><div class="comp-name">${esc(uname(j))}</div><div class="comp-ref">quer vincular @${esc(j.username_vinculo_pendente)}</div><div class="comp-acts"><button class="b-ap" onclick="aprovarVinculo('${j.id}','${j.username_vinculo_pendente}')">aprovar</button><button class="b-rp" onclick="recusarVinculo('${j.id}')">recusar</button></div></div></div>`).join('')
     document.getElementById('joinerList').innerHTML=todosJoiners.map(j=>`<div class="row"><div class="ava" style="width:26px;height:26px;font-size:10px;">${(uname(j)||'?')[0].toUpperCase()}</div><div style="flex:1;"><div class="row-name">${esc(uname(j))}</div><div class="row-sub">${(j.usernames_twitter||[]).length} username(s) · ${j.tipo_perfil}</div></div><span class="badge b-ok">ativa</span></div>`).join('')
   }
+  else if(v==='perfil'){carregarPerfil();}
+  else if(v==='time'){carregarTime();}
+}
+
+async function carregarPerfil(){
+  const el=document.getElementById('perfilForm');if(!el)return
+  const{data}=await sb.from('perfis_admin').select('*').eq('user_id',currentUserId).single()
+  perfilAdminAtual=data
+  const areasHtml=AREAS_OPTIONS.map(a=>`<label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:#374151;cursor:pointer;"><input type="checkbox" value="${esc(a)}" ${(perfilAdminAtual?.areas||[]).includes(a)?'checked':''} style="accent-color:#7C3AED;width:15px;height:15px;"/>${esc(a)}</label>`).join('')
+  el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;"><div><label class="fi-label">nome</label><input type="text" class="fi" id="pNome" value="${esc(perfilAdminAtual?.nome||'')}" placeholder="como quer ser chamada"/></div><div><label class="fi-label">pronomes</label><input type="text" class="fi" id="pPronomes" value="${esc(perfilAdminAtual?.pronomes||'')}" placeholder="ex: ela/dela"/></div><div><label class="fi-label">@ do Twitter/X</label><input type="text" class="fi" id="pTwitter" value="${esc(perfilAdminAtual?.username_twitter||'')}" placeholder="@username"/></div><div><label class="fi-label">cargo</label><select class="fi" id="pCargo"><option value="Administradora" ${perfilAdminAtual?.cargo==='Administradora'?'selected':''}>Administradora</option><option value="GOM" ${perfilAdminAtual?.cargo==='GOM'?'selected':''}>GOM</option></select></div></div><label class="fi-label">áreas de atuação</label><div id="pAreas" style="background:#F9F8FE;border-radius:10px;padding:12px;border:1.5px solid #EDE9FE;margin-bottom:14px;">${areasHtml}</div><button class="sec-btn" style="width:100%;justify-content:center;" onclick="salvarPerfil()"><i class="ti ti-check" style="font-size:12px;"></i> salvar perfil</button>`
+}
+
+async function salvarPerfil(){
+  const nome=document.getElementById('pNome').value.trim()
+  const pronomes=document.getElementById('pPronomes').value.trim()
+  const username_twitter=document.getElementById('pTwitter').value.replace('@','').trim()
+  const cargo=document.getElementById('pCargo').value
+  const areas=Array.from(document.querySelectorAll('#pAreas input:checked')).map(i=>i.value)
+  const dados={user_id:currentUserId,nome,pronomes,username_twitter,cargo,areas,updated_at:new Date().toISOString()}
+  let error
+  if(perfilAdminAtual){({error}=await sb.from('perfis_admin').update(dados).eq('user_id',currentUserId))}
+  else{({error}=await sb.from('perfis_admin').insert(dados))}
+  if(error){toast('Erro ao salvar perfil.');return}
+  perfilAdminAtual={...perfilAdminAtual,...dados}
+  if(nome)document.getElementById('sbName').textContent=nome
+  toast('Perfil salvo!')
+}
+
+async function carregarTime(){
+  const el=document.getElementById('timeList');if(!el)return
+  const{data}=await sb.from('perfis_admin').select('*')
+  const admins=data||[]
+  if(!admins.length){el.innerHTML='<div class="empty"><i class="ti ti-users"></i>Nenhum perfil cadastrado ainda.</div>';return}
+  el.innerHTML=admins.map(a=>`<div class="grupo-row"><div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;font-size:18px;font-weight:800;">${a.nome?a.nome[0].toUpperCase():'?'}</div><div style="flex:1;"><div class="row-name">${esc(a.nome||'Sem nome')} ${a.pronomes?`<span style="font-size:10px;color:#9CA3AF;">(${esc(a.pronomes)})</span>`:''}</div><div class="row-sub">${a.cargo?`<span class="badge b-act" style="margin-right:4px;">${esc(a.cargo)}</span>`:''} ${a.username_twitter?'@'+esc(a.username_twitter)+' · ':''} ${(a.areas||[]).join(', ')}</div></div></div>`).join('')
+}
+
+async function promoverAdmin(email){
+  if(!email){toast('Informe o email.');return}
+  const{error}=await sb.rpc('promover_admin',{user_email:email})
+  if(error){toast('Para promover, use o SQL Editor: UPDATE auth.users SET raw_app_meta_data = raw_app_meta_data || \'{"role":"admin"}\' WHERE email = \''+email+'\';');return}
+  toast(`${email} promovida a admin!`)
 }
 
 async function aprovarComp(id){
   const c=todosComp.find(x=>x.id===id)
   await sb.from('comprovantes').update({status:'APROVADO',aprovado_por:'admin',aprovado_em:new Date().toISOString()}).eq('id',id)
-  if(c?.pagamento_ids?.length) await sb.from('pagamentos').update({status:'PAGO'}).in('id',c.pagamento_ids)
-  await carregarTudo(); renderDashboard(); renderView('comprovantes'); toast('Comprovante aprovado!')
+  if(c?.pagamento_ids?.length)await sb.from('pagamentos').update({status:'PAGO'}).in('id',c.pagamento_ids)
+  await carregarTudo();renderDashboard();renderView('comprovantes');toast('Aprovado!')
 }
-async function reprovarComp(id,motivo){
-  await sb.from('comprovantes').update({status:'REPROVADO',motivo_reprovacao:motivo}).eq('id',id)
-  await carregarTudo(); renderDashboard(); renderView('comprovantes'); toast('Comprovante reprovado.')
-}
-async function confirmarRep(id){
-  await sb.from('repasses').update({status:'CONFIRMADO',confirmado_por:'admin',confirmado_em:new Date().toISOString()}).eq('id',id)
-  await carregarTudo(); renderDashboard(); renderView('repasses'); toast('Repasse confirmado!')
-}
-async function repassarInad(itemId){
-  const item=todosItens.find(i=>i.id===itemId)
-  if(item) await sb.from('repasses').insert({item_id:itemId,perfil_origem_id:item.perfil_id,tipo:'INADIMPLENCIA',status:'PENDENTE'})
-  await sb.from('pagamentos').update({status:'REPASSE_INADIMPLENCIA'}).eq('item_id',itemId).eq('status','ATRASADO')
-  await carregarTudo(); renderDashboard(); toast('Repasse por inadimplência iniciado.')
-}
+async function reprovarComp(id,motivo){await sb.from('comprovantes').update({status:'REPROVADO',motivo_reprovacao:motivo}).eq('id',id);await carregarTudo();renderDashboard();renderView('comprovantes');toast('Reprovado.')}
+async function confirmarRep(id){await sb.from('repasses').update({status:'CONFIRMADO',confirmado_por:'admin',confirmado_em:new Date().toISOString()}).eq('id',id);await carregarTudo();renderDashboard();renderView('repasses');toast('Repasse confirmado!')}
+async function repassarInad(itemId){const item=todosItens.find(i=>i.id===itemId);if(item)await sb.from('repasses').insert({item_id:itemId,perfil_origem_id:item.perfil_id,tipo:'INADIMPLENCIA',status:'PENDENTE'});await sb.from('pagamentos').update({status:'REPASSE_INADIMPLENCIA'}).eq('item_id',itemId).eq('status','ATRASADO');await carregarTudo();renderDashboard();toast('Repasse por inadimplência iniciado.')}
 async function liberarEnvioItem(id){await sb.from('itens').update({status_pipeline:7}).eq('id',id);await carregarTudo();renderDashboard();toast('Envio liberado!')}
-async function liberarTodos(){
-  const ids=todosItens.filter(i=>i.status_pipeline===6).map(i=>i.id)
-  if(!ids.length){toast('Nenhum item pronto.');return}
-  await sb.from('itens').update({status_pipeline:7}).in('id',ids)
-  await carregarTudo(); renderDashboard(); toast(`${ids.length} itens liberados!`)
-}
-async function calcFrete(){
-  const cegId=document.getElementById('freteCeg').value
-  const val=parseFloat(document.getElementById('freteVal').value)
-  if(!val||val<=0){toast('Informe o valor do frete.');return}
-  const itensCeg=todosItens.filter(i=>i.ceg_id===cegId)
-  if(!itensCeg.length){toast('Nenhum item nesta ceg.');return}
-  const pesoTotal=itensCeg.reduce((s,i)=>s+(i.peso_unitario_g||3),0)
-  freteItensCalc=itensCeg.map(i=>({...i,vf:val*(i.peso_unitario_g||3)/pesoTotal}))
-  document.getElementById('freteItens').innerHTML=freteItensCalc.map(i=>`<div class="fr-row"><span style="color:#374151;font-weight:600;">${esc(uname(i.perfis_joiner))} — ${i.tipo_item||''} ${i.membro||''} (${i.peso_unitario_g||3}g)</span><span style="color:#7C3AED;font-weight:800;">R$ ${i.vf.toFixed(2).replace('.',',')}</span></div>`).join('')
-  document.getElementById('freteRes').classList.remove('hidden')
-}
-async function liberarFrete(){
-  for(const i of freteItensCalc) await sb.from('pagamentos').insert({item_id:i.id,tipo:2,valor:i.vf.toFixed(2),status:'PENDENTE',liberado_por:'admin',liberado_em:new Date().toISOString()})
-  toast(`${freteItensCalc.length} cobranças geradas!`); document.getElementById('freteRes').classList.add('hidden')
-}
+async function liberarTodos(){const ids=todosItens.filter(i=>i.status_pipeline===6).map(i=>i.id);if(!ids.length){toast('Nenhum item pronto.');return}await sb.from('itens').update({status_pipeline:7}).in('id',ids);await carregarTudo();renderDashboard();toast(`${ids.length} itens liberados!`)}
+async function calcFrete(){const cegId=document.getElementById('freteCeg').value;const val=parseFloat(document.getElementById('freteVal').value);if(!val||val<=0){toast('Informe o valor.');return}const itensCeg=todosItens.filter(i=>i.ceg_id===cegId);if(!itensCeg.length){toast('Nenhum item nesta ceg.');return}const pesoTotal=itensCeg.reduce((s,i)=>s+(i.peso_unitario_g||3),0);freteItensCalc=itensCeg.map(i=>({...i,vf:val*(i.peso_unitario_g||3)/pesoTotal}));document.getElementById('freteItens').innerHTML=freteItensCalc.map(i=>`<div class="fr-row"><span>${esc(uname(i.perfis_joiner))} — ${i.tipo_item||''} (${i.peso_unitario_g||3}g)</span><span style="color:#7C3AED;font-weight:800;">R$ ${i.vf.toFixed(2).replace('.',',')}</span></div>`).join('');document.getElementById('freteRes').classList.remove('hidden')}
+async function liberarFrete(){for(const i of freteItensCalc)await sb.from('pagamentos').insert({item_id:i.id,tipo:2,valor:i.vf.toFixed(2),status:'PENDENTE',liberado_por:'admin',liberado_em:new Date().toISOString()});toast(`${freteItensCalc.length} cobranças geradas!`);document.getElementById('freteRes').classList.add('hidden')}
 function updateWA(){const t=document.getElementById('waTipo')?.value||'cob';const c=document.getElementById('waCeg')?.value||'esta ceg';const e=document.getElementById('waPreview');if(e)e.textContent=WA[t]?WA[t](c):'';}
 async function copiarWA(){await navigator.clipboard.writeText(document.getElementById('waPreview')?.textContent||'');toast('Mensagem copiada!')}
-async function publicarAviso(){
-  const tipo=document.getElementById('avTipo').value,titulo=document.getElementById('avTitulo').value.trim(),mensagem=document.getElementById('avMsg').value.trim()
-  if(!titulo||!mensagem){toast('Preencha título e mensagem.');return}
-  await sb.from('avisos').insert({tipo,titulo,mensagem,publico:true,publicado_por:'admin'})
-  document.getElementById('avTitulo').value=''; document.getElementById('avMsg').value=''
-  toast('Aviso publicado!')
-}
-async function aprovarVinculo(id,u){
-  const {data:p}=await sb.from('perfis_joiner').select('usernames_twitter').eq('id',id).single()
-  await sb.from('perfis_joiner').update({usernames_twitter:[...(p?.usernames_twitter||[]),u],username_vinculo_pendente:null}).eq('id',id)
-  await carregarTudo(); renderView('joiners'); toast(`@${u} aprovado!`)
-}
+async function publicarAviso(){const tipo=document.getElementById('avTipo').value,titulo=document.getElementById('avTitulo').value.trim(),mensagem=document.getElementById('avMsg').value.trim();if(!titulo||!mensagem){toast('Preencha título e mensagem.');return}await sb.from('avisos').insert({tipo,titulo,mensagem,publico:true,publicado_por:'admin'});document.getElementById('avTitulo').value='';document.getElementById('avMsg').value='';toast('Aviso publicado!')}
+async function aprovarVinculo(id,u){const{data:p}=await sb.from('perfis_joiner').select('usernames_twitter').eq('id',id).single();await sb.from('perfis_joiner').update({usernames_twitter:[...(p?.usernames_twitter||[]),u],username_vinculo_pendente:null}).eq('id',id);await carregarTudo();renderView('joiners');toast(`@${u} aprovado!`)}
 async function recusarVinculo(id){await sb.from('perfis_joiner').update({username_vinculo_pendente:null}).eq('id',id);await carregarTudo();renderView('joiners');toast('Vínculo recusado.')}
 async function deletarGrupo(id){if(!confirm('Remover este grupo?'))return;await sb.from('grupos').delete().eq('id',id);await carregarTudo();renderView('grupos');toast('Grupo removido.')}
 async function criarCeg(dados){await sb.from('cegs').insert({...dados,created_by:'admin'});await carregarTudo();renderView('cegs');toast('CEG criada!')}
 async function criarGrupo(nome,membros){if(!nome){toast('Informe o nome.');return}await sb.from('grupos').insert({nome_grupo:nome,membros,created_by:'admin'});await carregarTudo();renderView('grupos');toast('Grupo criado!')}
 async function responderCotacao(id,status,val,obs){await sb.from('cotacoes').update({status,valor_brl:val||null,observacao:obs,respondido_por:'admin',respondido_em:new Date().toISOString()}).eq('id',id);await carregarTudo();renderView('cotacoes');toast('Cotação respondida!')}
 async function registrarClaim(){
-  const cegId=document.getElementById('mClaimCeg').value
-  const u=document.getElementById('mClaimUsername').value.replace('@','').trim()
-  const membro=document.getElementById('mClaimMembro').value.trim()
-  const tipo=document.getElementById('mClaimTipo').value.trim()
+  const cegId=document.getElementById('mClCeg').value
+  const u=document.getElementById('mClU').value.replace('@','').trim()
+  const membro=document.getElementById('mClM').value.trim()
+  const tipo=document.getElementById('mClT').value.trim()
   if(!u||!membro){toast('Preencha @ e membro.');return}
   let{data:p}=await sb.from('perfis_joiner').select('id').contains('usernames_twitter',[u]).single()
   if(!p){const{data:n}=await sb.from('perfis_joiner').insert({usernames_twitter:[u],tipo_perfil:'CLAIM'}).select().single();p=n}
   const peso=Object.entries(PESOS).find(([k])=>tipo.toLowerCase().includes(k.toLowerCase()))?.[1]||3
   await sb.from('itens').insert({ceg_id:cegId,perfil_id:p.id,membro,tipo_item:tipo,peso_unitario_g:peso,status_pipeline:1,created_by:'admin'})
-  await carregarTudo(); closeModal(); toast('Claim registrado!')
+  await carregarTudo();closeModal();toast('Claim registrado!')
 }
 
 const views=['dashboard','comprovantes','repasses','inadimplentes','cegs','claims','pagamentos','envios','cotacoes','frete','whatsapp','grupos','joiners','avisos','perfil','time']
@@ -458,170 +451,19 @@ function nav(v,el){
 
 function openModal(type,id=''){
   let h=''
-  if(type==='reprovar')h=`<div class="modal-title">reprovar comprovante</div><div class="modal-sub">informe o motivo</div><label class="modal-lbl">motivo</label><select class="fi"><option>imagem ilegível</option><option>valor incorreto</option><option>comprovante errado</option><option>outro</option></select><label class="modal-lbl">observação</label><textarea class="fi" rows="2" id="mMot" style="resize:none;" placeholder="detalhes..."></textarea><div class="modal-acts"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok red" onclick="reprovarComp('${id}',document.getElementById('mMot').value);closeModal()">reprovar</button></div>`
-  if(type==='nova-ceg')h=`<div class="modal-title">nova ceg</div><div class="modal-sub">preencha os dados</div><label class="modal-lbl">grupo</label><select class="fi" id="mGr">${todosGrupos.map(g=>`<option value="${g.id}">${esc(g.nome_grupo)}</option>`).join('')}</select><label class="modal-lbl">nome da ceg</label><input type="text" class="fi" id="mNC" placeholder="ex: CEG Karma POBs"/><label class="modal-lbl">tipo</label><select class="fi" id="mTC"><option value="TIPO1">Tipo 1 (set anunciado)</option><option value="TIPO2">Tipo 2 (caixinha)</option></select><label class="modal-lbl">identificação</label><select class="fi" id="mId"><option value="MEMBRO">MEMBRO</option><option value="NUMERO">NUMERO</option></select><label class="modal-lbl">link WhatsApp</label><input type="text" class="fi" id="mWA" placeholder="https://chat.whatsapp.com/..."/><div class="modal-acts"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok" onclick="criarCeg({nome:document.getElementById('mNC').value,tipo:document.getElementById('mTC').value,tipo_identificacao:document.getElementById('mId').value,grupo_id:document.getElementById('mGr').value,grupo_whatsapp:document.getElementById('mWA').value});closeModal()">criar</button></div>`
-  if(type==='novo-grupo')h=`<div class="modal-title">novo grupo</div><div class="modal-sub">adicione o grupo e membros</div><label class="modal-lbl">nome</label><input type="text" class="fi" id="mNG" placeholder="ex: IVE" style="margin-bottom:8px;"/><label class="modal-lbl">membros (Enter para adicionar)</label><input type="text" class="fi" id="mMI" placeholder="nome do membro..." onkeydown="addMem(event)"/><div id="mMT" style="display:flex;flex-wrap:wrap;margin-top:6px;"></div><div class="modal-acts" style="margin-top:10px;"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok" onclick="criarGrupo(document.getElementById('mNG').value,Array.from(document.getElementById('mMT').querySelectorAll('[data-m]')).map(s=>s.dataset.m));closeModal()">salvar</button></div>`
-  if(type==='nova-claim')h=`<div class="modal-title">registrar claim</div><div class="modal-sub">associe a joiner ao item</div><label class="modal-lbl">ceg</label><select class="fi" id="mClCeg">${todasCegs.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('')}</select><label class="modal-lbl">@ da joiner</label><input type="text" class="fi" id="mClU" placeholder="@username"/><label class="modal-lbl">membro ou número</label><input type="text" class="fi" id="mClM" placeholder="ex: Woozi ou #12"/><label class="modal-lbl">tipo de item</label><input type="text" class="fi" id="mClT" placeholder="ex: PC, Álbum Standard"/><div class="modal-acts"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok" onclick="registrarClaim()">registrar</button></div>`
-  if(type==='responder-cot')h=`<div class="modal-title">responder cotação</div><div class="modal-sub">informe o valor encontrado</div><label class="modal-lbl">status</label><select class="fi" id="mCS"><option value="RESPONDIDA">respondida</option><option value="SOLD_OUT">sold out</option><option value="NAO_ENCONTRADO">não encontrado</option></select><label class="modal-lbl">valor em BRL</label><input type="number" class="fi" id="mCV" placeholder="0,00"/><label class="modal-lbl">observação</label><textarea class="fi" rows="2" id="mCO" style="resize:none;" placeholder="frete incluso, condição..."></textarea><div class="modal-acts"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok" onclick="responderCotacao('${id}',document.getElementById('mCS').value,document.getElementById('mCV').value,document.getElementById('mCO').value);closeModal()">enviar</button></div>`
+  if(type==='reprovar')h=`<div class="modal-title">reprovar comprovante</div><div class="modal-sub">informe o motivo</div><label class="modal-lbl">motivo</label><select class="fi"><option>imagem ilegível</option><option>valor incorreto</option><option>comprovante errado</option><option>outro</option></select><label class="modal-lbl">observação</label><textarea class="fi" rows="2" id="mMot" style="resize:none;"></textarea><div class="modal-acts"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok red" onclick="reprovarComp('${id}',document.getElementById('mMot').value);closeModal()">reprovar</button></div>`
+  else if(type==='nova-ceg')h=`<div class="modal-title">nova ceg</div><label class="modal-lbl">grupo</label><select class="fi" id="mGr">${todosGrupos.map(g=>`<option value="${g.id}">${esc(g.nome_grupo)}</option>`).join('')}</select><label class="modal-lbl">nome da ceg</label><input type="text" class="fi" id="mNC" placeholder="ex: CEG Karma POBs"/><label class="modal-lbl">tipo</label><select class="fi" id="mTC"><option value="TIPO1">Tipo 1 (set anunciado)</option><option value="TIPO2">Tipo 2 (caixinha)</option></select><label class="modal-lbl">identificação</label><select class="fi" id="mId"><option value="MEMBRO">MEMBRO</option><option value="NUMERO">NUMERO</option></select><label class="modal-lbl">link WhatsApp</label><input type="text" class="fi" id="mWA" placeholder="https://chat.whatsapp.com/..."/><div class="modal-acts"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok" onclick="criarCeg({nome:document.getElementById('mNC').value,tipo:document.getElementById('mTC').value,tipo_identificacao:document.getElementById('mId').value,grupo_id:document.getElementById('mGr').value,grupo_whatsapp:document.getElementById('mWA').value});closeModal()">criar</button></div>`
+  else if(type==='novo-grupo')h=`<div class="modal-title">novo grupo</div><label class="modal-lbl">nome</label><input type="text" class="fi" id="mNG" placeholder="ex: IVE" style="margin-bottom:8px;"/><label class="modal-lbl">membros (Enter para adicionar)</label><input type="text" class="fi" id="mMI" placeholder="nome do membro..." onkeydown="addMem(event)"/><div id="mMT" style="display:flex;flex-wrap:wrap;margin-top:6px;"></div><div class="modal-acts" style="margin-top:10px;"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok" onclick="criarGrupo(document.getElementById('mNG').value,Array.from(document.getElementById('mMT').querySelectorAll('[data-m]')).map(s=>s.dataset.m));closeModal()">salvar</button></div>`
+  else if(type==='nova-claim')h=`<div class="modal-title">registrar claim</div><label class="modal-lbl">ceg</label><select class="fi" id="mClCeg">${todasCegs.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('')}</select><label class="modal-lbl">@ da joiner</label><input type="text" class="fi" id="mClU" placeholder="@username"/><label class="modal-lbl">membro ou número</label><input type="text" class="fi" id="mClM" placeholder="ex: Woozi ou #12"/><label class="modal-lbl">tipo de item</label><input type="text" class="fi" id="mClT" placeholder="ex: PC, Álbum Standard"/><div class="modal-acts"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok" onclick="registrarClaim()">registrar</button></div>`
+  else if(type==='responder-cot')h=`<div class="modal-title">responder cotação</div><label class="modal-lbl">status</label><select class="fi" id="mCS"><option value="RESPONDIDA">respondida</option><option value="SOLD_OUT">sold out</option><option value="NAO_ENCONTRADO">não encontrado</option></select><label class="modal-lbl">valor em BRL</label><input type="number" class="fi" id="mCV" placeholder="0,00"/><label class="modal-lbl">observação</label><textarea class="fi" rows="2" id="mCO" style="resize:none;"></textarea><div class="modal-acts"><button class="mc" onclick="closeModal()">cancelar</button><button class="mok" onclick="responderCotacao('${id}',document.getElementById('mCS').value,document.getElementById('mCV').value,document.getElementById('mCO').value);closeModal()">enviar</button></div>`
   document.getElementById('modal-area').innerHTML=`<div class="modal-bg open" id="mBg" onclick="closeMBg(event)"><div class="modal">${h}</div></div>`
 }
 function closeModal(){document.getElementById('modal-area').innerHTML=''}
 function closeMBg(e){if(e.target.id==='mBg')closeModal()}
-function addMem(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!v)return;const t=document.getElementById('mMT');const d=document.createElement('div');d.className='mem-tag';d.innerHTML=`<span data-m="${esc(v)}">${esc(v)}</span> <span style="cursor:pointer;color:#C4B5FD;" onclick="this.parentElement.remove()">×</span>`;t.appendChild(d);e.target.value=''}
+function addMem(e){if(e.key!=='Enter')return;const v=e.target.value.trim();if(!v)return;const t=document.getElementById('mMT');const d=document.createElement('div');d.className='mem-tag';d.innerHTML=`<span data-m="${esc(v)}">${esc(v)}</span> <span style="cursor:pointer;color:#C4B5FD;" onclick="this.parentElement.remove()">x</span>`;t.appendChild(d);e.target.value=''}
 let tt;function toast(m){document.getElementById('tm').textContent=m;const w=document.getElementById('tw');w.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>w.classList.remove('show'),3500)}
-async function logout(){await sb.auth.signOut();window.location.href='/'}
+async function logout(){await sb.auth.signOut();window.location.href='/wonuskiz-portal/'}
 init()
-// ============================================================
-// PERFIL ADMIN
-// ============================================================
-const AREAS_OPTIONS = [
-  'Pagamentos e repasses',
-  'Atualização de status',
-  'Cobranças de cegs',
-  'Compras e cotações',
-  'Envios internacionais',
-  'Envios nacionais',
-  'Organização de pedidos',
-  'Design e identidade visual',
-  'Webpages'
-]
-
-let perfilAdminAtual = null
-let currentUserId = null
-
-async function carregarPerfil() {
-  const { data: { session } } = await sb.auth.getSession()
-  if (!session) return
-  currentUserId = session.user.id
-
-  const { data } = await sb.from('perfis_admin').select('*').eq('user_id', currentUserId).single()
-  perfilAdminAtual = data
-
-  const el = document.getElementById('perfilForm')
-  if (!el) return
-
-  const areasHtml = AREAS_OPTIONS.map(a => `
-    <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:12px;color:#374151;cursor:pointer;">
-      <input type="checkbox" value="${esc(a)}" ${(perfilAdminAtual?.areas||[]).includes(a)?'checked':''} style="accent-color:#7C3AED;width:15px;height:15px;"/>
-      ${esc(a)}
-    </label>
-  `).join('')
-
-  el.innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-      <div>
-        <label class="fi-label">nome</label>
-        <input type="text" class="fi" id="pNome" value="${esc(perfilAdminAtual?.nome||'')}" placeholder="como quer ser chamada"/>
-      </div>
-      <div>
-        <label class="fi-label">pronomes</label>
-        <input type="text" class="fi" id="pPronomes" value="${esc(perfilAdminAtual?.pronomes||'')}" placeholder="ex: ela/dela"/>
-      </div>
-      <div>
-        <label class="fi-label">@ do Twitter/X</label>
-        <input type="text" class="fi" id="pTwitter" value="${esc(perfilAdminAtual?.username_twitter||'')}" placeholder="@username"/>
-      </div>
-      <div>
-        <label class="fi-label">cargo</label>
-        <select class="fi" id="pCargo">
-          <option value="Administradora" ${perfilAdminAtual?.cargo==='Administradora'?'selected':''}>Administradora</option>
-          <option value="GOM" ${perfilAdminAtual?.cargo==='GOM'?'selected':''}>GOM</option>
-        </select>
-      </div>
-    </div>
-    <label class="fi-label">áreas de atuação</label>
-    <div id="pAreas" style="background:#F9F8FE;border-radius:10px;padding:12px;border:1.5px solid #EDE9FE;margin-bottom:14px;">
-      ${areasHtml}
-    </div>
-    <button class="sec-btn" style="width:100%;justify-content:center;" onclick="salvarPerfil()">
-      <i class="ti ti-check" style="font-size:12px;"></i> salvar perfil
-    </button>
-  `
-}
-
-async function salvarPerfil() {
-  const nome = document.getElementById('pNome').value.trim()
-  const pronomes = document.getElementById('pPronomes').value.trim()
-  const username_twitter = document.getElementById('pTwitter').value.replace('@','').trim()
-  const cargo = document.getElementById('pCargo').value
-  const areas = Array.from(document.querySelectorAll('#pAreas input:checked')).map(i => i.value)
-
-  const dados = { user_id: currentUserId, nome, pronomes, username_twitter, cargo, areas, updated_at: new Date().toISOString() }
-
-  let error
-  if (perfilAdminAtual) {
-    ({ error } = await sb.from('perfis_admin').update(dados).eq('user_id', currentUserId))
-  } else {
-    ({ error } = await sb.from('perfis_admin').insert(dados))
-  }
-
-  if (error) { toast('Erro ao salvar perfil.'); return }
-
-  perfilAdminAtual = { ...perfilAdminAtual, ...dados }
-
-  // Atualiza nome na sidebar
-  if (nome) document.getElementById('sbName').textContent = nome
-
-  toast('Perfil salvo com sucesso!')
-}
-
-// ============================================================
-// TIME DE ADMINS
-// ============================================================
-async function carregarTime() {
-  const el = document.getElementById('timeList')
-  if (!el) return
-
-  const { data } = await sb.from('perfis_admin').select('*, user:user_id(email)')
-  const admins = data || []
-
-  if (!admins.length) {
-    el.innerHTML = '<div class="empty"><i class="ti ti-users"></i>Nenhum perfil de admin cadastrado ainda.</div>'
-    return
-  }
-
-  el.innerHTML = admins.map(a => `
-    <div class="grupo-row">
-      <div class="ceg-ic" style="background:#F5F3FF;color:#7C3AED;font-size:18px;font-weight:800;">
-        ${a.nome ? a.nome[0].toUpperCase() : '?'}
-      </div>
-      <div style="flex:1;">
-        <div class="row-name">${esc(a.nome||'Sem nome')} ${a.pronomes?`<span style="font-size:10px;color:#9CA3AF;font-weight:400;">(${esc(a.pronomes)})</span>`:''}</div>
-        <div class="row-sub">
-          ${a.cargo?`<span class="badge b-act" style="margin-right:4px;">${esc(a.cargo)}</span>`:''}
-          ${a.username_twitter?`@${esc(a.username_twitter)} · `:''}
-          ${(a.areas||[]).join(', ')}
-        </div>
-      </div>
-    </div>
-  `).join('')
-}
-
-// ============================================================
-// PROMOVER A ADMIN
-// ============================================================
-async function promoverAdmin(email) {
-  if (!email) { toast('Informe o email.'); return }
-
-  // Chama função do Supabase para atualizar app_metadata
-  const { error } = await sb.rpc('promover_admin', { user_email: email })
-
-  if (error) {
-    // Fallback: mostra instrução
-    toast('Use o SQL Editor para promover: UPDATE auth.users SET raw_app_meta_data = raw_app_meta_data || \'{"role":"admin"}\' WHERE email = \'' + email + '\';')
-    return
-  }
-
-  toast(`${email} promovida a admin! Peça para ela fazer logout e login novamente.`)
-}
-
-// Sobrescreve renderView para incluir perfil e time
-const _renderViewOriginal = renderView
-function renderView(v) {
-  if (v === 'perfil') { carregarPerfil(); return }
-  if (v === 'time') { carregarTime(); return }
-  _renderViewOriginal(v)
-}
 </script>
 </body>
 </html>
