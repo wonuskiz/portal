@@ -183,7 +183,7 @@
   // Substitua pelos seus valores reais!
   // ============================================================
   const SUPABASE_URL = 'https://ozbevopvwtxfpmtnfbbt.supabase.co'
-  const SUPABASE_KEY = 'sb_publishable_AQ-Fz9jW41bznMLeNlUeYQ_MVFSbYdM'
+  const SUPABASE_KEY = 'SUA_CHAVE_PUBLICA_AQUI'
 
   const { createClient } = supabase
   const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
@@ -252,7 +252,7 @@
       }
 
       // Redireciona para o portal do joiner
-      window.location.href = `/portal/index.html?username=${encodeURIComponent(username)}`
+      window.location.href = `/wonuskiz-portal/portal/index.html?username=${encodeURIComponent(username)}`
     } catch (e) {
       erro.style.display = 'block'
       btn.innerHTML = '<i class="ti ti-search" style="font-size:14px;"></i> buscar'
@@ -279,7 +279,7 @@
   async function verificarSessao() {
     const { data: { session } } = await sb.auth.getSession()
     if (session) {
-      window.location.href = '/portal/index.html'
+      window.location.href = '/wonuskiz-portal/portal/index.html'
     }
   }
 
