@@ -1,0 +1,91 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Admins — apenas leitura pública para verificar, escrita só via console
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false; // somente via Firebase Console
+    }
+
+    // Perfis admin — admin lê/escreve o próprio
+    match /perfis_admin/{uid} {
+      allow read:  if request.auth != null && isAdmin();
+      allow write: if request.auth != null && request.auth.uid == uid && isAdmin();
+    }
+
+    // Perfis joiner — joiner lê/escreve o próprio; admin lê todos
+    match /perfis_joiner/{id} {
+      allow read:  if request.auth != null && (isAdmin() || resource.data.uid == request.auth.uid);
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && (isAdmin() || resource.data.uid == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // CEGs — admin gerencia; joiner lê
+    match /cegs/{id} {
+      allow read:   if request.auth != null;
+      allow write:  if isAdmin();
+    }
+
+    // Itens — admin gerencia; joiner lê os próprios
+    match /itens/{id} {
+      allow read:  if request.auth != null && (isAdmin() || resource.data.perfil_id == getPerfilId());
+      allow write: if isAdmin();
+    }
+
+    // Pagamentos — admin gerencia; joiner lê os próprios
+    match /pagamentos/{id} {
+      allow read:  if request.auth != null && (isAdmin() || resource.data.perfil_id == getPerfilId());
+      allow write: if isAdmin();
+    }
+
+    // Comprovantes — joiner cria; admin lê/atualiza
+    match /comprovantes/{id} {
+      allow read:   if request.auth != null && (isAdmin() || resource.data.perfil_id == getPerfilId());
+      allow create: if request.auth != null;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Repasses — admin gerencia; joiner lê os próprios
+    match /repasses/{id} {
+      allow read:  if request.auth != null && (isAdmin() || resource.data.perfil_origem_id == getPerfilId());
+      allow write: if isAdmin();
+    }
+
+    // Grupos — admin gerencia; joiner lê
+    match /grupos/{id} {
+      allow read:  if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Cotações — joiner cria; admin lê/responde
+    match /cotacoes/{id} {
+      allow read:   if request.auth != null && (isAdmin() || resource.data.perfil_id == getPerfilId());
+      allow create: if request.auth != null;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Avisos — admin cria; todos leem
+    match /avisos/{id} {
+      allow read:  if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // ============================================================
+    // FUNÇÕES AUXILIARES
+    // ============================================================
+    function isAdmin() {
+      return request.auth != null &&
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function getPerfilId() {
+      // Helper para comparar perfil_id com o uid do usuário autenticado
+      // (funciona se perfis_joiner usa uid como ID do doc ou tem campo uid)
+      return request.auth.uid;
+    }
+  }
+}

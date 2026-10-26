@@ -4,8 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Wonuskiz — Portal da Joiner</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.29.0/tabler-icons.min.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
@@ -135,6 +134,7 @@
     .modal-acts{display:flex;gap:9px;margin-top:18px;}
     .modal-cancel{flex:1;padding:11px;background:#F5F3FF;color:#7C3AED;border:none;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;}
     .modal-confirm{flex:1;padding:11px;background:#7C3AED;color:#fff;border:none;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;}
+    .modal-confirm:disabled{background:#C4B5FD;cursor:not-allowed;}
 
     .two-col{display:grid;grid-template-columns:1fr 290px;gap:18px;}
     .loading-wrap{display:flex;align-items:center;justify-content:center;padding:40px;color:#9CA3AF;font-size:13px;gap:10px;}
@@ -148,7 +148,6 @@
     .hidden{display:none!important;}
     .back-btn{display:none;align-items:center;gap:6px;background:none;border:none;color:#7C3AED;font-size:13px;font-weight:700;cursor:pointer;padding:0 0 16px 0;font-family:inherit;}
     .back-btn i{font-size:16px;}
-
 
     @media(max-width:900px){
       .sb{display:none;} .main{margin-left:0;}
@@ -174,7 +173,7 @@
   </div>
 </div>
 
-<!-- PORTAL DO JOINER -->
+<!-- PORTAL DA JOINER -->
 <div class="app" id="app">
   <div class="sb">
     <div class="sb-top">
@@ -205,6 +204,7 @@
     <div class="content" id="content">
       <button class="back-btn" id="backBtn" onclick="voltar()"><i class="ti ti-arrow-left"></i> voltar</button>
 
+      <!-- INÍCIO -->
       <div id="v-inicio">
         <div class="hero">
           <div class="hero-greet">olá, joiner! 💜</div>
@@ -251,6 +251,7 @@
         </div>
       </div>
 
+      <!-- ITENS -->
       <div id="v-itens" class="hidden">
         <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-box"></i></div> meus itens</div></div>
         <div class="tabs" id="itensTabs">
@@ -262,6 +263,7 @@
         <div id="itensListFull"></div>
       </div>
 
+      <!-- PAGAMENTOS -->
       <div id="v-pagamentos" class="hidden">
         <div class="sec-head">
           <div class="sec-title"><div class="sec-ic"><i class="ti ti-credit-card"></i></div> pagamentos</div>
@@ -276,6 +278,7 @@
         <div id="pagsListFull"></div>
       </div>
 
+      <!-- REPASSES -->
       <div id="v-repasses" class="hidden">
         <div class="sec-head">
           <div class="sec-title"><div class="sec-ic"><i class="ti ti-arrows-exchange"></i></div> repasses</div>
@@ -284,6 +287,7 @@
         <div id="repassesList"></div>
       </div>
 
+      <!-- CAIXINHAS -->
       <div id="v-caixinhas" class="hidden">
         <div class="sec-head">
           <div class="sec-title"><div class="sec-ic"><i class="ti ti-search"></i></div> caixinhas</div>
@@ -292,6 +296,7 @@
         <div id="cotacoesList"></div>
       </div>
 
+      <!-- AVISOS -->
       <div id="v-avisos" class="hidden">
         <div class="sec-head"><div class="sec-title"><div class="sec-ic"><i class="ti ti-bell"></i></div> avisos</div></div>
         <div id="avisosListFull"></div>
@@ -304,346 +309,590 @@
 
 <div class="toast-wrap" id="toastWrap"><div class="toast-pill"><i class="ti ti-check" style="font-size:14px;"></i><span id="toastMsg"></span></div></div>
 
-<script>
-const SUPABASE_URL = 'https://ozbevopvwtxfpmtnfbbt.supabase.co'
-const SUPABASE_KEY = 'sb_publishable_AQ-Fz9jW41bznMLeNlUeYQ_MVFSbYdM'
-const { createClient } = supabase
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
+<script type="module">
+import { initializeApp }                                from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js'
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+                                                        from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js'
+import { getFirestore, collection, query, where, getDocs,
+         addDoc, updateDoc, doc, orderBy, limit, serverTimestamp }
+                                                        from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js'
 
-const PIPELINE = ['Compra confirmada','Em trânsito (Seller→Proxy)','No proxy','Em trânsito (Proxy→GOM)','Alfândega','Com a GOM','Envio liberado','Em trânsito nacional','Entregue']
+// ============================================================
+// CONFIG
+// ============================================================
+const FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyBaYC56AGAFRan8j_d48NSyiBWC6Zk5JCw',
+  authDomain: 'portal-wonuskiz.firebaseapp.com',
+  projectId: 'portal-wonuskiz',
+  storageBucket: 'portal-wonuskiz.firebasestorage.app',
+  messagingSenderId: '419875747135',
+  appId: '1:419875747135:web:8ba0e431b903cae7f8cf8a',
+}
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQ7vKpgsmUZkh4B7_kzXKfa_CzZG5if8M8UODsieJfTuW7w46YBdcPJPdGT780aYx4/exec'
+
 const TIPOS_PAG = {1:'Item',2:'Frete Int. 1',3:'Frete Int. 2',4:'Taxa RF',5:'Envio Nacional'}
 const STATUS_PAG = {
-  EM_BREVE:{label:'Em breve',cls:'b-soon'},
-  PENDENTE:{label:'Pendente',cls:'b-warn'},
-  COMPROVANTE_ENVIADO:{label:'Comprovante enviado',cls:'b-sent'},
-  PAGO:{label:'Pago',cls:'b-ok'},
-  ATRASADO:{label:'Atrasado',cls:'b-late'},
+  EM_BREVE:            { label:'Em breve',             cls:'b-soon' },
+  PENDENTE:            { label:'Pendente',             cls:'b-warn' },
+  COMPROVANTE_ENVIADO: { label:'Comprovante enviado',  cls:'b-sent' },
+  PAGO:                { label:'Pago',                 cls:'b-ok'   },
+  ATRASADO:            { label:'Atrasado',             cls:'b-late' },
 }
-const PLATAFORMAS = {MERCARI_JP:{label:'M',cor:'#FF6040'},XIANYU:{label:'X',cor:'#FF6B00'},BUNJANG:{label:'B',cor:'#3A86FF'},POCAMARKET:{label:'P',cor:'#7C3AED'},OUTRO:{label:'O',cor:'#6B7280'}}
-
-let perfilId=null, todosItens=[], todosPags=[], todasCotacoes=[], todosRepasses=[]
+const PLATAFORMAS = {
+  MERCARI_JP: { label:'M', cor:'#FF6040' },
+  XIANYU:     { label:'X', cor:'#FF6B00' },
+  BUNJANG:    { label:'B', cor:'#3A86FF' },
+  POCAMARKET: { label:'P', cor:'#7C3AED' },
+  OUTRO:      { label:'O', cor:'#6B7280' },
+}
 
 // ============================================================
-// AUTH — lógica central e limpa
+// FIREBASE INIT
 // ============================================================
-async function loginGoogle() {
-  await sb.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: 'https://wonuskiz.github.io/portal/joiner/' }
-  })
+const app      = initializeApp(FIREBASE_CONFIG)
+const auth     = getAuth(app)
+const db       = getFirestore(app)
+const provider = new GoogleAuthProvider()
+
+// ============================================================
+// ESTADO
+// ============================================================
+let usuarioAtual   = null  // Firebase User
+let perfilDoc      = null  // doc da coleção perfis_joiner
+let todosItens     = []
+let todosPags      = []
+let todasCotacoes  = []
+let todosRepasses  = []
+
+// ============================================================
+// AUTH
+// ============================================================
+window.loginGoogle = async function () {
+  try {
+    await signInWithPopup(auth, provider)
+  } catch (e) {
+    toast('Erro ao fazer login: ' + e.message)
+  }
 }
 
-async function logout() {
-  await sb.auth.signOut()
-  document.getElementById('app').style.display = 'none'
-  document.getElementById('loginWrap').style.display = 'flex'
+window.logout = async function () {
+  await signOut(auth)
 }
 
-// Roda ao carregar a página — verifica sessão uma única vez
-;(async () => {
-  const { data: { session } } = await sb.auth.getSession()
-  if (!session) return // sem sessão: mostra tela de login
-  iniciarPortal(session.user)
-})()
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    usuarioAtual = user
+    document.getElementById('loginWrap').style.display = 'none'
+    document.getElementById('app').style.display = 'flex'
+    await iniciarPortal(user)
+  } else {
+    usuarioAtual = null
+    perfilDoc = null
+    document.getElementById('app').style.display = 'none'
+    document.getElementById('loginWrap').style.display = 'flex'
+  }
+})
 
+// ============================================================
+// INICIAR PORTAL
+// ============================================================
 async function iniciarPortal(user) {
-  document.getElementById('loginWrap').style.display = 'none'
-  document.getElementById('app').style.display = 'flex'
-
   // Avatar
-  const ini = (user.email||'U')[0].toUpperCase()
-  const avaHtml = user.user_metadata?.avatar_url
-    ? `<img src="${user.user_metadata.avatar_url}"/>`
+  const ini = (user.email || 'U')[0].toUpperCase()
+  const avaHtml = user.photoURL
+    ? `<img src="${user.photoURL}"/>`
     : ini
   document.getElementById('sbAva').innerHTML = avaHtml
-  document.getElementById('tbAva').innerHTML = user.user_metadata?.avatar_url
-    ? `<img src="${user.user_metadata.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`
+  document.getElementById('tbAva').innerHTML = user.photoURL
+    ? `<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`
     : ini
 
-  // Busca perfil
-  const { data: perfil } = await sb.from('perfis_joiner').select('*').eq('user_id', user.id).single()
-  if (perfil) {
-    perfilId = perfil.id
-    const username = perfil.usernames_twitter?.[0] || ''
-    if (username) document.getElementById('sbUsername').textContent = '@' + username
+  // Busca perfil da joiner
+  const perfisRef = collection(db, 'perfis_joiner')
+  const q = query(perfisRef, where('user_id', '==', user.uid))
+  const snap = await getDocs(q)
+
+  if (!snap.empty) {
+    perfilDoc = { id: snap.docs[0].id, ...snap.docs[0].data() }
+    const username = perfilDoc.usernames_twitter?.[0] || ''
+    document.getElementById('sbUsername').textContent = username ? '@' + username : (user.email?.split('@')[0] || 'joiner')
   } else {
+    // Perfil ainda não criado — exibe nome do email
     document.getElementById('sbUsername').textContent = user.email?.split('@')[0] || 'joiner'
   }
 
-  // Carrega dados
   await carregarDados()
   renderInicio()
+  nav('inicio', document.querySelector('.sbi.on'), false)
 }
 
 // ============================================================
 // DADOS
 // ============================================================
 async function carregarDados() {
-  if (!perfilId) return
+  if (!perfilDoc) return
 
-  const { data: itens } = await sb.from('itens').select('*,cegs(nome,tipo_identificacao)').eq('perfil_id', perfilId).order('created_at',{ascending:false})
-  todosItens = itens || []
+  // Itens
+  const itensSnap = await getDocs(
+    query(collection(db, 'itens'), where('perfil_id', '==', perfilDoc.id), orderBy('created_at', 'desc'))
+  )
+  todosItens = itensSnap.docs.map(d => ({ id: d.id, ...d.data() }))
 
+  // Pagamentos (todos os itens da joiner)
   const itemIds = todosItens.map(i => i.id)
+  todosPags = []
   if (itemIds.length) {
-    const { data: pags } = await sb.from('pagamentos').select('*').in('item_id', itemIds).order('vencimento',{ascending:true})
-    todosPags = pags || []
+    // Firestore 'in' suporta até 30 valores — se necessário dividir em chunks
+    const chunks = []
+    for (let i = 0; i < itemIds.length; i += 30) chunks.push(itemIds.slice(i, i + 30))
+    for (const chunk of chunks) {
+      const snap = await getDocs(
+        query(collection(db, 'pagamentos'), where('item_id', 'in', chunk), orderBy('vencimento', 'asc'))
+      )
+      todosPags.push(...snap.docs.map(d => ({ id: d.id, ...d.data() })))
+    }
   }
 
-  const { data: cots } = await sb.from('cotacoes').select('*').eq('perfil_id', perfilId).order('created_at',{ascending:false})
-  todasCotacoes = cots || []
+  // Cotações
+  const cotSnap = await getDocs(
+    query(collection(db, 'cotacoes'), where('perfil_id', '==', perfilDoc.id), orderBy('created_at', 'desc'))
+  )
+  todasCotacoes = cotSnap.docs.map(d => ({ id: d.id, ...d.data() }))
 
-  const itemIds2 = todosItens.map(i => i.id)
-  if (itemIds2.length) {
-    const { data: reps } = await sb.from('repasses').select('*').in('item_id', itemIds2).order('created_at',{ascending:false})
-    todosRepasses = reps || []
+  // Repasses
+  todosRepasses = []
+  if (itemIds.length) {
+    const chunks = []
+    for (let i = 0; i < itemIds.length; i += 30) chunks.push(itemIds.slice(i, i + 30))
+    for (const chunk of chunks) {
+      const snap = await getDocs(
+        query(collection(db, 'repasses'), where('item_id', 'in', chunk), orderBy('created_at', 'desc'))
+      )
+      todosRepasses.push(...snap.docs.map(d => ({ id: d.id, ...d.data() })))
+    }
   }
 
   // Atualiza contadores
   document.getElementById('totalItens').textContent = todosItens.length
-  const pendentes = todosPags.filter(p=>['PENDENTE','ATRASADO'].includes(p.status))
+  const pendentes = todosPags.filter(p => ['PENDENTE', 'ATRASADO'].includes(p.status))
   document.getElementById('totalPags').textContent = pendentes.length
-  document.getElementById('totalRep').textContent = todosRepasses.filter(r=>r.status==='PENDENTE').length
-  const totalPago = todosPags.filter(p=>p.status==='PAGO').reduce((s,p)=>s+Number(p.valor||0),0)
-  document.getElementById('totalVal').textContent = 'R$ ' + totalPago.toFixed(2).replace('.',',')
+  document.getElementById('totalRep').textContent = todosRepasses.filter(r => r.status === 'PENDENTE').length
+  const totalPago = todosPags.filter(p => p.status === 'PAGO').reduce((s, p) => s + Number(p.valor || 0), 0)
+  document.getElementById('totalVal').textContent = 'R$ ' + totalPago.toFixed(2).replace('.', ',')
 
-  if (pendentes.length > 0) {
-    document.getElementById('badgePags').textContent = pendentes.length
-    document.getElementById('badgePags').style.display = 'inline'
-  }
-  if (todosItens.length > 0) {
-    document.getElementById('badgeItens').textContent = todosItens.length
-    document.getElementById('badgeItens').style.display = 'inline'
-  }
+  document.getElementById('badgePags').textContent = pendentes.length
+  document.getElementById('badgePags').style.display = pendentes.length > 0 ? 'inline' : 'none'
+  document.getElementById('badgeItens').textContent = todosItens.length
+  document.getElementById('badgeItens').style.display = todosItens.length > 0 ? 'inline' : 'none'
 }
 
 async function carregarAvisos() {
-  const { data } = await sb.from('avisos').select('*').eq('publico',true).order('created_at',{ascending:false}).limit(10)
-  return data || []
+  const snap = await getDocs(
+    query(collection(db, 'avisos'), where('publico', '==', true), orderBy('created_at', 'desc'), limit(10))
+  )
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
 }
 
 // ============================================================
 // RENDERS
 // ============================================================
 function renderInicio() {
-  // Itens
   const elItens = document.getElementById('itensList')
   elItens.innerHTML = !todosItens.length
     ? '<div class="empty"><i class="ti ti-box"></i>Nenhum item ainda.</div>'
-    : todosItens.slice(0,3).map(renderItemCard).join('')
+    : todosItens.slice(0, 3).map(renderItemCard).join('')
 
-  // Pagamentos
   const elPags = document.getElementById('pagsList')
-  const pend = todosPags.filter(p=>['PENDENTE','ATRASADO','EM_BREVE'].includes(p.status)).slice(0,3)
+  const pend = todosPags.filter(p => ['PENDENTE', 'ATRASADO', 'EM_BREVE'].includes(p.status)).slice(0, 3)
   elPags.innerHTML = !pend.length
     ? '<div class="empty"><i class="ti ti-check"></i>Nenhum pagamento pendente.</div>'
     : pend.map(renderPagCard).join('')
 
-  // Avisos
   carregarAvisos().then(avisos => {
     const elAv = document.getElementById('avisosList')
     elAv.innerHTML = !avisos.length
       ? '<div class="empty">Nenhum aviso.</div>'
-      : avisos.slice(0,3).map(a=>`<div class="av-card"><div class="av-ic"><i class="ti ti-bell"></i></div><div><div class="av-title">${esc(a.titulo)}</div><div class="av-body">${esc(a.mensagem)}</div></div></div>`).join('')
+      : avisos.slice(0, 3).map(a => `
+        <div class="av-card">
+          <div class="av-ic"><i class="ti ti-bell"></i></div>
+          <div>
+            <div class="av-title">${esc(a.titulo)}</div>
+            <div class="av-body">${esc(a.mensagem)}</div>
+          </div>
+        </div>`).join('')
   })
 }
 
 function renderItemCard(item) {
   const stepAtual = item.status_pipeline || 1
-  const pags = todosPags.filter(p=>p.item_id===item.id)
-  const pendente = pags.find(p=>['PENDENTE','ATRASADO'].includes(p.status))
-  const total = pags.reduce((s,p)=>s+Number(p.valor||0),0)
+  const pags = todosPags.filter(p => p.item_id === item.id)
+  const pendente = pags.find(p => ['PENDENTE', 'ATRASADO'].includes(p.status))
+  const total = pags.reduce((s, p) => s + Number(p.valor || 0), 0)
   const bgs = ['#8B5CF6','#F472B6','#60D9A8','#F59E0B','#3B82F6','#EF4444']
-  const bg = bgs[Math.abs(hashStr(item.id))%bgs.length]
-  const statusLabel = stepAtual>=9?'Entregue':stepAtual>=7?'Envio liberado':stepAtual>=5?'Na alfândega':'Em andamento'
-  const statusBg = stepAtual>=9?'#059669':stepAtual>=7?'#2563EB':stepAtual>=5?'#D97706':'#7C3AED'
+  const bg = bgs[Math.abs(hashStr(item.id)) % bgs.length]
+  const statusLabel = stepAtual >= 9 ? 'Entregue' : stepAtual >= 7 ? 'Envio liberado' : stepAtual >= 5 ? 'Na alfândega' : 'Em andamento'
+  const statusBg   = stepAtual >= 9 ? '#059669'   : stepAtual >= 7 ? '#2563EB'       : stepAtual >= 5 ? '#D97706'      : '#7C3AED'
+  const nomeCeg = item.ceg_nome || item.cegs?.nome || 'Sem ceg'
   return `<div class="item-card">
     <div class="item-top">
       <div class="item-img" style="background:${bg};"><div class="item-status-badge" style="background:${statusBg};">${statusLabel}</div></div>
       <div style="flex:1;">
-        <div class="item-name">${esc(item.cegs?.nome||'Sem ceg')}</div>
-        <div class="item-meta">${item.membro?`<b>${esc(item.membro)}</b> · `:''}${item.tipo_item?esc(item.tipo_item):''}</div>
+        <div class="item-name">${esc(nomeCeg)}</div>
+        <div class="item-meta">${item.membro ? `<b>${esc(item.membro)}</b> · ` : ''}${item.tipo_item ? esc(item.tipo_item) : ''}</div>
       </div>
-      <div><div class="item-price-lbl">total</div><div class="item-price">R$ ${total.toFixed(2).replace('.',',')}</div></div>
+      <div><div class="item-price-lbl">total</div><div class="item-price">R$ ${total.toFixed(2).replace('.', ',')}</div></div>
     </div>
     ${renderPipeline(stepAtual)}
-    ${pendente?`<div class="pay-alert"><div class="pay-alert-text">${pendente.status==='ATRASADO'?'⚠️ Pagamento em atraso!':'Pagamento pendente'}</div><button class="pay-btn" onclick="nav('pagamentos')">Ver</button></div>`:''}
+    ${pendente ? `<div class="pay-alert"><div class="pay-alert-text">${pendente.status === 'ATRASADO' ? '⚠️ Pagamento em atraso!' : 'Pagamento pendente'}</div><button class="pay-btn" onclick="nav('pagamentos')">Ver</button></div>` : ''}
   </div>`
 }
 
 function renderPipeline(atual) {
-  const labels=['Pagamento','Compra JP','Envio JP','Chegou BR','Alfândega','Com GOM','Env. lib.','Trânsito','Entregue']
-  return `<div class="pipe">${labels.map((lbl,i)=>{
-    const step=i+1,isLast=step===labels.length,isDone=step<atual,isCurr=step===atual
-    return `<div class="pipe-step"><div style="position:relative;"><div class="pipe-node ${isDone?'pn-done':isCurr?'pn-curr':'pn-off'}">${isDone?'<i class="ti ti-check" style="font-size:10px;"></i>':isCurr?step:''}</div>${!isLast?`<div class="pipe-conn ${isDone?'pc-done':'pc-off'}"></div>`:''}</div><div class="pipe-lbl ${isCurr?'curr':''}">${lbl}</div></div>`
+  const labels = ['Pagamento','Compra JP','Envio JP','Chegou BR','Alfândega','Com GOM','Env. lib.','Trânsito','Entregue']
+  return `<div class="pipe">${labels.map((lbl, i) => {
+    const step = i + 1, isLast = step === labels.length, isDone = step < atual, isCurr = step === atual
+    return `<div class="pipe-step"><div style="position:relative;"><div class="pipe-node ${isDone ? 'pn-done' : isCurr ? 'pn-curr' : 'pn-off'}">${isDone ? '<i class="ti ti-check" style="font-size:10px;"></i>' : isCurr ? step : ''}</div>${!isLast ? `<div class="pipe-conn ${isDone ? 'pc-done' : 'pc-off'}"></div>` : ''}</div><div class="pipe-lbl ${isCurr ? 'curr' : ''}">${lbl}</div></div>`
   }).join('')}</div>`
 }
 
 function renderPagCard(pag) {
-  const item = todosItens.find(i=>i.id===pag.item_id)
-  const s = STATUS_PAG[pag.status]||{label:pag.status,cls:'b-soon'}
-  const data = pag.vencimento ? new Date(pag.vencimento) : null
+  const item = todosItens.find(i => i.id === pag.item_id)
+  const s = STATUS_PAG[pag.status] || { label: pag.status, cls: 'b-soon' }
+  // vencimento pode ser Firestore Timestamp ou string
+  const dataRaw = pag.vencimento?.toDate ? pag.vencimento.toDate() : pag.vencimento ? new Date(pag.vencimento) : null
+  const nomeCeg = item ? (item.ceg_nome || item.cegs?.nome || 'Item') : 'Pagamento'
   return `<div class="pag-card">
-    ${data?`<div class="pag-date"><div class="pag-day">${data.getDate()}</div><div class="pag-month">${data.toLocaleString('pt-BR',{month:'short'}).replace('.','')}</div></div>`:''}
-    <div style="flex:1;"><div class="pag-name">${item?esc(item.cegs?.nome||'Item'):'Pagamento'} — ${TIPOS_PAG[pag.tipo]||pag.tipo}</div><div class="pag-sub"><span class="badge ${s.cls}">${s.label}</span></div></div>
-    <div class="pag-val">R$ ${Number(pag.valor||0).toFixed(2).replace('.',',')}</div>
-    ${['PENDENTE','ATRASADO'].includes(pag.status)?`<button class="pag-btn" onclick="openModal('comprovante')">Pagar</button>`:''}
+    ${dataRaw ? `<div class="pag-date"><div class="pag-day">${dataRaw.getDate()}</div><div class="pag-month">${dataRaw.toLocaleString('pt-BR', {month:'short'}).replace('.','')}</div></div>` : ''}
+    <div style="flex:1;"><div class="pag-name">${esc(nomeCeg)} — ${TIPOS_PAG[pag.tipo] || pag.tipo}</div><div class="pag-sub"><span class="badge ${s.cls}">${s.label}</span></div></div>
+    <div class="pag-val">R$ ${Number(pag.valor || 0).toFixed(2).replace('.', ',')}</div>
+    ${['PENDENTE','ATRASADO'].includes(pag.status) ? `<button class="pag-btn" onclick="openModal('comprovante')">Pagar</button>` : ''}
   </div>`
 }
 
 // ============================================================
 // NAVEGAÇÃO
 // ============================================================
-const views=['inicio','itens','pagamentos','repasses','caixinhas','avisos']
-const sbItems=document.querySelectorAll('.sbi')
-let navHistory=[]
-let navAtual='inicio'
+const views = ['inicio','itens','pagamentos','repasses','caixinhas','avisos']
+const sbItems = document.querySelectorAll('.sbi')
+let navHistory = []
+let navAtual = 'inicio'
 
-function nav(view,el,addHistory=true) {
-  if(addHistory && navAtual && navAtual!==view) navHistory.push(navAtual)
-  navAtual=view
-  views.forEach(v=>{const e=document.getElementById('v-'+v);if(e)e.classList.toggle('hidden',v!==view)})
-  sbItems.forEach(i=>i.classList.remove('on'))
-  if(el&&el.classList)el.classList.add('on')
-  else{const m=document.querySelector(`.sbi[onclick="nav('${view}',this)"]`);if(m)m.classList.add('on')}
-  document.getElementById('content').scrollTop=0
-  const backBtn=document.getElementById('backBtn')
-  if(backBtn)backBtn.style.display=navHistory.length>0?'flex':'none'
-  if(view==='itens')renderItensCompleto()
-  if(view==='pagamentos')renderPagsCompleto()
-  if(view==='repasses')renderRepassesCompleto()
-  if(view==='caixinhas')renderCaixinhas()
-  if(view==='avisos')renderAvisosCompleto()
+window.nav = function (view, el, addHistory = true) {
+  if (addHistory && navAtual && navAtual !== view) navHistory.push(navAtual)
+  navAtual = view
+  views.forEach(v => { const e = document.getElementById('v-' + v); if (e) e.classList.toggle('hidden', v !== view) })
+  sbItems.forEach(i => i.classList.remove('on'))
+  if (el && el.classList) el.classList.add('on')
+  else { const m = document.querySelector(`.sbi[onclick="nav('${view}',this)"]`); if (m) m.classList.add('on') }
+  document.getElementById('content').scrollTop = 0
+  const backBtn = document.getElementById('backBtn')
+  if (backBtn) backBtn.style.display = navHistory.length > 0 ? 'flex' : 'none'
+  if (view === 'itens')      renderItensCompleto()
+  if (view === 'pagamentos') renderPagsCompleto()
+  if (view === 'repasses')   renderRepassesCompleto()
+  if (view === 'caixinhas')  renderCaixinhas()
+  if (view === 'avisos')     renderAvisosCompleto()
 }
 
-function voltar(){
-  if(navHistory.length===0)return
-  const anterior=navHistory.pop()
-  nav(anterior,null,false)
+window.voltar = function () {
+  if (navHistory.length === 0) return
+  nav(navHistory.pop(), null, false)
 }
 
 // ============================================================
 // RENDERS COMPLETOS
 // ============================================================
-function renderItensCompleto(filtro='todos'){
-  let itens=todosItens
-  if(filtro==='pendente')itens=itens.filter(i=>todosPags.some(p=>p.item_id===i.id&&['PENDENTE','ATRASADO'].includes(p.status)))
-  if(filtro==='transito')itens=itens.filter(i=>i.status_pipeline>=2&&i.status_pipeline<=8)
-  if(filtro==='entregue')itens=itens.filter(i=>i.status_pipeline===9)
-  document.getElementById('itensListFull').innerHTML=!itens.length?'<div class="empty"><i class="ti ti-box"></i>Nenhum item encontrado.</div>':itens.map(renderItemCard).join('')
+function renderItensCompleto(filtro = 'todos') {
+  let itens = todosItens
+  if (filtro === 'pendente') itens = itens.filter(i => todosPags.some(p => p.item_id === i.id && ['PENDENTE','ATRASADO'].includes(p.status)))
+  if (filtro === 'transito') itens = itens.filter(i => i.status_pipeline >= 2 && i.status_pipeline <= 8)
+  if (filtro === 'entregue') itens = itens.filter(i => i.status_pipeline === 9)
+  document.getElementById('itensListFull').innerHTML = !itens.length
+    ? '<div class="empty"><i class="ti ti-box"></i>Nenhum item encontrado.</div>'
+    : itens.map(renderItemCard).join('')
 }
 
-function renderPagsCompleto(filtro='todos'){
-  let pags=todosPags
-  if(filtro==='pendente')pags=pags.filter(p=>p.status==='PENDENTE')
-  if(filtro==='atrasado')pags=pags.filter(p=>p.status==='ATRASADO')
-  if(filtro==='pago')pags=pags.filter(p=>p.status==='PAGO')
-  document.getElementById('pagsListFull').innerHTML=!pags.length?'<div class="empty"><i class="ti ti-credit-card"></i>Nenhum pagamento encontrado.</div>':pags.map(renderPagCard).join('')
+function renderPagsCompleto(filtro = 'todos') {
+  let pags = todosPags
+  if (filtro === 'pendente') pags = pags.filter(p => p.status === 'PENDENTE')
+  if (filtro === 'atrasado') pags = pags.filter(p => p.status === 'ATRASADO')
+  if (filtro === 'pago')     pags = pags.filter(p => p.status === 'PAGO')
+  document.getElementById('pagsListFull').innerHTML = !pags.length
+    ? '<div class="empty"><i class="ti ti-credit-card"></i>Nenhum pagamento encontrado.</div>'
+    : pags.map(renderPagCard).join('')
 }
 
-function renderRepassesCompleto(){
-  document.getElementById('repassesList').innerHTML=!todosRepasses.length
-    ?'<div class="empty"><i class="ti ti-arrows-exchange"></i>Nenhum repasse ainda.</div>'
-    :todosRepasses.map(r=>{
-      const item=todosItens.find(i=>i.id===r.item_id)
-      return `<div class="rep-card"><div style="flex:1;"><div class="pag-name">${item?esc(item.cegs?.nome||'Item'):'Item'}</div><div class="pag-sub">Tipo: ${r.tipo} · <span class="badge ${r.status==='CONFIRMADO'?'b-ok':r.status==='CANCELADO'?'b-late':'b-warn'}">${r.status}</span></div></div>${r.valor_negociado?`<div class="pag-val">R$ ${Number(r.valor_negociado).toFixed(2).replace('.',',')}</div>`:''}</div>`
-    }).join('')
+function renderRepassesCompleto() {
+  document.getElementById('repassesList').innerHTML = !todosRepasses.length
+    ? '<div class="empty"><i class="ti ti-arrows-exchange"></i>Nenhum repasse ainda.</div>'
+    : todosRepasses.map(r => {
+        const item = todosItens.find(i => i.id === r.item_id)
+        const cls  = r.status === 'CONFIRMADO' ? 'b-ok' : r.status === 'CANCELADO' ? 'b-late' : 'b-warn'
+        return `<div class="rep-card"><div style="flex:1;"><div class="pag-name">${item ? esc(item.ceg_nome || item.cegs?.nome || 'Item') : 'Item'}</div><div class="pag-sub">Tipo: ${r.tipo} · <span class="badge ${cls}">${r.status}</span></div></div>${r.valor_negociado ? `<div class="pag-val">R$ ${Number(r.valor_negociado).toFixed(2).replace('.', ',')}</div>` : ''}</div>`
+      }).join('')
 }
 
-function renderCaixinhas(){
-  const html=todasCotacoes.map(c=>{
-    const plat=PLATAFORMAS[c.plataforma]||PLATAFORMAS.OUTRO
-    const sMap={AGUARDANDO:'b-warn',RESPONDIDA:'b-ok',SOLD_OUT:'b-late',NAO_ENCONTRADO:'b-late',CANCELADA:'b-soon'}
-    return `<div class="cot-card"><div class="cot-plat" style="background:${plat.cor};">${plat.label}</div><div style="flex:1;"><div class="pag-name">${esc(c.descricao)}</div><div class="pag-sub">${c.plataforma} · <span class="badge ${sMap[c.status]||'b-soon'}">${c.status}</span></div></div>${c.valor_brl?`<div class="pag-val">R$ ${Number(c.valor_brl).toFixed(2).replace('.',',')}</div>`:''}</div>`
+function renderCaixinhas() {
+  const html = todasCotacoes.map(c => {
+    const plat = PLATAFORMAS[c.plataforma] || PLATAFORMAS.OUTRO
+    const sMap = { AGUARDANDO:'b-warn', RESPONDIDA:'b-ok', SOLD_OUT:'b-late', NAO_ENCONTRADO:'b-late', CANCELADA:'b-soon' }
+    return `<div class="cot-card"><div class="cot-plat" style="background:${plat.cor};">${plat.label}</div><div style="flex:1;"><div class="pag-name">${esc(c.descricao)}</div><div class="pag-sub">${c.plataforma} · <span class="badge ${sMap[c.status] || 'b-soon'}">${c.status}</span></div></div>${c.valor_brl ? `<div class="pag-val">R$ ${Number(c.valor_brl).toFixed(2).replace('.', ',')}</div>` : ''}</div>`
   }).join('')
-  document.getElementById('cotacoesList').innerHTML=(html||'<div class="empty"><i class="ti ti-search"></i>Nenhuma cotação ainda.</div>')+`<div class="nova-cot" onclick="openModal('cotacao')"><i class="ti ti-plus"></i> Nova cotação</div>`
+  document.getElementById('cotacoesList').innerHTML = (html || '<div class="empty"><i class="ti ti-search"></i>Nenhuma cotação ainda.</div>') +
+    `<div class="nova-cot" onclick="openModal('cotacao')"><i class="ti ti-plus"></i> Nova cotação</div>`
 }
 
-function renderAvisosCompleto(){
-  carregarAvisos().then(avisos=>{
-    document.getElementById('avisosListFull').innerHTML=!avisos.length
-      ?'<div class="empty"><i class="ti ti-bell"></i>Nenhum aviso.</div>'
-      :avisos.map(a=>`<div class="av-card"><div class="av-ic"><i class="ti ti-bell"></i></div><div><div class="av-title">${esc(a.titulo)}</div><div class="av-body">${esc(a.mensagem)}</div><div style="font-size:10px;color:#9CA3AF;margin-top:4px;">${new Date(a.created_at).toLocaleDateString('pt-BR')}</div></div></div>`).join('')
+function renderAvisosCompleto() {
+  carregarAvisos().then(avisos => {
+    document.getElementById('avisosListFull').innerHTML = !avisos.length
+      ? '<div class="empty"><i class="ti ti-bell"></i>Nenhum aviso.</div>'
+      : avisos.map(a => {
+          const dataRaw = a.created_at?.toDate ? a.created_at.toDate() : a.created_at ? new Date(a.created_at) : null
+          return `<div class="av-card"><div class="av-ic"><i class="ti ti-bell"></i></div><div><div class="av-title">${esc(a.titulo)}</div><div class="av-body">${esc(a.mensagem)}</div>${dataRaw ? `<div style="font-size:10px;color:#9CA3AF;margin-top:4px;">${dataRaw.toLocaleDateString('pt-BR')}</div>` : ''}</div></div>`
+        }).join('')
   })
 }
 
 // ============================================================
 // FILTROS
 // ============================================================
-function filtrarItens(f,el){document.querySelectorAll('#itensTabs .tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderItensCompleto(f)}
-function filtrarPags(f,el){el.closest('.content').querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');renderPagsCompleto(f)}
+window.filtrarItens = function (f, el) {
+  document.querySelectorAll('#itensTabs .tab').forEach(t => t.classList.remove('on'))
+  el.classList.add('on')
+  renderItensCompleto(f)
+}
+window.filtrarPags = function (f, el) {
+  el.closest('.content').querySelectorAll('.tab').forEach(t => t.classList.remove('on'))
+  el.classList.add('on')
+  renderPagsCompleto(f)
+}
 
 // ============================================================
 // MODAIS
 // ============================================================
-function openModal(type){
-  let h=''
-  if(type==='comprovante')h=`<div class="modal-title">enviar comprovante</div><div class="modal-sub">selecione o pagamento e envie o arquivo</div><label class="modal-lbl">pagamento</label><select class="modal-sel" id="mPagSel">${todosPags.filter(p=>['PENDENTE','ATRASADO'].includes(p.status)).map(p=>{const item=todosItens.find(i=>i.id===p.item_id);return`<option value="${p.id}">${item?.cegs?.nome||'Item'} — ${TIPOS_PAG[p.tipo]} · R$ ${Number(p.valor||0).toFixed(2)}</option>`}).join('')}</select><label class="modal-lbl">nota (opcional)</label><textarea class="modal-ta" rows="2" id="mNota" placeholder="ex: pagando os dois juntos"></textarea><label class="modal-lbl">arquivo do comprovante</label><input type="file" accept="image/*,.pdf" id="mArquivo" style="font-size:12px;margin-top:4px;"/><div class="modal-acts"><button class="modal-cancel" onclick="closeModal()">cancelar</button><button class="modal-confirm" onclick="enviarComprovante()">enviar</button></div>`
-  else if(type==='cotacao')h=`<div class="modal-title">nova cotação</div><div class="modal-sub">qual tipo de pedido você quer fazer?</div><label class="modal-lbl">plataforma</label><select class="modal-sel" id="mPlat"><option value="MERCARI_JP">Mercari JP</option><option value="XIANYU">Xianyu</option><option value="BUNJANG">Bunjang</option><option value="POCAMARKET">PocaMarket</option><option value="OUTRO">Outro</option></select><label class="modal-lbl">tipo de pedido</label><select class="modal-sel" id="mTipoCot"><option value="INDIVIDUAL">Individual</option><option value="SET_PEQUENO">Set pequeno (até 35 itens)</option><option value="SET_GRANDE">Set grande (acima de 35 itens)</option></select><label class="modal-lbl">descrição / link</label><textarea class="modal-ta" rows="3" id="mDescCot" placeholder="ex: Woozi Figurine · mercari.jp/item/xxx"></textarea><div class="modal-acts"><button class="modal-cancel" onclick="closeModal()">cancelar</button><button class="modal-confirm" onclick="enviarCotacao()">solicitar</button></div>`
-  else if(type==='repasse')h=`<div class="modal-title">solicitar repasse</div><label class="modal-lbl">item</label><select class="modal-sel" id="mItemRep">${todosItens.filter(i=>i.disponivel_repasse).map(i=>`<option value="${i.id}">${esc(i.cegs?.nome||'')} — ${i.membro||i.tipo_item}</option>`).join('')||'<option>Nenhum item disponível</option>'}</select><label class="modal-lbl">tipo</label><select class="modal-sel" id="mTipoRep"><option value="ANUNCIADO">Anunciado (para a comunidade)</option><option value="DIRETO">Direto (para uma joiner)</option></select><div class="modal-acts"><button class="modal-cancel" onclick="closeModal()">cancelar</button><button class="modal-confirm" onclick="solicitarRepasse()">solicitar</button></div>`
-  document.getElementById('modal-area').innerHTML=`<div class="modal-bg open" id="modalBg" onclick="closeBg(event)"><div class="modal">${h}</div></div>`
+window.openModal = function (type) {
+  let h = ''
+
+  if (type === 'comprovante') {
+    const pagsPend = todosPags.filter(p => ['PENDENTE','ATRASADO'].includes(p.status))
+    const optsSelect = pagsPend.map(p => {
+      const item = todosItens.find(i => i.id === p.item_id)
+      const nome = item ? (item.ceg_nome || item.cegs?.nome || 'Item') : 'Item'
+      return `<option value="${p.id}">${esc(nome)} — ${TIPOS_PAG[p.tipo] || p.tipo} · R$ ${Number(p.valor || 0).toFixed(2)}</option>`
+    }).join('')
+    h = `<div class="modal-title">enviar comprovante</div>
+         <div class="modal-sub">selecione o pagamento e envie o arquivo</div>
+         <label class="modal-lbl">pagamento</label>
+         <select class="modal-sel" id="mPagSel">${optsSelect || '<option>Nenhum pagamento pendente</option>'}</select>
+         <label class="modal-lbl">nota (opcional)</label>
+         <textarea class="modal-ta" rows="2" id="mNota" placeholder="ex: pagando os dois juntos"></textarea>
+         <label class="modal-lbl">arquivo do comprovante</label>
+         <input type="file" accept="image/*,.pdf" id="mArquivo" style="font-size:12px;margin-top:4px;"/>
+         <div class="modal-acts">
+           <button class="modal-cancel" onclick="closeModal()">cancelar</button>
+           <button class="modal-confirm" id="btnEnviar" onclick="enviarComprovante()">enviar</button>
+         </div>`
+  }
+  else if (type === 'cotacao') {
+    h = `<div class="modal-title">nova cotação</div>
+         <div class="modal-sub">qual tipo de pedido você quer fazer?</div>
+         <label class="modal-lbl">plataforma</label>
+         <select class="modal-sel" id="mPlat">
+           <option value="MERCARI_JP">Mercari JP</option>
+           <option value="XIANYU">Xianyu</option>
+           <option value="BUNJANG">Bunjang</option>
+           <option value="POCAMARKET">PocaMarket</option>
+           <option value="OUTRO">Outro</option>
+         </select>
+         <label class="modal-lbl">tipo de pedido</label>
+         <select class="modal-sel" id="mTipoCot">
+           <option value="INDIVIDUAL">Individual</option>
+           <option value="SET_PEQUENO">Set pequeno (até 35 itens)</option>
+           <option value="SET_GRANDE">Set grande (acima de 35 itens)</option>
+         </select>
+         <label class="modal-lbl">descrição / link</label>
+         <textarea class="modal-ta" rows="3" id="mDescCot" placeholder="ex: Woozi Figurine · mercari.jp/item/xxx"></textarea>
+         <div class="modal-acts">
+           <button class="modal-cancel" onclick="closeModal()">cancelar</button>
+           <button class="modal-confirm" onclick="enviarCotacao()">solicitar</button>
+         </div>`
+  }
+  else if (type === 'repasse') {
+    const itensDisp = todosItens.filter(i => i.disponivel_repasse)
+    const optsItems = itensDisp.map(i =>
+      `<option value="${i.id}">${esc(i.ceg_nome || i.cegs?.nome || '')} — ${i.membro || i.tipo_item}</option>`
+    ).join('') || '<option>Nenhum item disponível</option>'
+    h = `<div class="modal-title">solicitar repasse</div>
+         <label class="modal-lbl">item</label>
+         <select class="modal-sel" id="mItemRep">${optsItems}</select>
+         <label class="modal-lbl">tipo</label>
+         <select class="modal-sel" id="mTipoRep">
+           <option value="ANUNCIADO">Anunciado (para a comunidade)</option>
+           <option value="DIRETO">Direto (para uma joiner)</option>
+         </select>
+         <div class="modal-acts">
+           <button class="modal-cancel" onclick="closeModal()">cancelar</button>
+           <button class="modal-confirm" onclick="solicitarRepasse()">solicitar</button>
+         </div>`
+  }
+
+  document.getElementById('modal-area').innerHTML =
+    `<div class="modal-bg open" id="modalBg" onclick="closeBg(event)"><div class="modal">${h}</div></div>`
 }
-function closeModal(){document.getElementById('modal-area').innerHTML=''}
-function closeBg(e){if(e.target.id==='modalBg')closeModal()}
+
+window.closeModal = function () { document.getElementById('modal-area').innerHTML = '' }
+window.closeBg    = function (e) { if (e.target.id === 'modalBg') closeModal() }
 
 // ============================================================
 // AÇÕES
 // ============================================================
-async function enviarComprovante(){
-  if(!perfilId){toast('Faça login para enviar comprovantes.');return}
-  const pagId=document.getElementById('mPagSel')?.value
-  const nota=document.getElementById('mNota')?.value
-  const arquivo=document.getElementById('mArquivo')?.files[0]
-  if(!pagId){toast('Selecione um pagamento.');return}
-  let arquivoUrl=null
-  if(arquivo){
-    const ext=arquivo.name.split('.').pop()
-    const path=`${perfilId}/${Date.now()}.${ext}`
-    const{data,error}=await sb.storage.from('comprovantes').upload(path,arquivo)
-    if(error){toast('Erro ao enviar arquivo.');return}
-    arquivoUrl=data.path
+window.enviarComprovante = async function () {
+  if (!perfilDoc) { toast('Faça login para enviar comprovantes.'); return }
+  const pagId  = document.getElementById('mPagSel')?.value
+  const nota   = document.getElementById('mNota')?.value || ''
+  const arquivo = document.getElementById('mArquivo')?.files[0]
+
+  if (!pagId) { toast('Selecione um pagamento.'); return }
+
+  const btn = document.getElementById('btnEnviar')
+  if (btn) { btn.disabled = true; btn.textContent = 'enviando...' }
+
+  let driveFileId   = null
+  let drivePreviewUrl = null
+
+  if (arquivo) {
+    // Converte para base64 e envia via Apps Script → Google Drive
+    const base64 = await toBase64(arquivo)
+    const conteudoBase64 = base64.split(',')[1]
+
+    try {
+      const resp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          acao:          'uploadComprovante',
+          userId:        perfilDoc.id,
+          emailJoiner:   usuarioAtual.email,
+          nomeArquivo:   arquivo.name,
+          conteudoBase64,
+          mimeType:      arquivo.type,
+        }),
+      })
+      const json = await resp.json()
+      if (!json.sucesso) {
+        toast('Erro ao enviar arquivo: ' + json.mensagem)
+        if (btn) { btn.disabled = false; btn.textContent = 'enviar' }
+        return
+      }
+      driveFileId    = json.dados.fileId
+      drivePreviewUrl = json.dados.previewUrl
+    } catch (e) {
+      toast('Erro de rede ao enviar arquivo.')
+      if (btn) { btn.disabled = false; btn.textContent = 'enviar' }
+      return
+    }
   }
-  const{error}=await sb.from('comprovantes').insert({pagamento_ids:[pagId],perfil_id:perfilId,nota,arquivo_url:arquivoUrl,status:'PENDENTE'})
-  if(error){toast('Erro ao enviar comprovante.');return}
-  await sb.from('pagamentos').update({status:'COMPROVANTE_ENVIADO'}).eq('id',pagId)
-  await carregarDados()
-  closeModal()
-  toast('Comprovante enviado! Aguardando aprovação.')
+
+  // Salva comprovante no Firestore
+  try {
+    await addDoc(collection(db, 'comprovantes'), {
+      pagamento_ids:   [pagId],
+      perfil_id:       perfilDoc.id,
+      nota,
+      drive_file_id:   driveFileId,
+      drive_preview_url: drivePreviewUrl,
+      status:          'PENDENTE',
+      created_at:      serverTimestamp(),
+    })
+
+    // Atualiza status do pagamento
+    await updateDoc(doc(db, 'pagamentos', pagId), { status: 'COMPROVANTE_ENVIADO' })
+
+    await carregarDados()
+    closeModal()
+    renderInicio()
+    toast('Comprovante enviado! Aguardando aprovação.')
+  } catch (e) {
+    toast('Erro ao salvar comprovante: ' + e.message)
+    if (btn) { btn.disabled = false; btn.textContent = 'enviar' }
+  }
 }
 
-async function enviarCotacao(){
-  if(!perfilId){toast('Faça login para solicitar cotações.');return}
-  const plataforma=document.getElementById('mPlat').value
-  const tipo_pedido=document.getElementById('mTipoCot').value
-  const descricao=document.getElementById('mDescCot').value.trim()
-  if(!descricao){toast('Descreva o item.');return}
-  const{error}=await sb.from('cotacoes').insert({perfil_id:perfilId,plataforma,tipo_pedido,descricao})
-  if(error){toast('Erro ao enviar cotação.');return}
-  await carregarDados()
-  closeModal()
-  toast('Cotação enviada!')
-  renderCaixinhas()
+window.enviarCotacao = async function () {
+  if (!perfilDoc) { toast('Faça login para solicitar cotações.'); return }
+  const plataforma   = document.getElementById('mPlat').value
+  const tipo_pedido  = document.getElementById('mTipoCot').value
+  const descricao    = document.getElementById('mDescCot').value.trim()
+  if (!descricao) { toast('Descreva o item.'); return }
+
+  try {
+    await addDoc(collection(db, 'cotacoes'), {
+      perfil_id: perfilDoc.id,
+      plataforma,
+      tipo_pedido,
+      descricao,
+      status: 'AGUARDANDO',
+      created_at: serverTimestamp(),
+    })
+    await carregarDados()
+    closeModal()
+    renderCaixinhas()
+    toast('Cotação enviada!')
+  } catch (e) {
+    toast('Erro ao enviar cotação: ' + e.message)
+  }
 }
 
-async function solicitarRepasse(){
-  if(!perfilId){toast('Faça login para solicitar repasses.');return}
-  const itemId=document.getElementById('mItemRep').value
-  const tipo=document.getElementById('mTipoRep').value
-  if(!itemId){toast('Nenhum item disponível.');return}
-  const{error}=await sb.from('repasses').insert({item_id:itemId,perfil_origem_id:perfilId,tipo,status:'PENDENTE'})
-  if(error){toast('Erro ao solicitar repasse.');return}
-  await carregarDados()
-  closeModal()
-  toast('Repasse solicitado!')
+window.solicitarRepasse = async function () {
+  if (!perfilDoc) { toast('Faça login para solicitar repasses.'); return }
+  const itemId = document.getElementById('mItemRep').value
+  const tipo   = document.getElementById('mTipoRep').value
+  if (!itemId) { toast('Nenhum item disponível.'); return }
+
+  try {
+    await addDoc(collection(db, 'repasses'), {
+      item_id:          itemId,
+      perfil_origem_id: perfilDoc.id,
+      tipo,
+      status:           'PENDENTE',
+      created_at:       serverTimestamp(),
+    })
+    await carregarDados()
+    closeModal()
+    toast('Repasse solicitado!')
+  } catch (e) {
+    toast('Erro ao solicitar repasse: ' + e.message)
+  }
 }
 
 // ============================================================
 // UTILITÁRIOS
 // ============================================================
-function esc(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function hashStr(s){let h=0;for(let i=0;i<s.length;i++)h=Math.imul(31,h)+s.charCodeAt(i)|0;return h}
+function esc(t) {
+  if (!t) return ''
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+function hashStr(s) {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = Math.imul(31, h) + s.charCodeAt(i) | 0
+  return h
+}
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 let toastTimer
-function toast(msg){document.getElementById('toastMsg').textContent=msg;const w=document.getElementById('toastWrap');w.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>w.classList.remove('show'),3500)}
+window.toast = function (msg) {
+  document.getElementById('toastMsg').textContent = msg
+  const w = document.getElementById('toastWrap')
+  w.classList.add('show')
+  clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => w.classList.remove('show'), 3500)
+}
 </script>
 </body>
 </html>
